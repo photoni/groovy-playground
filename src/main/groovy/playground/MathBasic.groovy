@@ -1,4 +1,4 @@
-package groovy.playground
+package playground
 
 import groovy.swing.impl.DefaultAction;
 

@@ -1,4 +1,4 @@
-package groovy.playground
+package playground
 
 class SignatureBasic {
 	static void main(def args) {
