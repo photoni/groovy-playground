@@ -1,0 +1,21 @@
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+
+repositories { mavenCentral() }
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.3.0'
+	compile 'org.apache.httpcomponents:fluent-hc:4.3.3'
+	compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+	compile 'org.slf4j:slf4j-api:1.7.2'
+	compile 'ch.qos.logback:logback-classic:1.0.9'
+	compile 'ch.qos.logback:logback-core:1.0.9'
+	compile 'net.sf.opencsv:opencsv:2.3'
+	testCompile 'junit:junit:4.11'
+}
+
+test {
+	onOutput { descriptor, event ->
+		logger.lifecycle("Test: " + descriptor + " out/err: " + event.message )
+	}
+}
