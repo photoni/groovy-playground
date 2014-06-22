@@ -1,4 +1,4 @@
-package playground
+package net
 
 import groovy.util.logging.Slf4j
 import groovyx.net.http.ContentType;
@@ -16,7 +16,7 @@ import au.com.bytecode.opencsv.CSVReader;
  *
  */
 @Slf4j
-class HttpClientBasic {
+class HttpClientOps {
 
 
 	/**
@@ -46,23 +46,39 @@ class HttpClientBasic {
 	}
 
 	/**
-	 * Get content from an url with a specific path and query parameter.<br/>
+	 * Get csv content from an url with a specific path and query parameter.<br/>
 	 * Handles {@link ContentType}
 	 * @param url
-	 * @return csv 
+	 * @return csv parsed in a list of objects
 	 */
-	def getCsv(String url,Map<String,Object> params){
+	def List<Map<String,?>> getCsv(String url,Map<String,Object> params){
 		def http = new HTTPBuilder(url);
 		http.parser.'text/csv' = { resp ->
 			return new CSVReader(new InputStreamReader( resp.entity.content,
 			ParserRegistry.getCharset( resp ) ) )
 		}
-		/*  path: 'weather', query: [q: 'London']  */
 		http.request( Method.GET, 'text/csv' ) { req ->
 			uri.query = params
 			headers.Accept = 'text/csv'
 			response.success = { resp, reader ->
 				return reader.readAll();
+			}
+		}
+	}
+
+	/**
+	 * Get csv content from an url with a specific path and query parameter.<br/>
+	 * Handles {@link ContentType}
+	 * @param url
+	 * @return csv not parsed.
+	 */
+	def byte[] getCsvAsBinary(String url,Map<String,Object> params){
+		def http = new HTTPBuilder(url);
+		http.request( Method.GET, 'text/csv' ) { req ->
+			uri.query = params
+			headers.Accept = 'text/csv'
+			response.success = { resp->
+				return resp.entity.content.bytes;
 			}
 		}
 	}
