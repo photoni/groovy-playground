@@ -24,7 +24,7 @@ class SecurityConverter {
 		strat.setType(SecurityQuote.class)
 		Map<String, String> mapping = new HashMap<String, String>()
 		mapping.put("Date", "dateAsString")
-		mapping.put("Adj Close", "close")
+		mapping.put("Adj Close", "adjClose")
 		mapping.put("High", "high");
 		mapping.put("Low", "low");
 		mapping.put("Open", "open");

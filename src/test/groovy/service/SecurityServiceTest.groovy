@@ -17,7 +17,7 @@ class SecurityServiceTest {
 	public void loadSecurityTest() {
 		SecurityService ss= SecurityService.instance
 		Security s=ss.loadSecurity("GOOGL")
-		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.date}")}
+		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.adjClose}")}
 		/* define here assertions */
 	}
 
@@ -38,6 +38,6 @@ class SecurityServiceTest {
 	public void getSecurity() {
 		SecurityService ss= SecurityService.instance
 		Security s=ss.getSecurity("GOOGL");
-		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.date}")}
+		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.adjClose}")}
 	}
 }

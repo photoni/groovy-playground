@@ -1,7 +1,11 @@
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
-repositories { mavenCentral() }
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
 
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.3.0'
@@ -12,6 +16,7 @@ dependencies {
 	compile 'ch.qos.logback:logback-core:1.0.9'
 	compile 'net.sf.opencsv:opencsv:2.3'
 	compile 'redis.clients:jedis:2.5.1'
+	compile 'ta:ta-lib:0.4.0'
 	testCompile 'junit:junit:4.11'
 }
 
