@@ -1,6 +1,10 @@
 package playground;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ArraySumJ {
+	Logger log= LoggerFactory.getLogger(this.getClass());
 	/**
 	 * Sum of two integer
 	 * @param x
@@ -17,9 +21,12 @@ public class ArraySumJ {
 	 */
 	public int nArgs(int... args){
 		int sum=0;
+		long start= System.nanoTime();
 		for (int i : args) {
 			sum+=i;
 		}
+		long end= System.nanoTime();
+		log.debug("Total time nano intern: {}", end-start);
 		return sum;
 	}
 

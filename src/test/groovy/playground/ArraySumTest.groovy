@@ -39,7 +39,7 @@ class ArraySumTest {
 
 	@Test
 	void arraySumMultiArgs() {
-		def arraySum=new ArraySum();
+		def arraySum=new ArraySumJ();
 		long start= System.nanoTime();
 		int sum= arraySum.nArgs(2,2,3,3,2,1,2);
 		long end= System.nanoTime();

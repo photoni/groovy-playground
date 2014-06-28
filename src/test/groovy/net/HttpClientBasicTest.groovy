@@ -1,4 +1,4 @@
-package playground;
+package net;
 
 import static org.junit.Assert.*
 import groovy.util.logging.Slf4j
