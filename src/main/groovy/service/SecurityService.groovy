@@ -16,7 +16,7 @@ import data.SecurityRepo
  *
  */
 @Slf4j
-@Singleton
+@Singleton(strict=false)
 class SecurityService {		
 	private SecurityRepo sr;
 

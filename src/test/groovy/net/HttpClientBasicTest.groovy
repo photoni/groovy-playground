@@ -14,11 +14,11 @@ class HttpClientBasicTest {
 	void httpGetJsonTest() {
 		def hcb=new HttpClientOps();
 		String resp=hcb.getHttpSimple("http://google.com");
-		long start= System.nanoTime();
-		def json=hcb.getJson("http://api.openweathermap.org/data/2.5/",[ path: 'weather', query: [q: 'London']]);
-		long end= System.nanoTime();
-		log.debug("Total time nano : {}", end-start);
-		log.debug("It is currently ${json.weather.description} in London.");
+//		long start= System.nanoTime();
+//		def json=hcb.getJson("http://api.openweathermap.org/data/2.5/",[ path: 'weather', query: [q: 'London']]);
+//		long end= System.nanoTime();
+//		log.debug("Total time nano : {}", end-start);
+//		log.debug("It is currently ${json.weather.description} in London.");
 	}
 
 	@Test

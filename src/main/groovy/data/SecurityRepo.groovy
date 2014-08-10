@@ -7,7 +7,7 @@ import model.KeyBuilder;
  * @author filippo
  *
  */
-@Singleton
+@Singleton(strict=false)
 class SecurityRepo {
 	protected RedisBox rb;
 

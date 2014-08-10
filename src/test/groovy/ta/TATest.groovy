@@ -37,18 +37,24 @@ class TASingleSecurityTest {
 	@Test
 	public void smaTest() {	
 		double[] out= ta.sma(prices)
-		//out.eachWithIndex { val,i -> log.debug(" aver: ${i} - val : ${val}")}
+		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 	
 	@Test
 	public void wmaTest() {		
 		double[] out= ta.wma(prices)
-		out.eachWithIndex { val,i -> log.debug(" aver: ${i} - val : ${val}")}
+		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 	
 	@Test
 	public void emaTest() {
 		double[] out= ta.ema(prices)
+		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
+	}
+	
+	@Test
+	public void tmaTest() {
+		double[] out= ta.tma(prices)
 		out.eachWithIndex { val,i -> log.debug(" aver: ${i} - val : ${val}")}
 	}
 }

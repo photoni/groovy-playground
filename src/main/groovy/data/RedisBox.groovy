@@ -10,7 +10,7 @@ import redis.clients.jedis.JedisPoolConfig
  * @author filippo
  *
  */
-@Singleton
+@Singleton(strict=false)
 class RedisBox {
 
 	private static final String REDIS_DEFAULT_HOST = "localhost"
