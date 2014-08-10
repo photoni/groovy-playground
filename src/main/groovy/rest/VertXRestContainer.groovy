@@ -15,12 +15,12 @@ class VertXRestContainer extends Verticle{
 	Vertx vertx = VertxFactory.newVertx();
 
 	public void start() {
-		vertx.createHttpServer().requestHandler(new Handler<HttpServerRequest>() {
-					public void handle(HttpServerRequest req) {
-						req.response().headers().set("Content-Type", "text/plain");
-						req.response().end("Hello World");
-					}
-				}).listen(8080);
+		
+		vertx.createHttpServer().requestHandler { req ->
+			req.response().headers().set("Content-Type", "text/plain");
+			req.response().end("Pippo World");
+		}.listen(8080)
+
 	}
 
 	public static void main(String[] list) throws Exception {
