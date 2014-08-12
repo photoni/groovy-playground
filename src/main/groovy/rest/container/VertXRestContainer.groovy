@@ -1,4 +1,4 @@
-package rest
+package rest.container
 
 import org.vertx.java.core.Handler
 import org.vertx.java.core.Vertx

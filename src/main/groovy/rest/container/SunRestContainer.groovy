@@ -1,4 +1,4 @@
-package rest
+package rest.container
 
 import java.util.concurrent.Executors
 
@@ -7,7 +7,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer
 
-class RestAPI implements HttpHandler {
+class SunRestContainer implements HttpHandler {
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		String requestMethod = httpExchange.getRequestMethod();
@@ -42,7 +42,7 @@ class RestAPI implements HttpHandler {
 		InetSocketAddress addr = new InetSocketAddress(8080)
 		HttpServer httpServer = com.sun.net.httpserver.HttpServer.create(addr, 0)
 		httpServer.with {
-			createContext('/analysis', new RestAPI())
+			createContext('/analysis', new SunRestContainer())
 			setExecutor(Executors.newCachedThreadPool())
 			start()
 		}

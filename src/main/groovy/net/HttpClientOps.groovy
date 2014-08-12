@@ -11,7 +11,7 @@ import org.apache.http.client.fluent.Request
 
 import au.com.bytecode.opencsv.CSVReader;
 /**
- * Performs Http basic operations
+ * Performs Http basic CLIENT operations
  * @author filippo
  *
  */
