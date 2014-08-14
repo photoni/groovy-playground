@@ -21,6 +21,7 @@ import com.tictactec.ta.lib.MInteger
 @Slf4j
 class TASingleSecurityTest {
 	static final String TICKER = "GOOGL"
+	static final boolean CUT = true
 	SecurityService ss;	Security s;double[] prices;TechnicalAnalisys ta;
 	
 	@Before
@@ -29,32 +30,33 @@ class TASingleSecurityTest {
 		s=ss.getSecurity(TICKER)
 		int historyLength=s.getHistory().size()
 		prices=new double[historyLength]
-		s.getHistory().eachWithIndex { obj, i -> prices[i]=obj.adjClose}
+		s.getHistory().eachWithIndex { obj, i -> prices[i]=obj.adjClose}		
+		prices.each {obj -> log.trace(" val : ${obj}")}		
 		ta=TechnicalAnalisys.instance
 		//s.getHistory().eachWithIndex { val,i -> log.debug(" price: ${i} - val : ${val.adjClose}")}
 	}
 
 	@Test
 	public void smaTest() {	
-		double[] out= ta.sma(prices)
+		double[] out= ta.sma(prices,CUT)
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 	
 	@Test
 	public void wmaTest() {		
-		double[] out= ta.wma(prices)
+		double[] out= ta.wma(prices,CUT)
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 	
 	@Test
 	public void emaTest() {
-		double[] out= ta.ema(prices)
+		double[] out= ta.ema(prices,CUT)
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 	
 	@Test
 	public void tmaTest() {
-		double[] out= ta.tma(prices)
-		out.eachWithIndex { val,i -> log.debug(" aver: ${i} - val : ${val}")}
+		double[] out= ta.tma(prices,CUT)
+		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 }

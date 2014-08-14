@@ -66,7 +66,7 @@ class SecurityService {
 	Security getSecurity(String symbol){
 		long start= System.nanoTime()	
 		byte[] bytes=sr.getBinaryCurve(symbol)
-		Security security=SecurityConverter.fromBinary(bytes,symbol)
+		Security security=SecurityConverter.fromBinary(bytes,symbol,false)
 		long end= System.nanoTime()
 		//log.debug("Total time nano : {}", end-start)
 		return security

@@ -11,14 +11,15 @@ import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy
  */
 class SecurityConverter {
 	/* INTERNALS */
-	
+
 	/**
 	 * Convert a binary csv stream to a security. 
 	 * @param csvBinary
 	 * @param symbol
+	 * @param reverse reverses the original order
 	 * @return
 	 */
-	static  Security fromBinary(byte[] csvBinary, String symbol) {
+	static  Security fromBinary(byte[] csvBinary, String symbol,boolean reverse) {
 		CSVReader csvr= new CSVReader(new StringReader(new String(csvBinary)))
 		HeaderColumnNameTranslateMappingStrategy<SecurityQuote> strat= new HeaderColumnNameTranslateMappingStrategy<SecurityQuote>()
 		strat.setType(SecurityQuote.class)
@@ -34,9 +35,10 @@ class SecurityConverter {
 		List<SecurityQuote> list = csv.parse(strat, csvr);
 		Security security= new Security();
 		security.setSymbol(symbol)
+		if(reverse)
+			list=list.reverse()
 		security.setHistory(list)
 		security.getHistory().each { obj -> def Date date=Date.parse("yyyy-MM-dd",obj.dateAsString);obj.setDate(date.getTime())}
 		return security
 	}
-
 }
