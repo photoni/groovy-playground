@@ -10,11 +10,12 @@ import javax.ws.rs.core.MediaType
 import model.Security
 import service.SecurityService
 import ta.TechnicalAnalisys
+import util.DateUtil;
 
 @Path("api")
 public class RestAPI {
 	static final String TICKER = "GOOGL"
-	Security s;double[] prices;TechnicalAnalisys ta;SecurityService ss;
+	Security s;double[] prices;long[] dates;TechnicalAnalisys ta;SecurityService ss;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -41,7 +42,11 @@ public class RestAPI {
 		s=ss.getSecurity(TICKER)
 		int historyLength=s.getHistory().size()
 		prices=new double[historyLength]
-		s.getHistory().eachWithIndex { obj, i -> prices[i]=obj.adjClose}
+		dates=new double[historyLength]
+		s.getHistory().eachWithIndex { obj, i ->
+			prices[i]=obj.adjClose
+			dates[i]=obj.date
+		}
 		result.put("prices", prices)
 
 		ta=TechnicalAnalisys.instance
@@ -50,8 +55,7 @@ public class RestAPI {
 		//    	JSONObject outputJsonObj = new JSONObject();
 		//        outputJsonObj.put("output", obj);
 		result.putAll(multi);
+		result.put("dates", dates);
 		return result;
 	}
-			
-			
 }

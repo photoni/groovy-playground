@@ -41,7 +41,7 @@ class JerseyRestContainer {
 		
 		server.start()
 		log.debug(String.format("\nJersey Application Server started with WADL available at " + "%sapplication.wadl\n", getURI()))
-		log.debug("Started Crunchify's Embedded Jersey HTTPServer Successfully !!!")
+		log.debug("Started Embedded Jersey HTTPServer Successfully !!!")
 		
 	}
 	public static void main(String[] args) throws IOException {

@@ -1,0 +1,81 @@
+<html>    
+<script src="http://code.jquery.com/jquery-2.0.0.js"></script>
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+ <body>
+    <div id="container" style="height: 900px; min-width: 310px"></div>
+     <script>
+     $(function () {
+
+        $.getJSON('http://local.piggy-trade.com/api/series?type=sma&type=wma&type=ema&type=tma', function (data) {
+            var dates=data.dates;
+            var prices=data.prices;
+            var pricesT= integrate(prices,dates);
+            var sma=data.sma;
+            var smaT= integrate(sma,dates);
+            var ema=data.ema;
+            var emaT= integrate(ema,dates);
+            var wma=data.wma;
+            var wmaT= integrate(wma,dates);
+            var tma=data.tma;
+            var tmaT= integrate(tma,dates);
+             $('#container').highcharts('StockChart', {
+                rangeSelector : {
+                    selected : 5,
+                    inputEnabled: $('#container').width() > 480
+                },
+
+                title : {
+                    text : ' Stock Prices'
+                },
+
+                series : [{
+                    name : 'prices',
+                    data : pricesT.reverse(),
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                },{
+                    name : 'sma',
+                    data : smaT.reverse(),
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                },{
+                    name : 'ema',
+                    data : emaT.reverse(),
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                },{
+                    name : 'wma',
+                    data : wmaT.reverse(),
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                },{
+                    name : 'tma',
+                    data : tmaT.reverse(),
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                }]
+             });
+                
+        });
+
+     });
+    function integrate(values, dates) {
+        var result=new Array();
+        for (i = 0; i < values.length; i++) {
+            var entry=new Array();
+            entry[0]=dates[i];
+            entry[1]=values[i];
+            result.push(entry);            
+        }   
+        return result;
+    }
+     </script>
+</body>   
+
+</html>
