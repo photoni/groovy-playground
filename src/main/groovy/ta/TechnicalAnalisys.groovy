@@ -134,10 +134,10 @@ class TechnicalAnalisys {
 	private double[] adjustOutput(double[] out, MInteger begin, MInteger length, boolean cutOut) {
 		double[] adjAut=new double[out.length]
 		if(cutOut)
-			adjAut = Arrays.copyOfRange(out, begin.value, length.value);
+			adjAut = Arrays.copyOfRange(out, begin.value, (length.value+begin.value-1));
 		else
 			out.eachWithIndex {obj,i ->
-				if(i>begin.value && i< length.value)adjAut[i]=obj
+				if(i< length.value)adjAut[i]=obj
 				else adjAut[i]=0
 			}
 		return adjAut

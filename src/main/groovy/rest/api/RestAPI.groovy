@@ -47,14 +47,15 @@ public class RestAPI {
 			prices[i]=obj.adjClose
 			dates[i]=obj.date
 		}
-		result.put("prices", prices)
+		//result.put("prices", prices)
 
 		ta=TechnicalAnalisys.instance
 		Map<String,double[]> multi=ta.multi(prices, types,cut)
+		multi.put("prices", prices);
 		//    	obj.put("a", 1.1);
 		//    	JSONObject outputJsonObj = new JSONObject();
 		//        outputJsonObj.put("output", obj);
-		result.putAll(multi);
+		result.put("results",multi);
 		result.put("dates", dates);
 		return result;
 	}

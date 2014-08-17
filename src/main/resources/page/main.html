@@ -1,24 +1,57 @@
-<html>    
+<html>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">    
 <script src="http://code.jquery.com/jquery-2.0.0.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
  <body>
-    <div id="container" style="height: 900px; min-width: 310px"></div>
+    <div class="row">
+        <div class="col-md-8">
+            <label class="checkbox-inline">
+                <input type="checkbox" id="price" value="price"> price
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" id="sma" value="sma"> sma
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" id="wma" value="wma"> wma
+            </label>
+            <label class="checkbox-inline">
+                <input type="checkbox" id="ema" value="ema"> wma
+            </label>
+        </div>
+    </div>
+      <div class="row">
+      <div class="col-md-12"> <div id="container" style="height: 900px; min-width: 310px"></div></div>
+    </div>
+   
      <script>
      $(function () {
 
         $.getJSON('http://local.piggy-trade.com/api/series?type=sma&type=wma&type=ema&type=tma', function (data) {
             var dates=data.dates;
-            var prices=data.prices;
-            var pricesT= integrate(prices,dates);
-            var sma=data.sma;
+            var resultSeries= new Array();
+            //var prices=data.prices;
+            //var pricesT= integrate(prices,dates);
+            //var priceSerie=createSeries('prices',pricesT.reverse());
+            //resultSeries.push(priceSerie);
+           
+            for(var entryN in  data.results) {
+              console.log("result entry: "+entryN);
+                var entryD=data.results[entryN];
+                var entryT= integrate(entryD,dates);
+                var entrySerie= createSeries(entryN,entryT.reverse());
+                resultSeries.push(entrySerie);
+            }
+            /*
+            var sma=data.results.sma;
             var smaT= integrate(sma,dates);
-            var ema=data.ema;
+            var ema=data.results.ema;
             var emaT= integrate(ema,dates);
-            var wma=data.wma;
+            var wma=data.results.wma;
             var wmaT= integrate(wma,dates);
-            var tma=data.tma;
-            var tmaT= integrate(tma,dates);
+            var tma=data.results.tma;
+            var tmaT= integrate(tma,dates);*/
              $('#container').highcharts('StockChart', {
                 rangeSelector : {
                     selected : 5,
@@ -29,37 +62,7 @@
                     text : ' Stock Prices'
                 },
 
-                series : [{
-                    name : 'prices',
-                    data : pricesT.reverse(),
-                    tooltip: {
-                        valueDecimals: 2
-                    }
-                },{
-                    name : 'sma',
-                    data : smaT.reverse(),
-                    tooltip: {
-                        valueDecimals: 2
-                    }
-                },{
-                    name : 'ema',
-                    data : emaT.reverse(),
-                    tooltip: {
-                        valueDecimals: 2
-                    }
-                },{
-                    name : 'wma',
-                    data : wmaT.reverse(),
-                    tooltip: {
-                        valueDecimals: 2
-                    }
-                },{
-                    name : 'tma',
-                    data : tmaT.reverse(),
-                    tooltip: {
-                        valueDecimals: 2
-                    }
-                }]
+                series : resultSeries
              });
                 
         });
@@ -74,6 +77,16 @@
             result.push(entry);            
         }   
         return result;
+    }
+    function createSeries(name,data) {
+        var seriesObject={
+                name : name,
+                data : data,
+                tooltip: {
+                    valueDecimals: 2
+                }
+            }
+        return seriesObject;
     }
      </script>
 </body>   
