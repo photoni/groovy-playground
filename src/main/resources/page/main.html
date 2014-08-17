@@ -6,29 +6,46 @@
 <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
  <body>
     <div class="row">
-        <div class="col-md-8">
-            <label class="checkbox-inline">
-                <input type="checkbox" id="price" value="price"> price
-            </label>
-            <label class="checkbox-inline">
-                <input type="checkbox" id="sma" value="sma"> sma
-            </label>
-            <label class="checkbox-inline">
-                <input type="checkbox" id="wma" value="wma"> wma
-            </label>
-            <label class="checkbox-inline">
-                <input type="checkbox" id="ema" value="ema"> wma
-            </label>
-        </div>
+        <form id="seriesForm" action="javascript:void(0)">
+            <div class="col-md-8">
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="price" value="price"> price
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="sma" value="sma"> sma
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="wma" value="wma"> wma
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="ema" value="ema"> wma
+                </label>
+            </div>
+            <button type="submit" class="btn btn-default">Go!</button>
+        </form>
     </div>
       <div class="row">
       <div class="col-md-12"> <div id="container" style="height: 900px; min-width: 310px"></div></div>
     </div>
    
      <script>
-     $(function () {
+     jQuery(function () {
+         
+        jQuery("#seriesForm").submit(function(event) {
 
-        $.getJSON('http://local.piggy-trade.com/api/series?type=sma&type=wma&type=ema&type=tma', function (data) {
+            /* stop form from submitting normally */
+            event.preventDefault();
+
+            /* get some values from elements on the page: */
+            var form = jQuery( this );
+            
+            form.find('input, textarea, select').each(function(el) {
+               console.log( this.value+  ": " +this.checked);
+            });
+         
+        }); 
+
+        jQuery.getJSON('http://local.piggy-trade.com/api/series?type=sma&type=wma&type=ema&type=tma', function (data) {
             var dates=data.dates;
             var resultSeries= new Array();
             //var prices=data.prices;
@@ -52,10 +69,10 @@
             var wmaT= integrate(wma,dates);
             var tma=data.results.tma;
             var tmaT= integrate(tma,dates);*/
-             $('#container').highcharts('StockChart', {
+             jQuery('#container').highcharts('StockChart', {
                 rangeSelector : {
                     selected : 5,
-                    inputEnabled: $('#container').width() > 480
+                    inputEnabled: jQuery('#container').width() > 480
                 },
 
                 title : {
