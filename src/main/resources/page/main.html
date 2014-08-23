@@ -1,5 +1,5 @@
 <html>
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">    
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 <script src="http://code.jquery.com/jquery-2.0.0.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="http://code.highcharts.com/stock/highstock.js"></script>
@@ -18,7 +18,10 @@
                     <input type="checkbox" id="wma" value="wma"> wma
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="ema" value="ema"> wma
+                    <input type="checkbox" id="ema" value="ema"> ema
+                </label>
+                 <label class="checkbox-inline">
+                    <input type="checkbox" id="tma" value="tma"> tma
                 </label>
             </div>
             <button type="submit" class="btn btn-default">Go!</button>
@@ -27,10 +30,11 @@
       <div class="row">
       <div class="col-md-12"> <div id="container" style="height: 900px; min-width: 310px"></div></div>
     </div>
-   
+
      <script>
+     var queryString="type=price";
      jQuery(function () {
-         
+
         jQuery("#seriesForm").submit(function(event) {
 
             /* stop form from submitting normally */
@@ -38,21 +42,22 @@
 
             /* get some values from elements on the page: */
             var form = jQuery( this );
-            
+
+
+            queryString="";
             form.find('input, textarea, select').each(function(el) {
                console.log( this.value+  ": " +this.checked);
+                if(this.checked)
+                    queryString+='type='+this.value+'&';
             });
-         
-        }); 
+            queryString+='_end';
+            console.log( "queryString: "+ queryString);
 
-        jQuery.getJSON('http://local.piggy-trade.com/api/series?type=sma&type=wma&type=ema&type=tma', function (data) {
+            /* remote call */
+            jQuery.getJSON('http://local.piggy-trade.com/api/series?'+queryString, function (data) {
             var dates=data.dates;
             var resultSeries= new Array();
-            //var prices=data.prices;
-            //var pricesT= integrate(prices,dates);
-            //var priceSerie=createSeries('prices',pricesT.reverse());
-            //resultSeries.push(priceSerie);
-           
+
             for(var entryN in  data.results) {
               console.log("result entry: "+entryN);
                 var entryD=data.results[entryN];
@@ -60,15 +65,7 @@
                 var entrySerie= createSeries(entryN,entryT.reverse());
                 resultSeries.push(entrySerie);
             }
-            /*
-            var sma=data.results.sma;
-            var smaT= integrate(sma,dates);
-            var ema=data.results.ema;
-            var emaT= integrate(ema,dates);
-            var wma=data.results.wma;
-            var wmaT= integrate(wma,dates);
-            var tma=data.results.tma;
-            var tmaT= integrate(tma,dates);*/
+
              jQuery('#container').highcharts('StockChart', {
                 rangeSelector : {
                     selected : 5,
@@ -81,18 +78,25 @@
 
                 series : resultSeries
              });
-                
+
         });
 
      });
+
+
+
+
+        });
+
+
     function integrate(values, dates) {
         var result=new Array();
         for (i = 0; i < values.length; i++) {
             var entry=new Array();
             entry[0]=dates[i];
             entry[1]=values[i];
-            result.push(entry);            
-        }   
+            result.push(entry);
+        }
         return result;
     }
     function createSeries(name,data) {
@@ -106,6 +110,6 @@
         return seriesObject;
     }
      </script>
-</body>   
+</body>
 
 </html>
