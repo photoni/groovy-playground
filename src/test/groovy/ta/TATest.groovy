@@ -39,7 +39,10 @@ class TASingleSecurityTest {
 	@Test
 	public void smaTest() {	
 		double[] out= ta.sma(prices,CUT)
+		double[] out1=Indicators.sma(0,prices.length,prices, 30);
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
+		log.debug("-------- MY SMA ---------");
+		out1.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 	
 	@Test

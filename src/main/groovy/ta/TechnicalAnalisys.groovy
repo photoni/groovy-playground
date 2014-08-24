@@ -11,6 +11,8 @@ import com.tictactec.ta.lib.RetCode
 @Singleton
 class TechnicalAnalisys {
 
+	static final int PERIODS = 20
+
 	/**
 	 * Simple moving average. <br/>
 	 * Smooth price action following. <br/>
@@ -22,7 +24,7 @@ class TechnicalAnalisys {
 	 */
 	double[] sma(double[] input, boolean cutOut){
 		/* The number of unit periods(days) to average together */
-		int period = 30
+		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
 		MInteger begin = new MInteger()
@@ -35,7 +37,6 @@ class TechnicalAnalisys {
 		log.debug("sma: Total time nano : {}", end - start);
 		double[] adjAut=adjustOutput( out, begin, length,cutOut)
 		return adjAut
-		
 	}
 	/**
 	 * Weighted moving average. <br/>
@@ -48,7 +49,7 @@ class TechnicalAnalisys {
 	 */
 	double[] wma(double[] input, boolean cutOut){
 		/* The number of unit periods(days) to average together */
-		int period = 30
+		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
 		MInteger begin = new MInteger()
@@ -74,7 +75,7 @@ class TechnicalAnalisys {
 	 */
 	double[] ema(double[] input, boolean cutOut){
 		/* The number of unit periods(days) to average together */
-		int period = 30
+		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
 		MInteger begin = new MInteger()
@@ -86,7 +87,7 @@ class TechnicalAnalisys {
 		long end = System.nanoTime();
 		log.debug("ema: Total time nano : {}", end - start)
 		double[] adjAut=adjustOutput( out, begin, length,cutOut)
-		return adjAut		
+		return adjAut
 	}
 
 	/**
@@ -100,17 +101,17 @@ class TechnicalAnalisys {
 	 */
 	double[] tma(double[] input, boolean cutOut){
 		/* The number of unit periods(days) to average together */
-		int period = 30
+		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
 		MInteger begin = new MInteger()
 		MInteger length = new MInteger()
 		Core core=new Core()
-		double[] out=new double[input.length]		
+		double[] out=new double[input.length]
 		long start = System.nanoTime()
 		RetCode retCode = core.trima(startIndex, endIndex, input, period, begin, length, out)
 		long end = System.nanoTime()
-		log.debug("tma: Total time nano : {}", end - start)		
+		log.debug("tma: Total time nano : {}", end - start)
 		double[] adjAut=adjustOutput( out, begin, length,cutOut)
 		return adjAut
 	}
@@ -127,6 +128,8 @@ class TechnicalAnalisys {
 				result.put("wma", wma(input,cutOut))
 			else if("ema".equalsIgnoreCase(obj))
 				result.put("ema", ema(input,cutOut))
+			else if("isma".equalsIgnoreCase(obj))
+				result.put("isma", Indicators.sma(0,input.length,input, 20))
 		}
 		return result;
 	}
