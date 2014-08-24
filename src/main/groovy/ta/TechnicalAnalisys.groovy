@@ -85,7 +85,7 @@ class TechnicalAnalisys {
 		long start = System.nanoTime();
 		RetCode retCode = core.ema(startIndex, endIndex, input, period, begin, length, out)
 		long end = System.nanoTime();
-		log.debug("ema: Total time nano : {}", end - start)
+		//log.debug("ema: Total time nano : {}", end - start)
 		double[] adjAut=adjustOutput( out, begin, length,cutOut)
 		return adjAut
 	}
@@ -130,6 +130,8 @@ class TechnicalAnalisys {
 				result.put("ema", ema(input,cutOut))
 			else if("isma".equalsIgnoreCase(obj))
 				result.put("isma", Indicators.sma(0,input.length,input, 20))
+			else if("iema".equalsIgnoreCase(obj))
+				result.put("iema", Indicators.ema(0,input.length,input, 20))
 		}
 		return result;
 	}

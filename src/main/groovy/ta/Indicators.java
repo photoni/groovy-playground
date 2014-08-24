@@ -36,9 +36,10 @@ public class Indicators {
 	 */
 	public static double[] ema(int startIndex, int endIndex, double[] values,
 			int periods) {
-		double[] result=new double[values.length];
-		for (int i = 0; i < values.length; i++) {
-			result[i]=emaFormula(startIndex, endIndex, values, periods);
+		int length = endIndex - startIndex;
+		double[] result = new double[length];
+		for (int i = 0; i < length; i++) {
+			result[i] = emaFormula(startIndex + i, endIndex, values, periods);
 		}
 
 		return result;
@@ -53,23 +54,26 @@ public class Indicators {
 	 */
 	private static double emaFormula(int startIndex, int endIndex,
 			double[] values, int periods) {
-		
+
 		double emaPrev = 0;
 		// (2 / (Time periods + 1) )
-		double multiplier = 2 / (periods + 1);
+		double multiplier = 2D / (periods + 1);
 		// {Close - EMA(previous day)} x multiplier + EMA(previous day)
-		if ((startIndex + periods) < endIndex)
+		double result = 0D;
+		if ((startIndex + periods) < endIndex) {
 			emaPrev = emaFormula(startIndex + 1, endIndex, values, periods);
-		else {
-			double sma = 0;
+			result = (values[startIndex] - emaPrev) * multiplier + emaPrev;
+		} else if ((startIndex + periods) == endIndex) {
 			double sum = 0;
 			for (int j = 0; j < periods; j++) {
-				sum += values[j];
+				sum += values[startIndex+j];
 			}
 
-			emaPrev = sum / periods;
+			result = sum / periods;
+
+		} else {
+			result = 0;
 		}
-		double result=(values[startIndex]-emaPrev)*multiplier+emaPrev;
 
 		return result;
 	}

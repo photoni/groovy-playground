@@ -38,8 +38,8 @@ class TASingleSecurityTest {
 
 	@Test
 	public void smaTest() {	
-		double[] out= ta.sma(prices,CUT)
-		double[] out1=Indicators.sma(0,prices.length,prices, 30);
+		double[] out= ta.sma(prices,CUT) //OK fine
+		double[] out1=Indicators.sma(0,prices.length,prices, 30); //OK fine
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 		log.debug("-------- MY SMA ---------");
 		out1.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
@@ -53,8 +53,11 @@ class TASingleSecurityTest {
 	
 	@Test
 	public void emaTest() {
-		double[] out= ta.ema(prices,CUT)
+		double[] out= ta.ema(prices,CUT) // not OK looks odd
+		double[] out1=Indicators.ema(0,prices.length,prices, 20);//OK looks fine
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
+		log.debug("-------- MY EMA ---------");
+		out1.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
 	
 	@Test
