@@ -14,6 +14,7 @@ class TechnicalAnalisys {
 	static final int PERIODS = 20
 
 	/**
+	 * LOOKS FINE!!!!!!
 	 * Simple moving average. <br/>
 	 * Smooth price action following. <br/>
 	 * Full scan. <br/>
@@ -65,6 +66,7 @@ class TechnicalAnalisys {
 	}
 
 	/**
+	 * LOOKS WRONG!!!!!
 	 * Exponential moving average. <br/>
 	 * Close price action following. Smooth alder <br/>
 	 * Full scan. <br/>
@@ -116,6 +118,9 @@ class TechnicalAnalisys {
 		return adjAut
 	}
 
+	
+	
+
 
 	Map<String,double[]> multi(double[] input,List<String> types, boolean cutOut){
 		Map<String,double[]> result= new HashMap<String,double[]>()
@@ -132,6 +137,8 @@ class TechnicalAnalisys {
 				result.put("isma", Indicators.sma(0,input.length,input, 20))
 			else if("iema".equalsIgnoreCase(obj))
 				result.put("iema", Indicators.ema(0,input.length,input, 20))
+			else if("iroc".equalsIgnoreCase(obj))
+				result.put("iroc", Indicators.roc(0,input.length,input, 20))
 		}
 		return result;
 	}

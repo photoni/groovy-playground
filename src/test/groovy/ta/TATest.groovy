@@ -65,4 +65,10 @@ class TASingleSecurityTest {
 		double[] out= ta.tma(prices,CUT)
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
 	}
+	
+	@Test
+	public void rocTest() {
+		double[] out= Indicators.roc(0,prices.length,prices, 30);
+		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}
+	}
 }
