@@ -46,6 +46,14 @@ class TASingleSecurityTest {
 	}
 	
 	@Test
+	public void bollingerBandsTest() {		
+		double[][] out=Indicators.bollingerBands(0,prices.length,prices, 30); //OK fine
+		out[0].eachWithIndex { val,i -> log.trace(" boll lower: ${i} - val : ${val}")}	
+		out[1].eachWithIndex { val,i -> log.trace(" boll middle: ${i} - val : ${val}")}
+		out[2].eachWithIndex { val,i -> log.trace(" boll higher: ${i} - val : ${val}")}
+	}
+	
+	@Test
 	public void wmaTest() {		
 		double[] out= ta.wma(prices,CUT)
 		out.eachWithIndex { val,i -> log.trace(" aver: ${i} - val : ${val}")}

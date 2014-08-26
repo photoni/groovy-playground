@@ -1,5 +1,9 @@
 package ta;
 
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+
+import util.ArrayUtil;
+
 public class Indicators {
 
 	/**
@@ -14,18 +18,41 @@ public class Indicators {
 		int length = endIndex - startIndex;
 		double[] result = new double[length];
 		for (int i = startIndex; i < length; i++) {
+			int start = i;
 			double sma = 0;
-			double sum = 0;
-			if ((i + periods) <= length) {
-				for (int j = 0; j < periods; j++) {
-					sum += values[i + j];
-				}
+			if ((start + periods) <= length) {
+				sma = smaFormula(start, periods, values);
 			}
-			sma = sum / periods;
-			result[i] = sma;
+			result[start] = sma;
 		}
 		return result;
 	}
+	
+	/**
+	 * @param values
+	 *            the array of values ordered from newer to older
+	 * @param periods
+	 *            number of period to compute
+	 * @return
+	 */
+	public static double[][] bollingerBands(int startIndex, int endIndex, double[] values,
+			int periods) {
+		int length = endIndex - startIndex;
+		double[][] result = new double[3][length];
+		for (int i = startIndex; i < length; i++) {
+			int start = i;
+			double[] bollingerBand = new double[3];
+			if ((start + periods) <= length) {
+				bollingerBand = bollingherBandFormula(start, periods, values);
+			}
+			result[0][i] = bollingerBand[0];
+			result[1][i] = bollingerBand[1];
+			result[2][i] = bollingerBand[2];
+		}
+		return result;
+	}
+
+	
 
 	/**
 	 * @param values
@@ -63,6 +90,23 @@ public class Indicators {
 		return result;
 	}
 
+	/* formulas */
+
+	private static double[] bollingherBandFormula(int startIndex, int periods,
+			double[] values) {
+		double[] result = new double[3];
+		double sma=smaFormula(startIndex, periods, values);
+		double[] sliced=ArrayUtil.slice(values, startIndex, startIndex+periods);
+		StandardDeviation sdFormula= new StandardDeviation();
+		double sd=sdFormula.evaluate(sliced);
+		double sdx2 = sd*2;
+		result[0]=sma-sdx2;
+		result[1]=sma;
+		result[2]=sma+sdx2;
+
+		return result;
+	}
+
 	private static double rocFormula(int startIndex, int endIndex,
 			double[] values, int periods) {
 		double result = 0;
@@ -74,7 +118,7 @@ public class Indicators {
 		return result;
 	}
 
-	/**
+	/*
 	 * @param values
 	 *            the array of values ordered from newer to older
 	 * @param periods
@@ -105,5 +149,22 @@ public class Indicators {
 		}
 
 		return result;
+	}
+	
+	/*
+	 * @param start start index
+	 * @param periods number of periods
+	 * @param values array of values
+	 * @return
+	 */
+	private static double smaFormula(int startIndex, int periods, double[] values) {
+		double sma = 0;
+		double sum = 0;
+		for (int j = 0; j < periods; j++) {
+			sum += values[startIndex + j];
+		}
+		sma = sum / periods;
+		return sma;
+
 	}
 }

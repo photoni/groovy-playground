@@ -118,8 +118,8 @@ class TechnicalAnalisys {
 		return adjAut
 	}
 
-	
-	
+
+
 
 
 	Map<String,double[]> multi(double[] input,List<String> types, boolean cutOut){
@@ -139,6 +139,12 @@ class TechnicalAnalisys {
 				result.put("iema", Indicators.ema(0,input.length,input, 20))
 			else if("iroc".equalsIgnoreCase(obj))
 				result.put("iroc", Indicators.roc(0,input.length,input, 20))
+			else if("iboll".equalsIgnoreCase(obj)){
+				def bollingerBands = Indicators.bollingerBands(0,input.length,input, 20)
+				result.put("iboll-lower", bollingerBands[0])
+				result.put("iboll-middle", bollingerBands[1])
+				result.put("iboll-higher", bollingerBands[2])
+			}
 		}
 		return result;
 	}
