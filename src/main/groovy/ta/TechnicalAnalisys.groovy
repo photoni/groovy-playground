@@ -122,29 +122,30 @@ class TechnicalAnalisys {
 
 
 
-	Map<String,double[]> multi(double[] input,List<String> types, boolean cutOut){
+	Map<String,double[]> multi(double[] prices,double[] highs,double[] lows,List<String> types, boolean cutOut){
 		Map<String,double[]> result= new HashMap<String,double[]>()
 		types.each {obj ->
 			if("tma".equalsIgnoreCase(obj))
-				result.put("tma", tma(input,cutOut))
+				result.put("tma", tma(prices,cutOut))
 			else if("sma".equalsIgnoreCase(obj))
-				result.put("sma", sma(input,cutOut))
+				result.put("sma", sma(prices,cutOut))
 			else if("wma".equalsIgnoreCase(obj))
-				result.put("wma", wma(input,cutOut))
+				result.put("wma", wma(prices,cutOut))
 			else if("ema".equalsIgnoreCase(obj))
-				result.put("ema", ema(input,cutOut))
+				result.put("ema", ema(prices,cutOut))
 			else if("isma".equalsIgnoreCase(obj))
-				result.put("isma", Indicators.sma(0,input.length,input, 20))
+				result.put("isma", Indicators.sma(0,prices.length,prices, 20))
 			else if("iema".equalsIgnoreCase(obj))
-				result.put("iema", Indicators.ema(0,input.length,input, 20))
+				result.put("iema", Indicators.ema(0,prices.length,prices, 20))
 			else if("iroc".equalsIgnoreCase(obj))
-				result.put("iroc", Indicators.roc(0,input.length,input, 20))
+				result.put("iroc", Indicators.roc(0,prices.length,prices, 20))
 			else if("iboll".equalsIgnoreCase(obj)){
-				def bollingerBands = Indicators.bollingerBands(0,input.length,input, 20)
+				def bollingerBands = Indicators.bollingerBands(0,prices.length,prices, 20)
 				result.put("iboll-lower", bollingerBands[0])
 				result.put("iboll-middle", bollingerBands[1])
 				result.put("iboll-higher", bollingerBands[2])
-			}
+			}else if("iatr".equalsIgnoreCase(obj))
+				result.put("iatr", Indicators.atr(0,prices.length,highs,lows, 14))
 		}
 		return result;
 	}

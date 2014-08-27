@@ -15,7 +15,7 @@ import util.DateUtil;
 @Path("api")
 public class RestAPI {
 	static final String TICKER = "GOOGL"
-	Security s;double[] prices;long[] dates;TechnicalAnalisys ta;SecurityService ss;
+	Security s;double[] prices;double[] highs;double[] lows;long[] dates;TechnicalAnalisys ta;SecurityService ss;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -42,15 +42,19 @@ public class RestAPI {
 		s=ss.getSecurity(TICKER)
 		int historyLength=s.getHistory().size()
 		prices=new double[historyLength]
+		highs=new double[historyLength]
+		lows=new double[historyLength]
 		dates=new double[historyLength]
 		s.getHistory().eachWithIndex { obj, i ->
 			prices[i]=obj.adjClose
+			highs[i]=obj.high
+			lows[i]=obj.low
 			dates[i]=obj.date
 		}
 		//result.put("prices", prices)
 
 		ta=TechnicalAnalisys.instance
-		Map<String,double[]> multi=ta.multi(prices, types,cut)
+		Map<String,double[]> multi=ta.multi(prices,highs,lows, types,cut)
 		multi.put("prices", prices);
 		//    	obj.put("a", 1.1);
 		//    	JSONObject outputJsonObj = new JSONObject();
