@@ -5,6 +5,7 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import util.ArrayUtil;
 
 public class Indicators {
+	
 
 	/**
 	 * @param values
@@ -64,7 +65,7 @@ public class Indicators {
 		int length = endIndex - startIndex;
 		double[] result = new double[length];
 		for (int i = 0; i < length; i++) {
-			result[i] = emaFormula(startIndex + i, endIndex, values, periods);
+			result[i] = emaFormula(startIndex + i, endIndex, values, periods,(short)0);
 		}
 
 		return result;
@@ -120,7 +121,7 @@ public class Indicators {
 		int length = endIndex - startIndex;
 		double[] result = new double[length];
 		for (int i = 0; i < length; i++) {
-			result[i] = atrFormula(startIndex + i, endIndex, highs,lows, periods);
+			result[i] = atrFormula(startIndex + i, endIndex, highs,lows, periods,(short)0);
 		}
 
 		return result;
@@ -135,18 +136,20 @@ public class Indicators {
 	 * @param periods
 	 * @return
 	 */
-	private static double atrFormula(int startIndex, int endIndex, double[] highs, double[] lows,int periods){
+	private static double atrFormula(int startIndex, int endIndex, double[] highs, double[] lows,int periods,short cursor) {
+
+		int currentIndex=startIndex+cursor;
 		double atrPrev = 0;
 		
 		// Current ATR = [(Prior ATR x 13) + Current TR] / 14
 		double result = 0D;
-		if ((startIndex + periods) < endIndex) {
-			atrPrev = atrFormula(startIndex + 1, endIndex, highs,lows, periods);
-			result = ((atrPrev*(periods-1)) + tr(highs[startIndex],lows[startIndex]))/periods;
-		} else if ((startIndex + periods) == endIndex) {
+		if (currentIndex+periods < endIndex && cursor<periods) {
+			atrPrev = atrFormula(startIndex, endIndex, highs,lows, periods,++cursor);
+			result = ((atrPrev*(periods-1)) + tr(highs[currentIndex],lows[currentIndex]))/periods;
+		} else if (cursor==periods || currentIndex+periods == endIndex) {
 			double sum = 0;
 			for (int j = 0; j < periods; j++) {
-				sum += tr(highs[startIndex + j],lows[startIndex + j]);
+				sum += tr(highs[currentIndex + j],lows[currentIndex + j]);
 			}
 
 			result = sum / periods;
@@ -181,20 +184,21 @@ public class Indicators {
 	 * @return
 	 */
 	private static double emaFormula(int startIndex, int endIndex,
-			double[] values, int periods) {
+			double[] values, int periods,short cursor) {
 
+		int currentIndex=startIndex+cursor;
 		double emaPrev = 0;
 		// (2 / (Time periods + 1) )
 		double multiplier = 2D / (periods + 1);
 		// {Close - EMA(previous day)} x multiplier + EMA(previous day)
 		double result = 0D;
-		if ((startIndex + periods) < endIndex) {
-			emaPrev = emaFormula(startIndex + 1, endIndex, values, periods);
-			result = (values[startIndex] - emaPrev) * multiplier + emaPrev;
-		} else if ((startIndex + periods) == endIndex) {
+		if (currentIndex+periods < endIndex && cursor<periods) {
+			emaPrev = emaFormula(startIndex, endIndex, values, periods,++cursor);
+			result = (values[currentIndex] - emaPrev) * multiplier + emaPrev;
+		} else if (cursor==periods || currentIndex+periods == endIndex) {
 			double sum = 0;
 			for (int j = 0; j < periods; j++) {
-				sum += values[startIndex + j];
+				sum += values[currentIndex + j];
 			}
 
 			result = sum / periods;
