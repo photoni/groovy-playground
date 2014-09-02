@@ -159,7 +159,7 @@ public class Indicators {
 			double[] values) {
 		double ema12=emaFormula(startIndex, endIndex, values, 12, 0);
 		double ema26=emaFormula(startIndex, endIndex, values, 26, 0);
-		double emaLine=(ema26>0&&ema12>0)?ema26-ema12:0;
+		double emaLine=(ema26>0&&ema12>0)?ema12-ema26:0;
 		return emaLine;
 	}
 
