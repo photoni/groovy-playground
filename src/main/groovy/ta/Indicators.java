@@ -65,7 +65,7 @@ public class Indicators {
 		int length = endIndex - startIndex;
 		double[] result = new double[length];
 		for (int i = 0; i < length; i++) {
-			result[i] = emaFormula(startIndex + i, endIndex, values, periods,(short)0);
+			result[i] = emaFormula(startIndex + i, endIndex, values, periods,0);
 		}
 
 		return result;
@@ -89,23 +89,7 @@ public class Indicators {
 		return result;
 	}
 
-	/* formulas */
-
-	private static double[] bollingherBandFormula(int startIndex, int periods,
-			double[] values) {
-		double[] result = new double[3];
-		double sma = smaFormula(startIndex, periods, values);
-		double[] sliced = ArrayUtil.slice(values, startIndex, startIndex
-				+ periods);
-		StandardDeviation sdFormula = new StandardDeviation();
-		double sd = sdFormula.evaluate(sliced);
-		double sdx2 = sd * 2;
-		result[0] = sma - sdx2;
-		result[1] = sma;
-		result[2] = sma + sdx2;
-
-		return result;
-	}
+	
 
 	/**
 	 * ATR iterator
@@ -123,6 +107,74 @@ public class Indicators {
 		for (int i = 0; i < length; i++) {
 			result[i] = atrFormula(startIndex + i, endIndex, highs,lows, periods,(short)0);
 		}
+
+		return result;
+	}
+	
+	/**
+	 * MACD iterator
+	 * @param startIndex
+	 * @param endIndex
+	 * @param values
+	 * @param periods
+	 * @return
+	 */
+	public static double[][] macd(int startIndex, int endIndex, double[] values) {
+		int length = endIndex - startIndex;
+		double[][] result= new double[3][length];
+		
+		//MACD Line: (12-day EMA - 26-day EMA) 		
+		double[] macdLineResult = new double[length];
+		for (int i = 0; i < length; i++) {
+			double macdLine =macdLineFormula(startIndex+i, endIndex, values);
+			macdLineResult[i]=macdLine;
+		}
+		
+		double[] macdSignalResult = new double[length];
+		//Signal Line: 9-day EMA of MACD Line
+		for (int i = 0; i < length; i++) {
+			double macdSignal =emaFormula(startIndex+i, endIndex, macdLineResult,9,0);
+			macdSignalResult[i]=macdSignal;
+		}
+		
+		double[] macdHistogramResult = new double[length];
+		//MACD Histogram: MACD Line - Signal Line
+		for (int i = 0; i < length; i++) {
+			double macdHistogram =macdLineResult[startIndex+i]-macdSignalResult[startIndex+i];
+			macdHistogramResult[i]=macdHistogram;
+		}	
+		result[0]=macdLineResult;
+		result[1]=macdSignalResult;
+		result[2]=macdHistogramResult;
+		
+		return result;
+
+	}
+
+	
+	
+	
+	/* formulas */
+	private static double macdLineFormula(int startIndex, int endIndex,
+			double[] values) {
+		double ema12=emaFormula(startIndex, endIndex, values, 12, 0);
+		double ema26=emaFormula(startIndex, endIndex, values, 26, 0);
+		double emaLine=(ema26>0&&ema12>0)?ema26-ema12:0;
+		return emaLine;
+	}
+
+	private static double[] bollingherBandFormula(int startIndex, int periods,
+			double[] values) {
+		double[] result = new double[3];
+		double sma = smaFormula(startIndex, periods, values);
+		double[] sliced = ArrayUtil.slice(values, startIndex, startIndex
+				+ periods);
+		StandardDeviation sdFormula = new StandardDeviation();
+		double sd = sdFormula.evaluate(sliced);
+		double sdx2 = sd * 2;
+		result[0] = sma - sdx2;
+		result[1] = sma;
+		result[2] = sma + sdx2;
 
 		return result;
 	}
@@ -184,7 +236,7 @@ public class Indicators {
 	 * @return
 	 */
 	private static double emaFormula(int startIndex, int endIndex,
-			double[] values, int periods,short cursor) {
+			double[] values, int periods,int cursor) {
 
 		int currentIndex=startIndex+cursor;
 		double emaPrev = 0;

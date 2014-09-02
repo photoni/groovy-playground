@@ -144,6 +144,11 @@ class TechnicalAnalisys {
 				result.put("iboll-lower", bollingerBands[0])
 				result.put("iboll-middle", bollingerBands[1])
 				result.put("iboll-higher", bollingerBands[2])
+			}else if("imacd".equalsIgnoreCase(obj)){
+				def macd = Indicators.macd(0,prices.length,prices)
+				result.put("macd-line", macd[0])
+				result.put("macd-signal", macd[1])
+				result.put("macd-histogram", macd[2])
 			}else if("iatr".equalsIgnoreCase(obj))
 				result.put("iatr", Indicators.atr(0,prices.length,highs,lows, 14))
 		}
