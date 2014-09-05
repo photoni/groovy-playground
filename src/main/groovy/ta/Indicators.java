@@ -154,7 +154,7 @@ public class Indicators {
 	
 	
 	
-	/* formulas */
+	/* period based formulas */
 	private static double macdLineFormula(int startIndex, int endIndex,
 			double[] values) {
 		double ema12=emaFormula(startIndex, endIndex, values, 12, 0);
@@ -179,8 +179,8 @@ public class Indicators {
 		return result;
 	}
 
-	/**
-	 * ATR recursive formula
+	/* Wilder's smoothing
+	 * ATR recursive formula. ATR 14 Day smoothed
 	 * @param startIndex
 	 * @param endIndex
 	 * @param highs
@@ -213,10 +213,43 @@ public class Indicators {
 		return result;
 		
 	}
-	private static double tr(double high, double low) {
-		return high - low;
-	}
+	
+	/*
+	 * Wilder's smoothing
+	 * DM recursive formula. DM 14 Day smoothed
+	 * @param startIndex
+	 * @param endIndex
+	 * @param highs
+	 * @param lows
+	 * @param periods
+	 * @return
+	 */
+	private static double dmFormula(int startIndex, int endIndex, double[] values,int periods,short cursor,boolean rev) {
 
+		int currentIndex=startIndex+cursor;
+		double smoothedDmPrev = 0;
+		
+		// Current smoothedDM = [(Prior smoothedDM x 13) + Current DM] / 14
+		double result = 0D;
+		if (currentIndex+periods < endIndex && cursor<periods) {
+			smoothedDmPrev = dmFormula(startIndex, endIndex, values, periods,++cursor,rev);
+			result = ((smoothedDmPrev*(periods-1)) + dm(values[currentIndex],values[currentIndex+1],rev))/periods;
+		} else if (cursor==periods || currentIndex+periods == endIndex) {
+			double sum = 0;
+			for (int j = 0; j < periods; j++) {
+				sum += dm(values[currentIndex + j],values[currentIndex + j+1],rev);
+			}
+
+			result = sum / periods;
+
+		} else {
+			result = 0;
+		}
+
+		return result;
+		
+	}
+	
 	private static double rocFormula(int startIndex, int endIndex,
 			double[] values, int periods) {
 		double result = 0;
@@ -229,6 +262,7 @@ public class Indicators {
 	}
 
 	/*
+	 * Smoothing formula for EMA
 	 * @param values the array of values ordered from newer to older
 	 * 
 	 * @param periods number of period to compute
@@ -282,4 +316,16 @@ public class Indicators {
 		return sma;
 
 	}
+	
+	/* point to point formulas */
+	private static double tr(double high, double low) {
+		return high - low;
+	}
+	
+	private static double dm(double current, double previous,boolean rev) {
+		double diff = current - previous;
+		diff=rev?diff*-1:diff;
+		return diff>0?diff:0;
+	}
+	
 }
