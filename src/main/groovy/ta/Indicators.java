@@ -150,6 +150,43 @@ public class Indicators {
 		return result;
 
 	}
+	
+	
+	/**
+	 * DX
+	 * @param startIndex
+	 * @param endIndex
+	 * @param values
+	 * @param highs
+	 * @param lows
+	 * @param periods
+	 * @param rev
+	 * @return
+	 */
+	public static double dxFormula(int startIndex, int endIndex, double[] values,double[] highs,double[] lows, int periods,boolean rev){
+		double dxPlus=diFormula(startIndex, endIndex, values, highs, lows, periods, false);
+		double dxMinus=diFormula(startIndex, endIndex, values, highs, lows, periods, true);
+		double dx=(Math.abs(dxPlus-dxMinus)/dxPlus+dxMinus);
+		return dx;
+	}
+	
+	/**
+	 * @param startIndex
+	 * @param endIndex
+	 * @param values
+	 * @param highs
+	 * @param lows
+	 * @param periods
+	 * @param rev
+	 * @return
+	 */
+	public static double diFormula(int startIndex, int endIndex, double[] values,double[] highs,double[] lows, int periods,boolean rev) {
+		double atr=atrFormula(startIndex, endIndex, highs, lows, periods, (short)0);
+		double dm=dmFormula(startIndex, endIndex, values, periods, (short)0, rev);
+		double di=(dm/atr)*100;		
+		return di;
+
+	}
 
 	
 	
@@ -225,16 +262,15 @@ public class Indicators {
 	 * @return
 	 */
 	private static double dmFormula(int startIndex, int endIndex, double[] values,int periods,short cursor,boolean rev) {
-
 		int currentIndex=startIndex+cursor;
 		double smoothedDmPrev = 0;
 		
 		// Current smoothedDM = [(Prior smoothedDM x 13) + Current DM] / 14
 		double result = 0D;
-		if (currentIndex+periods < endIndex && cursor<periods) {
+		if (currentIndex+periods < endIndex-1 && cursor<periods) {
 			smoothedDmPrev = dmFormula(startIndex, endIndex, values, periods,++cursor,rev);
 			result = ((smoothedDmPrev*(periods-1)) + dm(values[currentIndex],values[currentIndex+1],rev))/periods;
-		} else if (cursor==periods || currentIndex+periods == endIndex) {
+		} else if (cursor==periods || currentIndex+periods == endIndex-1) {
 			double sum = 0;
 			for (int j = 0; j < periods; j++) {
 				sum += dm(values[currentIndex + j],values[currentIndex + j+1],rev);
