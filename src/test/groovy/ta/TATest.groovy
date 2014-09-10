@@ -62,6 +62,13 @@ class TASingleSecurityTest {
 		out[1].eachWithIndex { val,i -> log.trace(" macd signal: ${i} - val : ${val}")}
 		out[2].eachWithIndex { val,i -> log.trace(" macd histogram: ${i} - val : ${val}")}
 	}
+	
+	@Test
+	public void adxTest() {
+		double[] out=Indicators.adx(0, prices.length, prices, highs, lows, 14)
+		//out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
+		
+	}
 
 	@Test
 	public void wmaTest() {
