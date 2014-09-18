@@ -1,6 +1,8 @@
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'idea'
+
 
 repositories {
 	mavenLocal()
