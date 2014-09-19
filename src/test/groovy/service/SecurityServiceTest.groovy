@@ -38,6 +38,21 @@ class SecurityServiceTest {
 	public void getSecurity() {
 		SecurityService ss= SecurityService.instance
 		Security s=ss.getSecurity("GOOGL");
-		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.adjClose}")}
+		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}")}
 	}
+
+    /**
+     * Test for getting a security from the repository
+     */
+    @Test
+    public void getSecurityFromCsv() {
+        SecurityService ss= SecurityService.instance
+        Map<String, String> mapping = new HashMap<String, String>()
+        mapping.put("Date", "dateAsString")
+        mapping.put("Close", "adjClose")
+        mapping.put("High", "high");
+        mapping.put("Low", "low");
+        Security s=ss.getSecurityFromCsv('cs-adx.csv',mapping,"dd-MMM-yy",true)
+        s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}")}
+    }
 }

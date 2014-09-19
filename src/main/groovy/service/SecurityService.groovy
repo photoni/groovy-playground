@@ -8,6 +8,7 @@ import au.com.bytecode.opencsv.CSVReader
 import au.com.bytecode.opencsv.bean.CsvToBean
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy
 import data.SecurityRepo
+import util.CSVUtil
 
 
 /**
@@ -72,6 +73,22 @@ class SecurityService {
 		return security
 		
 	}
+
+    /**
+     * Get a security from the given file
+     * @param symbol
+     * @return
+     */
+    Security getSecurityFromCsv(String filePath, Map mapping,String dateFormat,boolean reverse){
+        long start= System.nanoTime()
+        byte[] bytes=CSVUtil.binary(filePath)
+
+        Security security=SecurityConverter.fromBinary(bytes,mapping,dateFormat,'tmp-'+start,reverse)
+        long end= System.nanoTime()
+        //log.debug("Total time nano : {}", end-start)
+        return security
+
+    }
 	
 	
 }

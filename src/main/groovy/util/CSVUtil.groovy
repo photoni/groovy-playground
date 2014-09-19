@@ -10,5 +10,10 @@ class CSVUtil {
 		CSVReader csvr= new CSVReader(new StringReader(new String(inputFile.getBytes())))
 		csvr.readAll()
 	}
+    static def binary(filePath){
+        //load and split the file
+        InputStream inputFile = CSVUtil.class.classLoader.getResourceAsStream(filePath)
+        inputFile.getBytes()
+    }
 
 }

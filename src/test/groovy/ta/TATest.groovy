@@ -66,11 +66,38 @@ class TASingleSecurityTest {
 	@Test
 	public void adxTest() {
 		double[] out=Indicators.adx(0, prices.length, prices, highs, lows, 14)
-		//out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
+		out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
 		
 	}
 
-	@Test
+    @Test
+    public void adxQATest() {
+        def setup=setupAdxQaTest()
+        double[] out=Indicators.adx(0, setup['prices'].length, setup['prices'], setup['highs'], setup['lows'], 14)
+        out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
+
+    }
+    @Test
+    public void trQATest() {
+        def setup=setupAdxQaTest()
+        double[] trM2=Indicators.trM2(0, setup['prices'].length, setup['highs'], setup['prices'])
+        trM2.eachWithIndex {
+            val,i -> log.debug(" tr: ${i} - val : ${val}")
+        }
+
+        double[] trM3=Indicators.trM3(0, setup['prices'].length, setup['lows'], setup['prices'])
+        trM3.eachWithIndex {
+            val,i -> log.debug(" tr: ${i} - val : ${val}")
+        }
+
+        double[] trM1=Indicators.trM1(0, setup['prices'].length, setup['highs'], setup['lows'])
+        trM1.eachWithIndex {
+            val,i -> log.debug(" tr: ${i} - val : ${val}")
+        }
+
+    }
+
+    @Test
 	public void wmaTest() {
 		double[] out= ta.wma(prices,CUT)
 		out.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
@@ -101,4 +128,28 @@ class TASingleSecurityTest {
 		double[] out= Indicators.atr(0,prices.length,highs,lows, 14);
 		out.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
 	}
+
+    /* Helpers */
+    def setupAdxQaTest() {
+        SecurityService ss = SecurityService.instance
+        Map<String, String> mapping = new HashMap<String, String>()
+        mapping.put("Date", "dateAsString")
+        mapping.put("Close", "adjClose")
+        mapping.put("High", "high");
+        mapping.put("Low", "low");
+        Security s = ss.getSecurityFromCsv('cs-adx.csv', mapping, "dd-MMM-yy", false)
+        def myPrices = new double[s.getHistory().size()]
+        def myHighs = new double[s.getHistory().size()]
+        def myLows = new double[s.getHistory().size()]
+        s.getHistory().eachWithIndex { obj, i ->
+            myPrices[i] = obj.adjClose; myHighs[i] = obj.high; myLows[i] = obj.low;
+            log.trace(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose} - high: ${obj.high} - low: ${obj.low}")
+        }
+        def result=[:]
+        result['prices']=myPrices
+        result['highs']=myHighs
+        result['lows']=myLows
+        return result
+    }
+
 }

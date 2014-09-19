@@ -117,6 +117,58 @@ public class Indicators {
 
 		return result;
 	}
+
+    /**
+     * TRM1 iterator. Price descending by date
+     * @param startIndex
+     * @param endIndex
+     * @param highs
+     * @param lows
+     * @return
+     */
+    public static double[] trM1(int startIndex, int endIndex, double[] highs,double[] lows) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = trM1(highs[i],lows[i]);
+        }
+
+        return result;
+    }
+    /**
+     * TRM2 iterator. Price descending by date
+     * @param startIndex
+     * @param endIndex
+     * @param highs
+     * @param prices
+     * @return
+     */
+    public static double[] trM2(int startIndex, int endIndex, double[] highs,double[] prices) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length-1; i++) {
+            result[i] = trM2(highs[startIndex+i],prices[startIndex+i+1]);
+        }
+
+        return result;
+    }
+    /**
+     * TRM3 iterator. Price descending by date
+     * @param startIndex
+     * @param endIndex
+     * @param lows
+     * @param prices
+     * @return
+     */
+    public static double[] trM3(int startIndex, int endIndex, double[] lows,double[] prices) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length-1; i++) {
+            result[i] = trM3(lows[i],prices[i+1]);
+        }
+
+        return result;
+    }
 	
 	/**
 	 * ADX iterator
@@ -146,7 +198,6 @@ public class Indicators {
 	 * @param startIndex
 	 * @param endIndex
 	 * @param values
-	 * @param periods
 	 * @return
 	 */
 	public static double[][] macd(int startIndex, int endIndex, double[] values) {
@@ -180,7 +231,8 @@ public class Indicators {
 		return result;
 
 	}
-	
+
+    /* FORMULAS */
 	
 	/**
 	 * DX
@@ -190,7 +242,6 @@ public class Indicators {
 	 * @param highs
 	 * @param lows
 	 * @param periods
-	 * @param rev
 	 * @return
 	 */
 	public static double dxFormula(int startIndex, int endIndex, double[] values,double[] highs,double[] lows, int periods){
@@ -266,11 +317,11 @@ public class Indicators {
 		double result = 0D;
 		if (currentIndex+periods < endIndex && cursor<periods) {
 			atrPrev = atrFormula(startIndex, endIndex, highs,lows, periods,++cursor);
-			result = ((atrPrev*(periods-1)) + tr(highs[currentIndex],lows[currentIndex]))/periods;
+			result = ((atrPrev*(periods-1)) + trM1(highs[currentIndex], lows[currentIndex]))/periods;
 		} else if (cursor==periods || currentIndex+periods == endIndex) {
 			double sum = 0;
 			for (int j = 0; j < periods; j++) {
-				sum += tr(highs[currentIndex + j],lows[currentIndex + j]);
+				sum += trM1(highs[currentIndex + j], lows[currentIndex + j]);
 			}
 
 			result = sum / periods;
@@ -282,6 +333,8 @@ public class Indicators {
 		return result;
 		
 	}
+
+
 	
 	/*
 	 * Wilder's smoothing
@@ -386,9 +439,46 @@ public class Indicators {
 	}
 	
 	/* point to point formulas */
-	private static double tr(double high, double low) {
-		return high - low;
+
+    /*Wilder started with a concept called True Range (TR), which is defined as the greatest of the following:
+    Method 1: Current High less the current Low
+    Method 2: Current High less the previous Close (absolute value)
+    Method 3: Current Low less the previous Close (absolute value)
+    */
+
+    /**
+     *
+     * @param currentHigh
+     * @param currentLow
+     * @return  True range Method1
+     */
+	private static double trM1(double currentHigh, double currentLow) {
+		return currentHigh - currentLow;
 	}
+
+    /**
+     *
+     * @param currentHigh
+     * @param prevClose
+     * @return  True range Method2
+     */
+    private static double trM2(double currentHigh, double prevClose) {
+        return Math.abs(currentHigh - prevClose);
+    }
+    /**
+     *
+     * @param currentLow
+     * @param prevClose
+     * @return  True range Method3
+     */
+    private static double trM3(double currentLow, double prevClose) {
+        return Math.abs(currentLow - prevClose);
+    }
+
+    /* point to point formulas */
+    private static double tr1(double high, double low) {
+        return high - low;
+    }
 	
 	private static double dm(double current, double previous,boolean rev) {
 		double diff = current - previous;
