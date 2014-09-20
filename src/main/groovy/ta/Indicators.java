@@ -11,8 +11,10 @@ import util.ArrayUtil;
 public class Indicators {
 	
 	private static Logger log= LoggerFactory.getLogger(Indicators.class);
-	
-	
+
+    /**
+     * MOVING AVERAGES
+     */
 
 	/**
 	 * @param values
@@ -35,6 +37,71 @@ public class Indicators {
 		}
 		return result;
 	}
+
+    /**
+     * @param values
+     *            the array of values ordered from newer to older
+     * @param periods
+     *            number of period to compute
+     * @return
+     */
+    public static double[] ema(int startIndex, int endIndex, double[] values,
+                               int periods) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = emaFormula(startIndex + i, endIndex, values, periods,0);
+        }
+
+        return result;
+    }
+
+    /**
+     *  MOVING AVERAGES CONVERGENCE/DIVERGENCE
+     */
+
+    /**
+     * MACD iterator
+     * @param startIndex
+     * @param endIndex
+     * @param values
+     * @return
+     */
+    public static double[][] macd(int startIndex, int endIndex, double[] values) {
+        int length = endIndex - startIndex;
+        double[][] result= new double[3][length];
+
+        //MACD Line: (12-day EMA - 26-day EMA)
+        double[] macdLineResult = new double[length];
+        for (int i = 0; i < length; i++) {
+            double macdLine =macdLineFormula(startIndex+i, endIndex, values);
+            macdLineResult[i]=macdLine;
+        }
+
+        double[] macdSignalResult = new double[length];
+        //Signal Line: 9-day EMA of MACD Line
+        for (int i = 0; i < length; i++) {
+            double macdSignal =emaFormula(startIndex+i, endIndex, macdLineResult,9,0);
+            macdSignalResult[i]=macdSignal;
+        }
+
+        double[] macdHistogramResult = new double[length];
+        //MACD Histogram: MACD Line - Signal Line
+        for (int i = 0; i < length; i++) {
+            double macdHistogram =macdLineResult[startIndex+i]-macdSignalResult[startIndex+i];
+            macdHistogramResult[i]=macdHistogram;
+        }
+        result[0]=macdLineResult;
+        result[1]=macdSignalResult;
+        result[2]=macdHistogramResult;
+
+        return result;
+
+    }
+
+    /**
+     * BOLLINGER
+     */
 
 	/**
 	 * @param values
@@ -60,23 +127,10 @@ public class Indicators {
 		return result;
 	}
 
-	/**
-	 * @param values
-	 *            the array of values ordered from newer to older
-	 * @param periods
-	 *            number of period to compute
-	 * @return
-	 */
-	public static double[] ema(int startIndex, int endIndex, double[] values,
-			int periods) {
-		int length = endIndex - startIndex;
-		double[] result = new double[length];
-		for (int i = 0; i < length; i++) {
-			result[i] = emaFormula(startIndex + i, endIndex, values, periods,0);
-		}
 
-		return result;
-	}
+    /**
+     * RATE OF CHANGE
+     */
 
 	/**
 	 * @param values
@@ -96,6 +150,10 @@ public class Indicators {
 		return result;
 	}
 
+    /**
+     * WILDER:
+     * Average True range, Average Directional Index
+     */
 	
 
 	/**
@@ -169,6 +227,41 @@ public class Indicators {
 
         return result;
     }
+
+    /**
+     * DM iterator. Price descending by date
+     * @param startIndex
+     * @param endIndex
+     * @param values
+     * @param reverse reverse true if calculating dmMinus
+     * @return
+     */
+    public static double[] dm(int startIndex, int endIndex, double[] values,boolean reverse) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length-1; i++) {
+            result[i] = dm(values[i],values[i+1],reverse);
+        }
+
+        return result;
+    }
+
+    /**
+     * DM iterator, combined. Price descending by date
+     * @param startIndex
+     * @param endIndex
+     * @param highs
+     * @param lows
+     * @return
+     */
+    public static double[][] dm(int startIndex, int endIndex, double[] highs,double[] lows) {
+        int length = endIndex - startIndex;
+        double[][] result = new double[2][length];
+        double[] dmMinus=Indicators.dm(0, lows.length, lows,true);
+        double[] dmPlus=Indicators.dm(0, highs.length, highs,true);
+        //TODO combine results
+        return result;
+    }
 	
 	/**
 	 * ADX iterator
@@ -192,45 +285,7 @@ public class Indicators {
 
 		return result;
 	}
-	
-	/**
-	 * MACD iterator
-	 * @param startIndex
-	 * @param endIndex
-	 * @param values
-	 * @return
-	 */
-	public static double[][] macd(int startIndex, int endIndex, double[] values) {
-		int length = endIndex - startIndex;
-		double[][] result= new double[3][length];
-		
-		//MACD Line: (12-day EMA - 26-day EMA) 		
-		double[] macdLineResult = new double[length];
-		for (int i = 0; i < length; i++) {
-			double macdLine =macdLineFormula(startIndex+i, endIndex, values);
-			macdLineResult[i]=macdLine;
-		}
-		
-		double[] macdSignalResult = new double[length];
-		//Signal Line: 9-day EMA of MACD Line
-		for (int i = 0; i < length; i++) {
-			double macdSignal =emaFormula(startIndex+i, endIndex, macdLineResult,9,0);
-			macdSignalResult[i]=macdSignal;
-		}
-		
-		double[] macdHistogramResult = new double[length];
-		//MACD Histogram: MACD Line - Signal Line
-		for (int i = 0; i < length; i++) {
-			double macdHistogram =macdLineResult[startIndex+i]-macdSignalResult[startIndex+i];
-			macdHistogramResult[i]=macdHistogram;
-		}	
-		result[0]=macdLineResult;
-		result[1]=macdSignalResult;
-		result[2]=macdHistogramResult;
-		
-		return result;
 
-	}
 
     /* FORMULAS */
 	
@@ -481,8 +536,7 @@ public class Indicators {
     }
 	
 	private static double dm(double current, double previous,boolean rev) {
-		double diff = current - previous;
-		diff=rev?diff*-1:diff;
+		double diff = rev?previous - current:current - previous;
 		return diff>0?diff:0;
 	}
 	

@@ -77,22 +77,88 @@ class TASingleSecurityTest {
         out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
 
     }
-    @Test
-    public void trQATest() {
-        def setup=setupAdxQaTest()
-        double[] trM2=Indicators.trM2(0, setup['prices'].length, setup['highs'], setup['prices'])
-        trM2.eachWithIndex {
-            val,i -> log.debug(" tr: ${i} - val : ${val}")
-        }
 
-        double[] trM3=Indicators.trM3(0, setup['prices'].length, setup['lows'], setup['prices'])
-        trM3.eachWithIndex {
-            val,i -> log.debug(" tr: ${i} - val : ${val}")
-        }
+    @Test
+    public void trM1QATest() {
+        def setup=setupAdxQaTest()
 
         double[] trM1=Indicators.trM1(0, setup['prices'].length, setup['highs'], setup['lows'])
         trM1.eachWithIndex {
-            val,i -> log.debug(" tr: ${i} - val : ${val}")
+            val,i -> log.debug(" index: ${i} - val : ${val}")
+            switch (i){
+                case 0:
+                    assert val==0.36999999999999744
+                    break;
+                case 1:
+                    assert val==0.509999999999998
+                    break;
+                case 502:
+                    assert val==0.9600000000000009
+                    break;
+                case 503:
+                    assert val==0.7899999999999991
+                    break;
+
+
+            }
+
+
+        }
+
+    }
+
+    @Test
+    public void dmPlusQATest() {
+        def setup=setupAdxQaTest()
+
+        double[] dmPlus=Indicators.dm(0, setup['prices'].length, setup['highs'],false)
+        dmPlus.eachWithIndex {
+            val,i -> log.debug(" index: ${i} - val : ${val}")
+            switch (i){
+                case 0:
+                    assert val==0.04999999999999716
+                    break;
+                case 1:
+                    assert val==0.10000000000000142
+                    break;
+                case 502:
+                    assert val==0.08000000000000185
+                    break;
+                case 503:
+                    assert val==0.0
+                    break;
+
+
+            }
+
+        }
+
+    }
+
+    @Test
+    public void dmMinusQATest() {
+        def setup=setupAdxQaTest()
+
+        double[] dmMinus=Indicators.dm(0, setup['prices'].length, setup['lows'],true)
+        dmMinus.eachWithIndex {
+            val,i -> log.debug(" index: ${i} - val : ${val}")
+                switch (i){
+                    case 0:
+                        assert val==0.0
+                        break;
+                    case 4:
+                        assert val==0.44000000000000483
+                        break;
+                    case 502:
+                        assert val==0.08999999999999986
+                        break;
+                    case 500:
+                        assert val==1.2200000000000024
+                        break;
+
+
+                }
+
         }
 
     }
@@ -137,7 +203,7 @@ class TASingleSecurityTest {
         mapping.put("Close", "adjClose")
         mapping.put("High", "high");
         mapping.put("Low", "low");
-        Security s = ss.getSecurityFromCsv('cs-adx.csv', mapping, "dd-MMM-yy", false)
+        Security s = ss.getSecurityFromCsv('cs-adx.csv', mapping, "dd-MMM-yy", true)
         def myPrices = new double[s.getHistory().size()]
         def myHighs = new double[s.getHistory().size()]
         def myLows = new double[s.getHistory().size()]
