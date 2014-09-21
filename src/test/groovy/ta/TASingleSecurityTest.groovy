@@ -222,10 +222,10 @@ class TASingleSecurityTest {
                         assert val==1.4500000000000028
                         break;
                     case 501:
-                        assert val==0.0
+                        assert val==0.16999999999999815
                         break;
                     case 502:
-                        assert val==0.08999999999999986
+                        assert val==0.08000000000000185
                         break;
 
 
