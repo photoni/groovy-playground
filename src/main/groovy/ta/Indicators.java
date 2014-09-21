@@ -258,8 +258,18 @@ public class Indicators {
         int length = endIndex - startIndex;
         double[][] result = new double[2][length];
         double[] dmMinus=Indicators.dm(0, lows.length, lows,true);
-        double[] dmPlus=Indicators.dm(0, highs.length, highs,true);
-        //TODO combine results
+        double[] dmPlus=Indicators.dm(0, highs.length, highs,false);
+        for(int i=0;i<length;i++){
+            double dmPlusCombined=0;
+            double dmMinusCombined=0;
+            if(dmPlus[i]>dmMinus[i])
+                dmPlusCombined=dmPlus[i];
+            else
+                dmMinusCombined=dmMinus[i];
+
+            result[0]=dmPlus;
+            result[1]=dmMinus;
+        }
         return result;
     }
 	

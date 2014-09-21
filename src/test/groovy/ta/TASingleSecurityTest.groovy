@@ -163,6 +163,78 @@ class TASingleSecurityTest {
 
     }
 
+
+    @Test
+    public void dmCombinedQATest() {
+        def setup=setupAdxQaTest()
+
+        double[][] dmCombined=Indicators.dm(0, setup['prices'].length, setup['highs'], setup['lows'])
+        double[] dmMinus=dmCombined[1];
+        double[] dmPlus=dmCombined[0];
+
+        log.debug("DM MINUS")
+        dmMinus.eachWithIndex {
+            val,i -> log.debug(" index: ${i} - val : ${val}")
+                switch (i){
+                    case 0:
+                        assert val==0.0
+                        break;
+                    case 4:
+                        assert val==0.44000000000000483
+                        break;
+                    case 5:
+                        assert val==0.0
+                        break;
+                    case 7:
+                        assert val==0.0799999999999983
+                        break;
+                    case 8:
+                        assert val==1.4500000000000028
+                        break;
+                    case 501:
+                        assert val==0.0
+                        break;
+                    case 502:
+                        assert val==0.08999999999999986
+                        break;
+
+
+                }
+
+        }
+
+        log.debug("DM PLUS")
+        dmPlus.eachWithIndex {
+            val,i -> log.debug(" index: ${i} - val : ${val}")
+                switch (i){
+                    case 0:
+                        assert val==0.04999999999999716
+                        break;
+                    case 1:
+                        assert val==0.10000000000000142
+                    case 2:
+                        assert val==0.5499999999999972
+                        break;
+                    case 3:
+                        assert val==0.28000000000000114
+                        break;
+                    case 8:
+                        assert val==1.4500000000000028
+                        break;
+                    case 501:
+                        assert val==0.0
+                        break;
+                    case 502:
+                        assert val==0.08999999999999986
+                        break;
+
+
+                }
+
+        }
+
+    }
+
     @Test
 	public void wmaTest() {
 		double[] out= ta.wma(prices,CUT)
