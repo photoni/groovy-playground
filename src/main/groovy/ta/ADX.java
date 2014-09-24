@@ -1,6 +1,5 @@
 package ta;
 
-import groovy.util.logging.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class ADX {
      * @param periods
      * @return
      */
-    public static double[] adx(int startIndex, int endIndex,double[] values ,double[] highs,
+    /**public static double[] adx(int startIndex, int endIndex,double[] values ,double[] highs,
                                double[] lows, int periods) {
         int length = endIndex - startIndex;
         double[] result = new double[length];
@@ -61,7 +60,7 @@ public class ADX {
         result=Indicators.sma(startIndex, endIndex, result, periods);
 
         return result;
-    }
+    }**/
 
     /**
      * DX
@@ -73,30 +72,29 @@ public class ADX {
      * @param periods
      * @return
      */
-    public static double dxFormula(int startIndex, int endIndex, double[] values,double[] highs,double[] lows, int periods){
+    /*public static double dxFormula(int startIndex, int endIndex, double[] values,double[] highs,double[] lows, int periods){
         double dxPlus=diFormula(startIndex, endIndex, values, highs, lows, periods, false);
         double dxMinus=diFormula(startIndex, endIndex, values, highs, lows, periods, true);
         double denominator = dxPlus+dxMinus;
         log.debug("dx {} den: {} - dxP: {} - dxM: {}",startIndex,denominator);
         double dx=denominator!=0?(Math.abs(dxPlus-dxMinus)/denominator):0;
         return dx;
-    }
+    }*/
 
     /**
      * @param startIndex
      * @param endIndex
      * @param values
-     * @param highs
-     * @param lows
      * @param periods
-     * @param rev
      * @return
      */
-    public static double diFormula(int startIndex, int endIndex, double[] values,double[] highs,double[] lows, int periods,boolean rev) {
-        double atr=Indicators.atrFormula(startIndex, endIndex, highs, lows, periods, (short) 0);
-        double dm=dmFormula(startIndex, endIndex, values, periods, (short)0, rev);
-        double di=(dm/atr)*100;
-        return di;
+    public static double[] wSmoothed1Iterator(int startIndex, int endIndex, double[] values,int periods) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length-1; i++) {
+            result[i] = wSmoothed1(startIndex+i, values, periods, (short) 0);
+        }
+        return result;
 
     }
 
@@ -120,31 +118,67 @@ public class ADX {
     }
 
     /*
-	 * Wilder's smoothing
-	 * DM recursive formula. DM 14 Day smoothed
+	 * Wilder's smoothing First Technique
+	 *
+	 * @param startIndex
+	 * @param endIndex
+	 * @param values
+	 * @param N
+	 * @param cursor
+     * @return
+	 */
+    public static double wSmoothed1(int startIndex,double[] values, int N, short cursor) {
+        int currentIndex=startIndex+cursor;
+        int endIndex=currentIndex+N;
+        double wsSmoothedPrev = 0;
+
+        // Current smoothed = [Prior smoothed - (Prior smoothed)/N + Current]
+        double result = 0D;
+        if (currentIndex+N < endIndex-1 && cursor<N) {
+            wsSmoothedPrev = wSmoothed1(startIndex+1, values, N, ++cursor);
+            result = wsSmoothedPrev - (wsSmoothedPrev/N) + values[currentIndex];
+        } else if (cursor==N || currentIndex+N == endIndex-1) {
+            double sum = 0;
+            for (int j = 0; j < N; j++) {
+                sum += values[currentIndex + j];
+            }
+
+            result = sum;
+
+        } else {
+            result = 0;
+        }
+
+        return result;
+
+    }
+
+
+    /*
+	 * Wilder's smoothing Second Technique
 	 * @param startIndex
 	 * @param endIndex
 	 * @param highs
 	 * @param lows
-	 * @param periods
+	 * @param N
 	 * @return
 	 */
-    private static double dmFormula(int startIndex, int endIndex, double[] values,int periods,short cursor,boolean rev) {
+    public static double wSmoothed2(int startIndex, int endIndex, double[] values,int N,short cursor,boolean rev) {
         int currentIndex=startIndex+cursor;
         double smoothedDmPrev = 0;
 
         // Current smoothedDM = [(Prior smoothedDM x 13) + Current DM] / 14
         double result = 0D;
-        if (currentIndex+periods < endIndex-1 && cursor<periods) {
-            smoothedDmPrev = dmFormula(startIndex, endIndex, values, periods,++cursor,rev);
-            result = ((smoothedDmPrev*(periods-1)) + dm(values[currentIndex],values[currentIndex+1],rev))/periods;
-        } else if (cursor==periods || currentIndex+periods == endIndex-1) {
+        if (currentIndex+N < endIndex-1 && cursor<N) {
+            smoothedDmPrev = wSmoothed2(startIndex + 1, endIndex, values, N, ++cursor, rev);
+            result = ((smoothedDmPrev*(N-1)) + values[currentIndex])/N;
+        } else if (cursor==N || currentIndex+N == endIndex-1) {
             double sum = 0;
-            for (int j = 0; j < periods; j++) {
+            for (int j = 0; j < N; j++) {
                 sum += dm(values[currentIndex + j],values[currentIndex + j+1],rev);
             }
 
-            result = sum / periods;
+            result = sum / N;
 
         } else {
             result = 0;

@@ -12,7 +12,7 @@ import service.SecurityService
 @Slf4j
 class ADXTest {
 
-    @Test
+    /*@Test
     public void adxTest() {
         double[] out=ADX.adx(0, prices.length, prices, highs, lows, 14)
         out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
@@ -25,7 +25,7 @@ class ADXTest {
         double[] out=ADX.adx(0, setup['prices'].length, setup['prices'], setup['highs'], setup['lows'], 14)
         out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
 
-    }
+    }*/
 
     @Test
     public void trM1QATest() {
@@ -57,7 +57,7 @@ class ADXTest {
     }
 
     @Test
-    public void dmPIndicatorslusQATest() {
+    public void dmPlusQATest() {
         def setup=setupAdxQaTest()
 
         double[] dmPlus=ADX.dm(0, setup['prices'].length, setup['highs'],false)
@@ -80,6 +80,18 @@ class ADXTest {
 
                 }
 
+        }
+
+    }
+
+    @Test
+    public void dmPlusSmoothedQATest() {
+        def setup=setupAdxQaTest()
+
+        double[] dmPlus=ADX.dm(0, setup['prices'].length, setup['highs'],false)
+        double[] dmPlusSmoothed14=ADX.wSmoothed1Iterator(0,dmPlus.length,dmPlus,14)
+        dmPlusSmoothed14.eachWithIndex {
+            val,i -> log.debug(" index: ${i} - val : ${val}")
         }
 
     }
