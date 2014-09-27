@@ -81,23 +81,6 @@ public class ADX {
         return dx;
     }*/
 
-    /**
-     * @param startIndex
-     * @param endIndex
-     * @param values
-     * @param periods
-     * @return
-     */
-    public static double[] wSmoothed1Iterator(int startIndex, int endIndex, double[] values,int periods) {
-        int length = endIndex - startIndex;
-        double[] result = new double[length];
-        for (int i = 0; i < length-1; i++) {
-            result[i] = wSmoothed1(startIndex+i, values, periods, (short) 0);
-        }
-        return result;
-
-    }
-
 
     /**
      * DM iterator. Price descending by date
@@ -117,76 +100,10 @@ public class ADX {
         return result;
     }
 
-    /*
-	 * Wilder's smoothing First Technique
-	 *
-	 * @param startIndex
-	 * @param endIndex
-	 * @param values
-	 * @param N
-	 * @param cursor
-     * @return
-	 */
-    public static double wSmoothed1(int startIndex,double[] values, int N, short cursor) {
-        int currentIndex=startIndex+cursor;
-        int endIndex=currentIndex+N;
-        double wsSmoothedPrev = 0;
-
-        // Current smoothed = [Prior smoothed - (Prior smoothed)/N + Current]
-        double result = 0D;
-        if (currentIndex+N < endIndex-1 && cursor<N) {
-            wsSmoothedPrev = wSmoothed1(startIndex+1, values, N, ++cursor);
-            result = wsSmoothedPrev - (wsSmoothedPrev/N) + values[currentIndex];
-        } else if (cursor==N || currentIndex+N == endIndex-1) {
-            double sum = 0;
-            for (int j = 0; j < N; j++) {
-                sum += values[currentIndex + j];
-            }
-
-            result = sum;
-
-        } else {
-            result = 0;
-        }
-
-        return result;
-
-    }
 
 
-    /*
-	 * Wilder's smoothing Second Technique
-	 * @param startIndex
-	 * @param endIndex
-	 * @param highs
-	 * @param lows
-	 * @param N
-	 * @return
-	 */
-    public static double wSmoothed2(int startIndex, int endIndex, double[] values,int N,short cursor,boolean rev) {
-        int currentIndex=startIndex+cursor;
-        double smoothedDmPrev = 0;
 
-        // Current smoothedDM = [(Prior smoothedDM x 13) + Current DM] / 14
-        double result = 0D;
-        if (currentIndex+N < endIndex-1 && cursor<N) {
-            smoothedDmPrev = wSmoothed2(startIndex + 1, endIndex, values, N, ++cursor, rev);
-            result = ((smoothedDmPrev*(N-1)) + values[currentIndex])/N;
-        } else if (cursor==N || currentIndex+N == endIndex-1) {
-            double sum = 0;
-            for (int j = 0; j < N; j++) {
-                sum += dm(values[currentIndex + j],values[currentIndex + j+1],rev);
-            }
 
-            result = sum / N;
-
-        } else {
-            result = 0;
-        }
-
-        return result;
-
-    }
 
     /**
      * Directional movement. CurrentValue-PreviousValue or vice versa

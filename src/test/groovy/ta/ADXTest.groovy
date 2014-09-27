@@ -87,9 +87,9 @@ class ADXTest {
     @Test
     public void dmPlusSmoothedQATest() {
         def setup=setupAdxQaTest()
-
-        double[] dmPlus=ADX.dm(0, setup['prices'].length, setup['highs'],false)
-        double[] dmPlusSmoothed14=ADX.wSmoothed1Iterator(0,dmPlus.length,dmPlus,14)
+        double[][] dmCombined=ADX.dm(0, setup['prices'].length, setup['highs'], setup['lows'])
+        double[] dmPlus=dmCombined[0];
+        double[] dmPlusSmoothed14=Smooth.wSmoothed1Iterator(0,dmPlus.length,dmPlus,14)
         dmPlusSmoothed14.eachWithIndex {
             val,i -> log.debug(" index: ${i} - val : ${val}")
         }
