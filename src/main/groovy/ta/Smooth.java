@@ -22,9 +22,9 @@ public class Smooth {
         assert endIndex<=values.length;
         int length = endIndex - startIndex;
         double[] result = new double[length];
-        for (int i = 0; i < length-1-periods; i++) {
-            log.debug("i: {} - startIndex: {}",i,startIndex+i);
-            result[i] = wSmoothed1(startIndex+i, values, periods, (short) 0);
+        for (int i = 0; i < length-(periods-1); i++) {
+            log.debug("Cycle: {} - startIndex: {}",i,startIndex+i);
+            result[i] = wSmoothed1(startIndex+i,endIndex, values, periods, (short) 0);
         }
         return result;
 
@@ -39,7 +39,7 @@ public class Smooth {
    * @param cursor
    * @return
    */
-    public static double wSmoothed1(int startIndex,double[] values, int N, short cursor) {
+    public static double wSmoothed1(int startIndex,int endIndex,double[] values, int N, short cursor) {
         int currentIndex=startIndex+cursor;
         log.debug("current index: {} - N: {} ",currentIndex,N);
 
@@ -47,10 +47,10 @@ public class Smooth {
 
         // Current smoothed = [Prior smoothed - (Prior smoothed)/N + Current]
         double result = 0D;
-        if (cursor<N && (currentIndex+N)<values.length) {
+        if (cursor<N && (currentIndex+N)<endIndex) {
             /* head recursive */
             log.debug("cursor: {} - startIndex: {}",cursor,startIndex);
-            wsSmoothedPrev = wSmoothed1(startIndex, values, N, ++cursor);
+            wsSmoothedPrev = wSmoothed1(startIndex,endIndex, values, N, ++cursor);
             result = wsSmoothedPrev - (wsSmoothedPrev/N) + values[currentIndex];
         } else {
 

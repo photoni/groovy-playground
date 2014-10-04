@@ -89,10 +89,20 @@ class ADXTest {
         def setup=setupAdxQaTest()
         double[][] dmCombined=ADX.dm(0, setup['prices'].length, setup['highs'], setup['lows'])
         double[] dmPlus=dmCombined[0];
-        double[] dmPlusSmoothed14=Smooth.wSmoothed1Iterator(0,dmPlus.length,dmPlus,14)
+        double[] dmPlusSmoothed14=Smooth.wSmoothed1Iterator(0,dmPlus.length-1,dmPlus,14)
+        log.debug("DM PLUS SMOOTHED")
         dmPlusSmoothed14.eachWithIndex {
             val,i -> log.debug(" index: ${i} - val : ${val}")
         }
+
+        double[] dmMinus=dmCombined[1];
+        double[] dmMinusSmoothed14=Smooth.wSmoothed1Iterator(0,dmMinus.length-1,dmMinus,14)
+        log.debug("DM MINUS SMOOTHED")
+        dmMinusSmoothed14.eachWithIndex {
+            val,i -> log.debug(" index: ${i} - val : ${val}")
+        }
+
+
 
     }
 
