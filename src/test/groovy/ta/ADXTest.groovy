@@ -107,6 +107,23 @@ class ADXTest {
     }
 
     @Test
+    public void trM1SmoothedQATest() {
+        def setup=setupAdxQaTest()
+        double[] trM1=Indicators.trM1(0, setup['prices'].length, setup['highs'], setup['lows'])
+        double[] trM1Smoothed14=Smooth.wSmoothed1Iterator(0,trM1.length-1,trM1,14)
+        log.debug("TR SMOOTHED")
+        /*trM1Smoothed14.eachWithIndex {
+            val,i -> log.debug(" index: ${i} - val : ${val}")
+        }*/
+
+
+
+
+
+    }
+
+
+    @Test
     public void dmMinusQATest() {
         def setup=setupAdxQaTest()
 
