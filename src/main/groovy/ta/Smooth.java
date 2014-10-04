@@ -20,6 +20,7 @@ public class Smooth {
      */
     public static double[] wSmoothed1Iterator(int startIndex, int endIndex, double[] values,int periods) {
         assert endIndex<=values.length;
+        endIndex-=1;
         int length = endIndex - startIndex;
         double[] result = new double[length];
         for (int i = 0; i < length-(periods-1); i++) {

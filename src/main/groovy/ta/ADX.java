@@ -40,46 +40,25 @@ public class ADX {
     }
 
     /**
-     * ADX iterator
-     * @param startIndex
-     * @param endIndex
-     * @param highs
-     * @param lows
-     * @param periods
-     * @return
-     */
-    /**public static double[] adx(int startIndex, int endIndex,double[] values ,double[] highs,
-                               double[] lows, int periods) {
-        int length = endIndex - startIndex;
-        double[] result = new double[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = dxFormula(startIndex+i, endIndex, values, highs, lows, periods);
-            log.debug("dx {}: {}",i,result[i]);
-        }
-
-        result=Indicators.sma(startIndex, endIndex, result, periods);
-
-        return result;
-    }**/
-
-    /**
-     * DX
-     * @param startIndex
-     * @param endIndex
+     * DI . Price descending by date
      * @param values
-     * @param highs
-     * @param lows
-     * @param periods
+     * @param trM1Smoothed
      * @return
      */
-    /*public static double dxFormula(int startIndex, int endIndex, double[] values,double[] highs,double[] lows, int periods){
-        double dxPlus=diFormula(startIndex, endIndex, values, highs, lows, periods, false);
-        double dxMinus=diFormula(startIndex, endIndex, values, highs, lows, periods, true);
-        double denominator = dxPlus+dxMinus;
-        log.debug("dx {} den: {} - dxP: {} - dxM: {}",startIndex,denominator);
-        double dx=denominator!=0?(Math.abs(dxPlus-dxMinus)/denominator):0;
-        return dx;
-    }*/
+    public static double[] di(double[] values,double[] trM1Smoothed) {
+
+        double[] result = new double[values.length];
+
+        for(int i =0;i<values.length;i++){
+            if(trM1Smoothed[i]>0)
+                result[i]=(values[i]/trM1Smoothed[i])*100;
+
+        }
+        return result;
+
+    }
+
+
 
 
     /**
