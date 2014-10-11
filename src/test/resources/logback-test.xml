@@ -11,7 +11,7 @@
   </appender>
 
    <logger name="chapters.configuration" level="DEBUG"/>
-    <logger name="ta.Smooth" level="INFO"/>
+    <logger name="ta.Smooth" level="DEBUG"/>
 
 
   <!-- Strictly speaking, the level attribute is not necessary since -->
