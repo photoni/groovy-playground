@@ -87,17 +87,11 @@ class ADXTest {
         double[] dmPlusSmoothed14=Smooth.wSmoothed1Iterator(0,dmPlus.length,dmPlus,14)
         assertValidDM14Plus(dmPlusSmoothed14)
         log.debug("DM PLUS SMOOTHED")
-        dmPlusSmoothed14.eachWithIndex {
-            val,i -> log.debug(" index: ${i} - val : ${val}")
-
-        }
         double[] dmMinus=dmCombined[1];
         double[] dmMinusSmoothed14=Smooth.wSmoothed1Iterator(0,dmMinus.length,dmMinus,14)
         assertDM14Minus(dmMinusSmoothed14)
         log.debug("DM MINUS SMOOTHED")
-        dmMinusSmoothed14.eachWithIndex {
-            val,i -> log.debug(" index: ${i} - val : ${val}")
-        }
+
     }
 
     @Test
@@ -114,14 +108,23 @@ class ADXTest {
         double[] trM1Smoothed14=Smooth.wSmoothed1Iterator(0,trM1.length,trM1,14)
 
         double[] diPlus=ADX.di(dmPlusSmoothed14,trM1Smoothed14)
-        diPlus.eachWithIndex{
-            val,i -> log.debug(" index: ${i} - val : ${val}")
-        }
+
+        assert diPlus[485]==9.5127993549945;
+        assert diPlus[486]==5.6372815417539375;
+        assert diPlus[487]==6.21228579571031;
+        assert diPlus[488]==6.8134974383133775;
+        assert diPlus[489]==7.301066447908087;
+        assert diPlus[490]==0;
+        assert diPlus[502]==0;
 
         double[] diMinus=ADX.di(dmMinusSmoothed14,trM1Smoothed14)
-        diMinus.eachWithIndex{
-            val,i -> log.debug(" index: ${i} - val : ${val}")
-        }
+        assert diPlus[485]==33.1330849725;
+        assert diPlus[486]==36.548674684;
+        assert diPlus[487]==39.5792117034;
+        assert diPlus[488]==37.1945115129;
+        assert diPlus[489]==35.4388843314;
+        assert diPlus[490]==0;
+        assert diPlus[502]==0;
     }
 
     @Test
