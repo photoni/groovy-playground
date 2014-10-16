@@ -12,6 +12,7 @@ public class Smooth {
     private static Logger log= LoggerFactory.getLogger(Smooth.class);
 
     /**
+     * TODO HACK to fix the endIndex-1 problem. Check why
      * @param startIndex
      * @param endIndex
      * @param values
@@ -26,6 +27,38 @@ public class Smooth {
         for (int i = 0; i < length-(periods-1); i++) {
             log.debug("Cycle: {} - startIndex: {}",i,startIndex+i);
             result[i] = wSmoothed1(startIndex+i,endIndex, values, periods, (short) 0);
+        }
+        return result;
+
+    }
+
+    /**
+     * @param startIndex
+     * @param endIndex
+     * @param values
+     * @param periods
+     * @param smoothType
+     * @return
+     */
+    public static double[] wSmoothedIterator(int startIndex, int endIndex, double[] values,int periods,int smoothType) {
+        assert endIndex<=values.length;
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length-(periods-1); i++) {
+            log.debug("Cycle: {} - startIndex: {}",i,startIndex+i);
+
+            switch (smoothType ) {
+                case 1:
+                    result[i] = wSmoothed1(startIndex+i,endIndex, values, periods, (short) 0);
+                    break;
+                case 2:
+                    result[i] = wSmoothed2(startIndex+i,endIndex, values, periods, (short) 0);
+                    break;
+               default:
+                    throw new UnsupportedOperationException("Unknown smooth type");
+            }
+
+
         }
         return result;
 
@@ -78,25 +111,26 @@ public class Smooth {
     * @param N
     * @return
     */
-    public static double wSmoothed2(int startIndex, int endIndex, double[] values,int N,short cursor,boolean rev) {
+    public static double wSmoothed2(int startIndex, int endIndex, double[] values,int N,short cursor) {
         int currentIndex=startIndex+cursor;
         double smoothedDmPrev = 0;
+        log.debug("current index: {} - N: {} ",currentIndex,N);
 
-        // Current smoothedDM = [(Prior smoothedDM x 13) + Current DM] / 14
+        // Current smoothed = [(Prior smoothed x 13) + Current ] / 14
         double result = 0D;
-        if (cursor<N) {
-            smoothedDmPrev = wSmoothed2(startIndex + 1, endIndex, values, N, ++cursor, rev);
+        if (cursor<N && (currentIndex+N)<endIndex) {
+            log.debug("cursor: {} - startIndex: {}",cursor,startIndex);
+            smoothedDmPrev = wSmoothed2(startIndex,endIndex, values, N, ++cursor);
             result = ((smoothedDmPrev*(N-1)) + values[currentIndex])/N;
-        } else if (cursor==N) {
+        } else {
             double sum = 0;
             for (int j = 0; j < N; j++) {
+                log.debug(" final currentIndex: {} - j: {} - val: {}",currentIndex,j,values[currentIndex + j]);
                 sum += values[currentIndex + j];
             }
 
             result = sum / N;
 
-        } else {
-            result = 0;
         }
 
         return result;

@@ -94,6 +94,9 @@ class ADXTest {
 
     }
 
+    /**
+     * +DI4 and -DI4
+     */
     @Test
     public void diCombinedQATest() {
         def setup=setupAdxQaTest()
@@ -108,24 +111,36 @@ class ADXTest {
         double[] trM1Smoothed14=Smooth.wSmoothed1Iterator(0,trM1.length,trM1,14)
 
         double[] diPlus=ADX.di(dmPlusSmoothed14,trM1Smoothed14)
-
-        assert diPlus[485]==9.5127993549945;
-        assert diPlus[486]==5.6372815417539375;
-        assert diPlus[487]==6.21228579571031;
-        assert diPlus[488]==6.8134974383133775;
-        assert diPlus[489]==7.301066447908087;
-        assert diPlus[490]==0;
-        assert diPlus[502]==0;
+        assertValidDIPlus(diPlus)
 
         double[] diMinus=ADX.di(dmMinusSmoothed14,trM1Smoothed14)
-        assert diPlus[485]==33.1330849725;
-        assert diPlus[486]==36.548674684;
-        assert diPlus[487]==39.5792117034;
-        assert diPlus[488]==37.1945115129;
-        assert diPlus[489]==35.4388843314;
-        assert diPlus[490]==0;
-        assert diPlus[502]==0;
+        assertValidDIMinus(diPlus)
     }
+
+    /**
+     * DX 14
+     */
+    @Test
+    public void dxQATest() {
+        def setup=setupAdxQaTest()
+        double[] dx=ADX.dx(0, setup['prices'].length, setup['highs'], setup['lows'],14)
+        assertIsValidDX(dx)
+    }
+
+    /**
+     * ADX 14
+     */
+    @Test
+    public void adxQATest() {
+        def setup=setupAdxQaTest()
+        double[] adx=ADX.adx(0, setup['prices'].length, setup['highs'], setup['lows'],14)
+        assert adx[473]==28.114437170585955
+        assert adx[474]==29.954292323573434
+        assert adx[475]==32.25667407943681
+        assert adx[476]==33.70788849599704
+    }
+
+
 
     @Test
     public void trM1SmoothedQATest() {
@@ -299,6 +314,48 @@ class ADXTest {
         assert dmMinusSmoothed14[489] == 4.32
         assert dmMinusSmoothed14[490] == 0.0
         assert dmMinusSmoothed14[502] == 0.0
+    }
+
+    private void assertValidDIMinus(double[] diPlus) {
+        assert diPlus[485] == 33.1330849725;
+        assert diPlus[486] == 36.548674684;
+        assert diPlus[487] == 39.5792117034;
+        assert diPlus[488] == 37.1945115129;
+        assert diPlus[489] == 35.4388843314;
+        assert diPlus[490] == 0;
+        assert diPlus[502] == 0;
+    }
+
+    private void assertValidDIPlus(double[] diPlus) {
+        assert diPlus[485] == 9.5127993549945;
+        assert diPlus[486] == 5.6372815417539375;
+        assert diPlus[487] == 6.21228579571031;
+        assert diPlus[488] == 6.8134974383133775;
+        assert diPlus[489] == 7.301066447908087;
+        assert diPlus[490] == 0;
+        assert diPlus[502] == 0;
+    }
+
+    private void assertIsValidDX(double[] dx) {
+        assert dx[0] == 25.90278451373333
+        assert dx[472] == 10.34107375609986
+        assert dx[473] == 4.196320181748763
+        assert dx[474] == 0.023329497349510703
+        assert dx[475] == 13.390886664153806
+        assert dx[476] == 13.390886664153806
+        assert dx[477] == 1.873176216898483
+        assert dx[478] == 6.450091331636891
+        assert dx[479] == 6.450091331636888
+        assert dx[480] == 9.57835895551122
+        assert dx[481] == 16.933353483672033
+        assert dx[482] == 20.013359683725945
+        assert dx[483] == 21.714470746185693
+        assert dx[484] == 39.10829257738574
+        assert dx[485] == 55.387022663499764
+        assert dx[486] == 73.27413174381128
+        assert dx[487] == 72.86707736157095
+        assert dx[488] == 69.03519336277274
+        assert dx[489] == 65.83493282149722
     }
 
 }

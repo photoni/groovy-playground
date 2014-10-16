@@ -40,6 +40,57 @@ public class ADX {
     }
 
     /**
+     * DX . Price descending by date
+     * @param startIndex
+     * @param endIndex
+     * @param highs
+     * @param lows
+     * @return
+     */
+    public static double[] dx(int startIndex, int endIndex, double[] highs,double[] lows,int periods) {
+
+        int length = endIndex - startIndex;
+        double[][] dmCombined=ADX.dm(0, endIndex, highs, lows);
+        double[] dmPlus=dmCombined[0];
+        double[] dmPlusSmoothed14=Smooth.wSmoothed1Iterator(0,dmPlus.length,dmPlus,periods);
+
+        double[] dmMinus=dmCombined[1];
+        double[] dmMinusSmoothed14=Smooth.wSmoothed1Iterator(0,dmMinus.length,dmMinus,periods);
+
+        double[] trM1=Indicators.trM1(0, endIndex, highs, lows);
+        double[] trM1Smoothed14=Smooth.wSmoothed1Iterator(0,trM1.length,trM1,periods);
+
+        double[] diPlus=ADX.di(dmPlusSmoothed14,trM1Smoothed14);
+        double[] diMinus=ADX.di(dmMinusSmoothed14,trM1Smoothed14);
+
+        double[] result = new double[length-periods];
+        for(int i =0;i<length-periods;i++){
+
+            result[i]=Math.abs((diPlus[i]-diMinus[i])/(diPlus[i]+diMinus[i]))*100;
+        }
+        return result;
+
+    }
+
+    /**
+     * ADX . Price descending by date
+     * @param startIndex
+     * @param endIndex
+     * @param highs
+     * @param lows
+     * @return
+     */
+    public static double[] adx(int startIndex, int endIndex, double[] highs,double[] lows,int periods) {
+
+        double[] dx = dx(startIndex,endIndex,highs,lows,periods);
+        double[] adx = Smooth.wSmoothedIterator(startIndex,dx.length,dx,periods,2);
+
+        return adx;
+
+
+    }
+
+    /**
      * DI . Price descending by date
      * @param values
      * @param trM1Smoothed
