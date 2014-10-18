@@ -151,6 +151,12 @@ class TechnicalAnalisys {
 				result.put("macd-histogram", macd[2])
 			}else if("iatr".equalsIgnoreCase(obj))
 				result.put("iatr", Indicators.atr(0,prices.length,highs,lows, 14))
+            else if("adx".equalsIgnoreCase(obj)){
+                result.put("adx", ADX.adx(0, prices.length, highs, lows,14))
+                double[][] dmCombined=ADX.dm(0, setup['prices'].length, setup['highs'], setup['lows'])
+                result.put("di+", dmCombined[0])
+                result.put("di-", dmCombined[1])
+            }
 		}
 		return result;
 	}

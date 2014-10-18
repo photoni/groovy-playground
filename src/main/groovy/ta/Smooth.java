@@ -97,7 +97,7 @@ public class Smooth {
             result = sum;
 
         }
-
+        log.debug("current index: {} - result : {}",currentIndex,result);
         return result;
 
     }
@@ -132,7 +132,7 @@ public class Smooth {
             result = sum / N;
 
         }
-
+        log.debug("current index result : {}",result);
         return result;
 
     }

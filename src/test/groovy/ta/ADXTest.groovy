@@ -134,6 +134,7 @@ class ADXTest {
     public void adxQATest() {
         def setup=setupAdxQaTest()
         double[] adx=ADX.adx(0, setup['prices'].length, setup['highs'], setup['lows'],14)
+        assert adx[472]==26.84491121240838
         assert adx[473]==28.114437170585955
         assert adx[474]==29.954292323573434
         assert adx[475]==32.25667407943681
@@ -284,6 +285,12 @@ class ADXTest {
         assert dmPlusSmoothed14[0] == 2.9257753299932308
         assert dmPlusSmoothed14[1] == 3.0244863611323423
         assert dmPlusSmoothed14[20] == 1.9960078210736771
+        assert dmPlusSmoothed14[474] == 2.9588970917752078 //differs from excel. Here starts the previous 14-cycle. Excel is not handling this
+        assert dmPlusSmoothed14[475] == 3.1622462199044024
+        assert dmPlusSmoothed14[476] == 3.405495929127818
+        assert dmPlusSmoothed14[477] == 2.698226385214575
+        assert dmPlusSmoothed14[478] == 2.9057822610003115
+        assert dmPlusSmoothed14[479] == 3.129303973384951
         assert dmPlusSmoothed14[480] == 2.4438658174914862
         assert dmPlusSmoothed14[481] == 2.265701649606216
         assert dmPlusSmoothed14[482] == 2.2892171611143857
@@ -327,6 +334,23 @@ class ADXTest {
     }
 
     private void assertValidDIPlus(double[] diPlus) {
+
+        assert diPlus[467] == 22.6394103743;
+        assert diPlus[468] == 24.717920748;
+        assert diPlus[469] == 20.9308292393;
+        assert diPlus[470] == 22.1115887601;
+        assert diPlus[471] == 22.9117114957;
+        assert diPlus[474] == 21.5372381162;
+        assert diPlus[475] == 23.94315706450288;
+        assert diPlus[476] == 25.023102317325375;
+        assert diPlus[477] == 21.073345817108482;
+        assert diPlus[478] == 22.936344984159415;
+        assert diPlus[479] == 24.19690919952988;
+        assert diPlus[480] == 19.194529761856778;
+        assert diPlus[481] == 17.963189058055573;
+        assert diPlus[482] == 17.97933715423352;
+        assert diPlus[483] == 18.089818752069718;
+        assert diPlus[484] == 13.673104636276959;
         assert diPlus[485] == 9.5127993549945;
         assert diPlus[486] == 5.6372815417539375;
         assert diPlus[487] == 6.21228579571031;

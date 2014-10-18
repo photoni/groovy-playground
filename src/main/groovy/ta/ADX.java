@@ -4,6 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Interpretation:<br/>
+ * At its most basic the Average Directional Index (ADX) can be used to determine if a security is trending or not.
+ * This determination helps traders choose between a trend following system or a non-trend following system.
+ * Wilder suggests that a strong trend is present when ADX is above 25 and no trend is present when below 20.
+ * There appears to be a gray zone between 20 and 25. As noted above, chartists may need to adjust the settings to increase sensitivity and signals.
+ * ADX also has a fair amount of lag because of all the smoothing techniques. Many technical analysts use 20 as the key level for ADX.
+ *
  * groovy-playground
  * Created by filippo on 21/09/14.
  */
