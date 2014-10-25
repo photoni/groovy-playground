@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Set of different smoothing techniques
+ *
  * groovy-playground
  * Created by filippo on 27/09/14.
  */
@@ -33,6 +35,7 @@ public class Smooth {
     }
 
     /**
+     * Wilder's smoothing combined techniques
      * @param startIndex
      * @param endIndex
      * @param values

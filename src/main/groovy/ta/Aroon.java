@@ -10,7 +10,10 @@ import org.slf4j.LoggerFactory;
 public class Aroon {
     private static Logger log= LoggerFactory.getLogger(Aroon.class);
 
-
+    /**
+     * combined Aroon indicators
+     * @return AroonUp,AroonDown and AroonOscillator in this order
+     */
     public static double[][] aroon(){
         return null;
     }
