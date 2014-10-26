@@ -18,14 +18,41 @@ public class Aroon {
         return null;
     }
 
-    public static double[] aroonUp(){
-        return null;
+    /**
+     * Aroon-Up = ((25 - Days Since 25-day High)/25) x 100
+     * @return
+     */
+    public static double[] aroonUp(double[] highs,int periods){
+        int[]elapsedTrendUp=MathAnalysis.getElapsedTrend(highs, periods, 1);
+        double[] aroonUp=aroonFormula(periods, elapsedTrendUp);
+        return aroonUp;
     }
-    public static double[] aroonDown(){
-        return null;
+
+
+    /**
+     * Aroon-Down = ((25 - Days Since 25-day Low)/25) x 100
+     * @return
+     */
+    public static double[] aroonDown(double[] lows,int periods){
+        int[]elapsedTrendDown=MathAnalysis.getElapsedTrend(lows, periods, 1);
+        double[] aroonDown=aroonFormula(periods, elapsedTrendDown);
+        return aroonDown;
     }
 
     public static double[] aroonOscillator(){
         return null;
     }
+
+    /**
+     * Helpers
+     */
+    private static double[] aroonFormula(int periods, int[] elapsedTrend) {
+        double[] aroon=new double[elapsedTrend.length];
+        for (int i = 0; i < elapsedTrend.length; i++) {
+            aroon[i]=((double)(periods-elapsedTrend[i])/periods)*100;
+
+        }
+        return aroon;
+    }
+
 }
