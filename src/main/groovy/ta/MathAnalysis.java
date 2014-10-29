@@ -29,7 +29,7 @@ public class MathAnalysis {
      * @param highs
      * @param lows
      * @param maxElapsed the backward window
-     * @return Two arrays containing respectively xDayHigh and xDayLow within the given back elapsed
+     * @return Two arrays containing respectively xElapsedMax and xElapsedMin within the given back elapsed
      */
     public static int[][] xElapsedMinMax(double[] highs,double[] lows, int maxElapsed){
         int[][] result= new int[2][highs.length];
@@ -75,6 +75,27 @@ public class MathAnalysis {
             xDay++;
         }
         return elapsed;
+    }
+
+    /**
+     * Deltas. Combined Gain and Losses. Losses are expressed in Abs values
+     * @param values
+     * @return
+     */
+    public static double[][] deltas(double[] values){
+        double[][] deltas=new double[2][values.length];
+        double[] gains=new double[values.length];
+        double[] losses=new double[values.length];
+        for (int i = 1; i <values.length ; i++) {
+            double delta=values[i] -values[i-1];
+            if(delta>0)
+                gains[i]=delta;
+            else
+                losses[i]=Math.abs(delta);
+        }
+        deltas[0]=gains;
+        deltas[1]=losses;
+        return deltas;
     }
 
 }

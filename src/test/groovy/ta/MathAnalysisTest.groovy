@@ -1,6 +1,7 @@
 package ta
 
 import groovy.util.logging.Slf4j
+import helpers.ArrayHelper
 import org.junit.Test
 
 /**
@@ -25,6 +26,22 @@ class MathAnalysisTest {
         int[]results=MathAnalysis.getElapsedTrend(lows, 25, -1);
         log.debug('xElapsedMin');
         assertIsValidElapsedMin(results)
+    }
+
+    @Test
+    def void getDeltaTest(){
+        def values=[1,1,2,3,3,3,3,4,5,6,6,7,8,9,10,9,8,10,9,13,14,15,16,17,18,19,20,18,17,14,16,24,25,25,26,27,
+               25] as double[]
+        double[][] deltas =MathAnalysis.deltas(values)
+        double[] gains=deltas[0];
+        double[] losses=deltas[1];
+
+
+        log.debug('gains')
+        ArrayHelper.log(gains,log,true)
+
+        log.debug('losses')
+        ArrayHelper.log(losses,log,true)
     }
 
     private void assertIsValidElapsedMin(int[] results) {
