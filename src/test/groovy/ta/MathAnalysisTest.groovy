@@ -31,17 +31,23 @@ class MathAnalysisTest {
     @Test
     def void getDeltaTest(){
         def values=[1,1,2,3,3,3,3,4,5,6,6,7,8,9,10,9,8,10,9,13,14,15,16,17,18,19,20,18,17,14,16,24,25,25,26,27,
-               25] as double[]
-        double[][] deltas =MathAnalysis.deltas(values)
-        double[] gains=deltas[0];
-        double[] losses=deltas[1];
-
-
+               25]
+        double[][] deltas =MathAnalysis.deltas(values.reverse() as double[])
+        double[] gains=deltas[0]
+        double[] losses=deltas[1]
         log.debug('gains')
         ArrayHelper.log(gains,log,true)
+        assert gains[2]==1
+        assert gains[5]==8
+        assert gains[6]==2
 
         log.debug('losses')
         ArrayHelper.log(losses,log,true)
+        assert losses[0]==2
+        assert losses[7]==3
+        assert losses[8]==1
+
+
     }
 
     private void assertIsValidElapsedMin(int[] results) {

@@ -86,8 +86,8 @@ public class MathAnalysis {
         double[][] deltas=new double[2][values.length];
         double[] gains=new double[values.length];
         double[] losses=new double[values.length];
-        for (int i = 1; i <values.length ; i++) {
-            double delta=values[i] -values[i-1];
+        for (int i = 0; i <(values.length-1) ; i++) {
+            double delta=values[i] -values[i+1];
             if(delta>0)
                 gains[i]=delta;
             else
