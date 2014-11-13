@@ -10,8 +10,7 @@ import org.junit.Test
 
 import service.SecurityService
 
-import com.tictactec.ta.lib.Core
-import com.tictactec.ta.lib.MInteger
+
 
 /**
  * Tests several TALib functions on a single security price array
@@ -65,26 +64,6 @@ class TASingleSecurityTest {
 	
 
 
-    @Test
-	public void wmaTest() {
-		double[] out= ta.wma(prices,CUT)
-		out.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
-	}
-
-	@Test
-	public void emaTest() {
-		double[] out= ta.ema(prices,CUT) // not OK looks odd
-		double[] out1=Indicators.ema(0,prices.length,prices, 20);//OK looks fine
-		out.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
-		log.debug("-------- MY EMA ---------");
-		out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
-	}
-
-	@Test
-	public void tmaTest() {
-		double[] out= ta.tma(prices,CUT)
-		out.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
-	}
 
 	@Test
 	public void rocTest() {

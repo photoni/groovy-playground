@@ -3,9 +3,6 @@ package ta
 import groovy.lang.Singleton;
 import groovy.util.logging.Slf4j;
 
-import com.tictactec.ta.lib.Core
-import com.tictactec.ta.lib.MInteger
-import com.tictactec.ta.lib.RetCode
 
 @Slf4j
 @Singleton
@@ -22,9 +19,9 @@ class TechnicalAnalisys {
 	 * @param input
 	 * @param out
 	 * @return
-	 */
+
 	double[] sma(double[] input, boolean cutOut){
-		/* The number of unit periods(days) to average together */
+
 		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
@@ -47,9 +44,9 @@ class TechnicalAnalisys {
 	 * @param input
 	 * @param out
 	 * @return
-	 */
+
 	double[] wma(double[] input, boolean cutOut){
-		/* The number of unit periods(days) to average together */
+
 		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
@@ -74,9 +71,9 @@ class TechnicalAnalisys {
 	 * @param input
 	 * @param out
 	 * @return
-	 */
+
 	double[] ema(double[] input, boolean cutOut){
-		/* The number of unit periods(days) to average together */
+
 		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
@@ -100,9 +97,9 @@ class TechnicalAnalisys {
 	 * @param input
 	 * @param out
 	 * @return
-	 */
+
 	double[] tma(double[] input, boolean cutOut){
-		/* The number of unit periods(days) to average together */
+
 		int period = PERIODS
 		def startIndex = 0
 		def endIndex = input.length - 1
@@ -116,7 +113,7 @@ class TechnicalAnalisys {
 		log.debug("tma: Total time nano : {}", end - start)
 		double[] adjAut=adjustOutput( out, begin, length,cutOut)
 		return adjAut
-	}
+	}*/
 
 
 
@@ -161,15 +158,5 @@ class TechnicalAnalisys {
 		return result;
 	}
 
-	private double[] adjustOutput(double[] out, MInteger begin, MInteger length, boolean cutOut) {
-		double[] adjAut=new double[out.length]
-		if(cutOut)
-			adjAut = Arrays.copyOfRange(out, begin.value, (length.value+begin.value-1));
-		else
-			out.eachWithIndex {obj,i ->
-				if(i< length.value)adjAut[i]=obj
-				else adjAut[i]=0
-			}
-		return adjAut
-	}
+
 }
