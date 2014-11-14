@@ -1,5 +1,6 @@
 package ta;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,11 +121,13 @@ public class Smooth {
         log.debug("current index: {} - N: {} ",currentIndex,N);
 
         // Current smoothed = [(Prior smoothed x 13) + Current ] / 14
+        String formulaString= StringUtils.EMPTY;
         double result = 0D;
         if (cursor<N && (currentIndex+N)<endIndex) {
             log.debug("cursor: {} - startIndex: {}",cursor,startIndex);
             smoothedDmPrev = wSmoothed2(startIndex,endIndex, values, N, ++cursor);
             result = ((smoothedDmPrev*(N-1)) + values[currentIndex])/N;
+            formulaString="(("+smoothedDmPrev+"*("+(N-1)+")) + "+values[currentIndex]+")/"+N;
         } else {
             double sum = 0;
             for (int j = 0; j < N; j++) {
@@ -133,9 +136,9 @@ public class Smooth {
             }
 
             result = sum / N;
-
+            formulaString=sum+"/"+N;
         }
-        log.debug("current index result : {}",result);
+        log.debug("current index result : {} - formula: {}",result,formulaString);
         return result;
 
     }

@@ -8,6 +8,7 @@ public class RSI {
     public static double[] averageGain(double[] values,int periods){
         double[][] deltas =MathAnalysis.deltas(values);
         double[] gains=deltas[0];
+
         return Smooth.wSmoothedIterator(0,gains.length,gains,periods,2);
     }
 

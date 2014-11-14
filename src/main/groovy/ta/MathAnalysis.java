@@ -80,12 +80,12 @@ public class MathAnalysis {
     /**
      * Deltas. Combined Gain and Losses. Losses are expressed in Abs values
      * @param values
-     * @return
+     * @return two array of length n-1 containing gain and losses
      */
     public static double[][] deltas(double[] values){
-        double[][] deltas=new double[2][values.length];
-        double[] gains=new double[values.length];
-        double[] losses=new double[values.length];
+        double[][] deltas=new double[2][values.length-1];
+        double[] gains=new double[values.length-1];
+        double[] losses=new double[values.length-1];
         for (int i = 0; i <(values.length-1) ; i++) {
             double delta=values[i] -values[i+1];
             if(delta>0)
