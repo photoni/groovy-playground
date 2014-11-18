@@ -51,55 +51,92 @@ class RSITest {
 
     @Test
     def void AverageGainLossQATest(){
-        /*
-            0.2384
-            0.2214
-            0.2077
-            0.2199
-            0.2042
-            0.1896
-            0.2167
-            0.2040
-            0.1895
-            0.2286
-            0.2123
-            0.1971
-            0.1831
-            0.1807
-            0.1389
-            0.1539
-            0.1429
-            0.1327
-            0.1567
 
-         */
         def setup=setupRsiQaTest()
         double[] ag=RSI.averageGain setup['prices'],14
         ArrayHelper.log(ag,log,true)
-        assert ag[18]==0.23838571428571445
-        assert ag[17]==0.22135816326530627
-        assert ag[16]==0.2076897230320702
-        assert ag[15]==0.2199118856726365
-        assert ag[14]==0.20420389383887677
-        assert ag[13]==0.18961790142181414
-        assert ag[12]==0.21666662274882748
-        assert ag[11]==0.20404043540962521
-        assert ag[10]==0.18946611859465198
-        assert ag[9]==0.2286328244093197
-        assert ag[8]==0.2123019083800826
-        assert ag[7]==0.19713748635293382
-        assert ag[6]==0.18305623732772425
-        assert ag[5]==0.18065936323288703
-        assert ag[4]==0.17059798014482364
-        assert ag[3]==0.18938158699329416
+        assertIsValidAvgGain(ag)
 
 
-        //double[] al=RSI.averageLoss setup['prices'],14
-        //ArrayHelper.log(al,log,true)
+        double[] al=RSI.averageLoss setup['prices'],14
+        ArrayHelper.log(al,log,true)
+        assertIsValidAvgLoss(al)
+
     }
 
+    def void assertIsValidAvgLoss(double[] al) {
+        /*
+        *   0.1017714286
+            0.0945020408
+            0.1012804665
+            0.1353532903
+            0.1256851981
+            0.116707684
+            0.1468285637
+            0.1363408091
+            0.1743164656
+            0.1924867181
+            0.2734519525
+            0.2539196702
+            0.2357825509
+            0.2189409401
+
+            0.10177142857142892 - formula: 1.4248000000000047/14
+            0.09450204081632685 - formula: ((0.10177142857142892*(13)) + 0.0)/14
+            0.08775189504373207 - formula: ((0.09450204081632685*(13)) + 0.0)/14
+[main] DEBUG t.Smooth - current index result : 0.09501247396917971 - formula: ((0.08775189504373207*(13)) + 0.18939999999999912)/14
+[main] DEBUG t.Smooth - current index result : 0.12953301154280963 - formula: ((0.09501247396917971*(13)) + 0.5782999999999987)/14
+[main] DEBUG t.Smooth - current index result : 0.12028065357546609 - formula: ((0.12953301154280963*(13)) + 0.0)/14
+[main] DEBUG t.Smooth - current index result : 0.11168917832007566 - formula: ((0.12028065357546609*(13)) + 0.0)/14
+[main] DEBUG t.Smooth - current index result : 0.14216852272578423 - formula: ((0.11168917832007566*(13)) + 0.5383999999999958)/14
+[main] DEBUG t.Smooth - current index result : 0.13201362824537108 - formula: ((0.14216852272578423*(13)) + 0.0)/14
+[main] DEBUG t.Smooth - current index result : 0.17029836908498788 - formula: ((0.13201362824537108*(13)) + 0.6680000000000064)/14
+[main] DEBUG t.Smooth - current index result : 0.1887556284360601 - formula: ((0.17029836908498788*(13)) + 0.4286999999999992)/14
+[main] DEBUG t.Smooth - current index result : 0.26998736926205585 - formula: ((0.1887556284360601*(13)) + 1.3260000000000005)/14
+[main] DEBUG t.Smooth - current index result : 0.250702557171909 - formula: ((0.26998736926205585*(13)) + 0.0)/14
+[main] DEBUG t.Smooth - current index result : 0.23279523165962976 - formula: ((0.250702557171909*(13)) + 0.0)/14
+[main] DEBUG t.Smooth - current index result : 0.21616700082679907 - formula: ((0.23279523165962976*(13)) + 0.0)/14
+
+        * */
+        assert al[18] == 0.09959285714285773
+        assert al[17] == 0.11242193877551046
+        assert al[16] == 0.10439180029154542
+        assert al[15] == 0.0969352431278636
+        assert al[14] == 0.10353986861873042
+        assert al[13] == 0.1374513065745353
+        assert al[12] == 0.12763335610492563
+        assert al[11] == 0.11851668781171665
+        assert al[10] == 0.14850835296802228
+        assert al[9] == 0.1379006134703064
+        assert al[8] == 0.175764855365285
+        assert al[7] == 0.19383165141062172
+        assert al[6] == 0.2747008191670059
+        assert al[5] == 0.2550793320836483
+        assert al[4] == 0.23685937979195915
+        assert al[3] == 0.21616700082679907
+        assert al[2] == 0.28520944439019763
 
 
+    }
+
+    def void assertIsValidAvgGain(double[] ag) {
+        assert ag[18] == 0.23838571428571445
+        assert ag[17] == 0.22135816326530627
+        assert ag[16] == 0.2076897230320702
+        assert ag[15] == 0.2199118856726365
+        assert ag[14] == 0.20420389383887677
+        assert ag[13] == 0.18961790142181414
+        assert ag[12] == 0.21666662274882748
+        assert ag[11] == 0.20404043540962521
+        assert ag[10] == 0.18946611859465198
+        assert ag[9] == 0.2286328244093197
+        assert ag[8] == 0.2123019083800826
+        assert ag[7] == 0.19713748635293382
+        assert ag[6] == 0.18305623732772425
+        assert ag[5] == 0.18065936323288703
+        assert ag[4] == 0.17059798014482364
+        assert ag[3] == 0.18938158699329416
+    }
 
     /* Helpers */
     def setupRsiQaTest() {
