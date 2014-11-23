@@ -48,8 +48,9 @@ public class Smooth {
         assert endIndex<=values.length;
         int length = endIndex - startIndex;
         double[] result = new double[length];
+        log.debug("Periods: {}",periods);
         for (int i = 0; i < length-(periods-1); i++) {
-            log.debug("Cycle: {} - startIndex: {}",i,startIndex+i);
+            log.debug("-------->>>>>>>>Cycle: {} - startIndex: {}  - value: {}",i,startIndex+i,values[startIndex+i]);
 
             switch (smoothType ) {
                 case 1:
@@ -118,17 +119,19 @@ public class Smooth {
     public static double wSmoothed2(int startIndex, int endIndex, double[] values,int N,short cursor) {
         int currentIndex=startIndex+cursor;
         double smoothedDmPrev = 0;
-        log.debug("current index: {} - N: {} ",currentIndex,N);
+        log.debug("current index: {}",currentIndex);
 
         // Current smoothed = [(Prior smoothed x 13) + Current ] / 14
         String formulaString= StringUtils.EMPTY;
         double result = 0D;
-        if (cursor<N && (currentIndex+N)<endIndex) {
-            log.debug("cursor: {} - startIndex: {}",cursor,startIndex);
+        /* N-2 is the last recursive call */
+        if (cursor<N-1 && (currentIndex+N)<endIndex) {
+            log.debug("cursor: {}",cursor);
             smoothedDmPrev = wSmoothed2(startIndex,endIndex, values, N, ++cursor);
             result = ((smoothedDmPrev*(N-1)) + values[currentIndex])/N;
             formulaString="(("+smoothedDmPrev+"*("+(N-1)+")) + "+values[currentIndex]+")/"+N;
-        } else {
+        } else {/* N-1 is the last formula */
+            log.debug("cursor: {}",cursor);
             double sum = 0;
             for (int j = 0; j < N; j++) {
                 log.debug(" final currentIndex: {} - j: {} - val: {}",currentIndex,j,values[currentIndex + j]);
