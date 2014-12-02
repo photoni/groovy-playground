@@ -14,7 +14,7 @@ import service.SecurityService
 class SmoothTest {
 
     @Test
-    def void rsTest(){
+    def void smooth2Test(){
         def setup=setupRsiQaTest()
         double[] ag=Smooth.wSmoothedIterator(0,setup.'prices'.length,setup.'prices',14,2)
         ArrayHelper.log(ag,log,true)

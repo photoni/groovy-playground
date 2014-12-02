@@ -98,4 +98,40 @@ public class MathAnalysis {
         return deltas;
     }
 
+    /**
+     *
+     * @param startIndex    the index to start from(included)
+     * @param highs    the array of values
+     * @param periods   how many position to span the computation
+     * @return the highest high
+     */
+    public static double highestHigh(int startIndex,double[] highs,int periods){
+        int endIndex=startIndex+periods;
+        assert startIndex>0&&endIndex<=highs.length;
+        double highest=Double.NEGATIVE_INFINITY;
+        for (int i = startIndex; i <endIndex ; i++) {
+            if(highs[i]>highest)
+                highest=highs[i];
+        }
+        return highest;
+    }
+
+    /**
+     *
+     * @param startIndex    the index to start from(included)
+     * @param lows    the array of values
+     * @param periods   how many position to span the computation
+     * @return the lowest low
+     */
+    public static double lowestLow(int startIndex,double[] lows,int periods){
+        int endIndex=startIndex+periods;
+        assert startIndex>0&&endIndex<=lows.length;
+        double lowest=Double.POSITIVE_INFINITY;
+        for (int i = startIndex; i <endIndex ; i++) {
+            if(lows[i]<lowest)
+                lowest=lows[i];
+        }
+        return lowest;
+    }
+
 }
