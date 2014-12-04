@@ -3,6 +3,9 @@ package ta
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
 import org.junit.Test
+import util.ArrayUtil
+
+import java.lang.reflect.Array
 
 /**
  *
@@ -48,6 +51,27 @@ class MathAnalysisTest {
         assert losses[8]==1
 
 
+    }
+
+    @Test
+    def void highestHighTest(){
+        def initialValues=[127.01,127.62,126.59,127.35,128.17,128.43,127.37,126.42,126.9,126.85,125.65,125.72,127.16,
+                            127.72,127.69,128.22,128.27,128.09,128.27,127.74,128.77,129.29,130.06,129.12,129.29,128.47,
+                            128.09,128.65,129.14,128.64]
+        def revValues= initialValues.reverse() as double[]
+        def result=ArrayHelper.closureIterator(0,revValues,14){int startIndex,double [] values,int periods ->
+            return MathAnalysis.highestHigh(startIndex,values,periods)
+        }
+        log.debug('Highest High: {}',result)
+        assert result[0]==130.06
+        assert result[7]==130.06
+        assert result[8]==129.29
+        assert result[9]==128.77
+        assert result[10]==128.27
+        assert result[11]==128.43
+        assert result[16]==128.43
+        assert result[17]==0
+        assert result[result.length-1]==0
     }
 
     private void assertIsValidElapsedMin(int[] results) {

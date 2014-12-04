@@ -1,5 +1,6 @@
 package ta;
 
+import helpers.ArrayHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +108,7 @@ public class MathAnalysis {
      */
     public static double highestHigh(int startIndex,double[] highs,int periods){
         int endIndex=startIndex+periods;
-        assert startIndex>0&&endIndex<=highs.length;
+        assert startIndex>=0&&endIndex<=highs.length;
         double highest=Double.NEGATIVE_INFINITY;
         for (int i = startIndex; i <endIndex ; i++) {
             if(highs[i]>highest)
@@ -115,6 +116,7 @@ public class MathAnalysis {
         }
         return highest;
     }
+
 
     /**
      *
@@ -125,7 +127,7 @@ public class MathAnalysis {
      */
     public static double lowestLow(int startIndex,double[] lows,int periods){
         int endIndex=startIndex+periods;
-        assert startIndex>0&&endIndex<=lows.length;
+        assert startIndex>=0&&endIndex<=lows.length;
         double lowest=Double.POSITIVE_INFINITY;
         for (int i = startIndex; i <endIndex ; i++) {
             if(lows[i]<lowest)
