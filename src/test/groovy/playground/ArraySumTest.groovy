@@ -38,6 +38,29 @@ class ArraySumTest {
 	}
 
 	@Test
+	public void twoIntSumAdjusted() {
+		long start= System.nanoTime();
+		Integer two=new Integer(2)
+		int sum =two+two;
+		long end= System.nanoTime();
+		log.debug("Total time nano : {}", end - start);
+
+		start= System.nanoTime();
+		two=new Integer(2)
+		sum =two+two;
+		end= System.nanoTime();
+		log.debug("Total time nano : {}", end - start);
+		assertEquals(4, sum);
+
+		start= System.nanoTime();
+		two=new Integer(2)
+		sum =two+two;
+		end= System.nanoTime();
+		log.debug("Total time nano : {}", end - start);
+		assertEquals(4, sum);
+	}
+
+	@Test
 	void arraySumMultiArgs() {
 		def arraySum=new ArraySumJ();
 		long start= System.nanoTime();

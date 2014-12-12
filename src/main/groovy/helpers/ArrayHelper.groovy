@@ -35,6 +35,16 @@ class ArrayHelper {
         return result;
 
     }
+    public static double[] closureIterator(int startIndex, int endIndex,int periods,Closure formula) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length-(periods-1); i++) {
+            def startIndexOffset = startIndex + i
+            result[i]=formula.call(startIndexOffset,periods)
+        }
+        return result;
+
+    }
 
 
 }

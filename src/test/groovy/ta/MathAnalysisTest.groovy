@@ -1,5 +1,6 @@
 package ta
 
+import data.TestDataSupport
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
 import org.junit.Test
@@ -55,23 +56,46 @@ class MathAnalysisTest {
 
     @Test
     def void highestHighTest(){
-        def initialValues=[127.01,127.62,126.59,127.35,128.17,128.43,127.37,126.42,126.9,126.85,125.65,125.72,127.16,
-                            127.72,127.69,128.22,128.27,128.09,128.27,127.74,128.77,129.29,130.06,129.12,129.29,128.47,
-                            128.09,128.65,129.14,128.64]
-        def revValues= initialValues.reverse() as double[]
-        def result=ArrayHelper.closureIterator(0,revValues,14){int startIndex,double [] values,int periods ->
+
+        def revHighValues= TestDataSupport.INITIAL_HIGH_VALUES.reverse() as double[]
+        def result=ArrayHelper.closureIterator(0,revHighValues,14){int startIndex,double [] values,int periods ->
             return MathAnalysis.highestHigh(startIndex,values,periods)
         }
         log.debug('Highest High: {}',result)
-        assert result[0]==130.06
-        assert result[7]==130.06
-        assert result[8]==129.29
-        assert result[9]==128.77
-        assert result[10]==128.27
-        assert result[11]==128.43
-        assert result[16]==128.43
-        assert result[17]==0
+        assertIsValidHighestHigh(result)
+
+        def revLowValues= TestDataSupport.INITIAL_LOW_VALUES.reverse() as double[]
+        result=ArrayHelper.closureIterator(0,revLowValues,14){int startIndex,double [] values,int periods ->
+            return MathAnalysis.lowestLow(startIndex,values,periods)
+        }
+        log.debug('Lowest Low: {}',result)
+        assertIsValidLowestLow(result)
+
+    }
+
+    def void assertIsValidLowestLow(double[] result) {
+        assert result[0] == 125.92
+        assert result[1] == 125.92
+        assert result[2] == 125.92
+        assert result[3] == 125.92
+        assert result[4] == 125.07
+        assert result[5] == 124.57
+        assert result[6] == 124.56
+        assert result[16] == 124.56
+        assert result[17] == 0
         assert result[result.length-1]==0
+    }
+
+    private void assertIsValidHighestHigh(double[] result) {
+        assert result[0] == 130.06
+        assert result[7] == 130.06
+        assert result[8] == 129.29
+        assert result[9] == 128.77
+        assert result[10] == 128.27
+        assert result[11] == 128.43
+        assert result[16] == 128.43
+        assert result[17] == 0
+        assert result[result.length - 1] == 0
     }
 
     private void assertIsValidElapsedMin(int[] results) {

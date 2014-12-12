@@ -23,8 +23,15 @@ public class ArraySumTestJ {
 	public void twoIntSum() {
 
 		long start = System.nanoTime();
-		int sum = 2 + 2;
+		int two = 2;
+		int sum = two + two;
 		long end = System.nanoTime();
+		logger.debug("Total time nano : {}", end - start);
+		assertEquals(4, sum);
+
+		start = System.nanoTime();
+		sum = two + two;
+		end = System.nanoTime();
 		logger.debug("Total time nano : {}", end - start);
 		assertEquals(4, sum);
 
