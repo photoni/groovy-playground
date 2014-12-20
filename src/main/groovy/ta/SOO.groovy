@@ -1,5 +1,7 @@
-package ta;
+package ta
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j;
 import helpers.ArrayHelper;
 
 /**
@@ -7,10 +9,11 @@ import helpers.ArrayHelper;
  * groovy-playground
  * Created by filippo on 02/12/14.
  */
-
+@Slf4j
+@CompileStatic
 public class SOO {
 
-    public static double[] StochasticOscillator(int startIndex, double[] revHigh,double[] revLow, double[] revClose,int
+    public static double[] stochasticOscillator(int startIndex, double[] revHigh,double[] revLow, double[] revClose,int
             periods){
 
         def highestHighs= ArrayHelper.closureIterator(0, revHigh, 14){int start,double [] values,int prds ->
