@@ -1,4 +1,7 @@
-package service;
+package service
+
+import helpers.ArrayHelper
+import org.junit.Before;
 
 import static org.junit.Assert.*
 import groovy.util.logging.Slf4j
@@ -10,6 +13,7 @@ import org.junit.Test
 class SecurityServiceTest {
 
 
+
 	/**
 	 * Test for loading a security from the source
 	 */
@@ -17,7 +21,8 @@ class SecurityServiceTest {
 	public void loadSecurityTest() {
 		SecurityService ss= SecurityService.instance
 		Security s=ss.loadSecurity("GOOGL")
-		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.adjClose}")}
+		//s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.adjClose}")}
+        ArrayHelper.log(s.getHistory(),log,true,'TRACE')
 		/* define here assertions */
 	}
 
@@ -38,7 +43,7 @@ class SecurityServiceTest {
 	public void getSecurity() {
 		SecurityService ss= SecurityService.instance
 		Security s=ss.getSecurity("GOOGL");
-		s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}")}
+		s.getHistory().eachWithIndex { obj, i -> log.trace(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}")}
 	}
 
     /**
@@ -53,6 +58,6 @@ class SecurityServiceTest {
         mapping.put("High", "high");
         mapping.put("Low", "low");
         Security s=ss.getSecurityFromCsv('cs-adx.csv',mapping,"dd-MMM-yy",true)
-        s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}")}
+        s.getHistory().eachWithIndex { obj, i -> log.trace(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}")}
     }
 }

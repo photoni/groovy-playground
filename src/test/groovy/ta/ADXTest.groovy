@@ -12,20 +12,6 @@ import service.SecurityService
 @Slf4j
 class ADXTest {
 
-    /*@Test
-    public void adxTest() {
-        double[] out=ADX.adx(0, prices.length, prices, highs, lows, 14)
-        out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
-
-    }
-
-    @Test
-    public void adxQATest() {
-        def setup=setupAdxQaTest()
-        double[] out=ADX.adx(0, setup['prices'].length, setup['prices'], setup['highs'], setup['lows'], 14)
-        out.eachWithIndex { val,i -> log.trace(" adx: ${i} - val : ${val}")}
-
-    }*/
 
     /**
      * True Range Methodology1

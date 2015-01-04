@@ -1,5 +1,6 @@
 package playground;
 
+import groovy.transform.CompileStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ public class ArraySumJ {
 	 * @param y
 	 * @return
 	 */
+    @CompileStatic
 	public int twoArgs(int x,int y){
 		return x+y;
 	}
