@@ -21,16 +21,17 @@ public class Indicators {
 	 *            the array of values ordered from newer to older
 	 * @param periods
 	 *            number of period to compute
-	 * @return
+	 * @return The Simple Moving Average
+	 * 
 	 */
 	public static double[] sma(int startIndex, int endIndex, double[] values,
 			int periods) {
 		int length = endIndex - startIndex;
 		double[] result = new double[length];
-		for (int i = startIndex; i < length; i++) {
+		for (int i = startIndex+periods-1; i < length; i++) {
 			int start = i;
 			double sma = 0;
-			if ((start + periods) <= length) {
+			if ((start) <= length) {
 				sma = smaFormula(start, periods, values);
 			}
 			result[start] = sma;
@@ -355,7 +356,7 @@ public class Indicators {
 		double sma = 0;
 		double sum = 0;
 		for (int j = 0; j < periods; j++) {
-			sum += values[startIndex + j];
+			sum += values[startIndex - j];
 		}
 		sma = sum / periods;
 		return sma;

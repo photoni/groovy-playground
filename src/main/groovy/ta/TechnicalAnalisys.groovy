@@ -10,110 +10,6 @@ class TechnicalAnalisys {
 
 	static final int PERIODS = 20
 
-	/**
-	 * LOOKS FINE!!!!!!
-	 * Simple moving average. <br/>
-	 * Smooth price action following. <br/>
-	 * Full scan. <br/>
-	 * Period 30 days. <br/>
-	 * @param input
-	 * @param out
-	 * @return
-
-	double[] sma(double[] input, boolean cutOut){
-
-		int period = PERIODS
-		def startIndex = 0
-		def endIndex = input.length - 1
-		MInteger begin = new MInteger()
-		MInteger length = new MInteger()
-		Core core=new Core()
-		double[] out=new double[input.length]
-		long start = System.nanoTime();
-		RetCode retCode = core.sma(startIndex, endIndex, input, period, begin, length, out)
-		long end = System.nanoTime();
-		log.debug("sma: Total time nano : {}", end - start);
-		double[] adjAut=adjustOutput( out, begin, length,cutOut)
-		return adjAut
-	}
-	/**
-	 * Weighted moving average. <br/>
-	 * Close price action following. <br/>
-	 * Full scan. <br/>
-	 * Period 30 days. <br/>
-	 * @param input
-	 * @param out
-	 * @return
-
-	double[] wma(double[] input, boolean cutOut){
-
-		int period = PERIODS
-		def startIndex = 0
-		def endIndex = input.length - 1
-		MInteger begin = new MInteger()
-		MInteger length = new MInteger()
-		Core core=new Core()
-		double[] out=new double[input.length]
-		long start = System.nanoTime();
-		RetCode retCode = core.wma(startIndex, endIndex, input, period, begin, length, out)
-		long end = System.nanoTime();
-		log.debug("wma: Total time nano : {}", end - start)
-		double[] adjAut=adjustOutput( out, begin, length,cutOut)
-		return adjAut
-	}
-
-	/**
-	 * LOOKS WRONG!!!!!
-	 * Exponential moving average. <br/>
-	 * Close price action following. Smooth alder <br/>
-	 * Full scan. <br/>
-	 * Period 30 days. <br/>
-	 * @param input
-	 * @param out
-	 * @return
-
-	double[] ema(double[] input, boolean cutOut){
-
-		int period = PERIODS
-		def startIndex = 0
-		def endIndex = input.length - 1
-		MInteger begin = new MInteger()
-		MInteger length = new MInteger()
-		Core core=new Core()
-		double[] out=new double[input.length]
-		long start = System.nanoTime();
-		RetCode retCode = core.ema(startIndex, endIndex, input, period, begin, length, out)
-		long end = System.nanoTime();
-		//log.debug("ema: Total time nano : {}", end - start)
-		double[] adjAut=adjustOutput( out, begin, length,cutOut)
-		return adjAut
-	}
-
-	/**
-	 * Triangular moving average. <br/>
-	 * Close price action following. Smooth alder <br/>
-	 * Full scan. <br/>
-	 * Period 30 days. <br/>
-	 * @param input
-	 * @param out
-	 * @return
-
-	double[] tma(double[] input, boolean cutOut){
-
-		int period = PERIODS
-		def startIndex = 0
-		def endIndex = input.length - 1
-		MInteger begin = new MInteger()
-		MInteger length = new MInteger()
-		Core core=new Core()
-		double[] out=new double[input.length]
-		long start = System.nanoTime()
-		RetCode retCode = core.trima(startIndex, endIndex, input, period, begin, length, out)
-		long end = System.nanoTime()
-		log.debug("tma: Total time nano : {}", end - start)
-		double[] adjAut=adjustOutput( out, begin, length,cutOut)
-		return adjAut
-	}*/
 
 
 
@@ -122,15 +18,7 @@ class TechnicalAnalisys {
 	Map<String,double[]> multi(double[] prices,double[] highs,double[] lows,List<String> types, boolean cutOut){
 		Map<String,double[]> result= new HashMap<String,double[]>()
 		types.each {obj ->
-			if("tma".equalsIgnoreCase(obj))
-				result.put("tma", tma(prices,cutOut))
-			else if("sma".equalsIgnoreCase(obj))
-				result.put("sma", sma(prices,cutOut))
-			else if("wma".equalsIgnoreCase(obj))
-				result.put("wma", wma(prices,cutOut))
-			else if("ema".equalsIgnoreCase(obj))
-				result.put("ema", ema(prices,cutOut))
-			else if("isma".equalsIgnoreCase(obj))
+			if("isma".equalsIgnoreCase(obj))
 				result.put("isma", Indicators.sma(0,prices.length,prices, 20))
 			else if("iema".equalsIgnoreCase(obj))
 				result.put("iema", Indicators.ema(0,prices.length,prices, 20))

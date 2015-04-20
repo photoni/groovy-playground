@@ -1,4 +1,6 @@
-package ta;
+package ta
+
+import data.TestDataSupport;
 
 import static org.junit.Assert.*
 import groovy.util.logging.Slf4j
@@ -39,11 +41,14 @@ class TASingleSecurityTest {
 
 	@Test
 	public void smaTest() {
-		double[] out= ta.sma(prices,CUT) //OK fine
-		double[] out1=Indicators.sma(0,prices.length,prices, 30); //OK fine
-		out.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
-		log.debug("-------- MY SMA ---------");
+
+		double[] out1=Indicators.sma(0,TestDataSupport.INITIAL_SMA.size(),TestDataSupport.INITIAL_SMA,5); //OK fine
+		log.debug("-------- SMA ---------");
 		out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
+		assert out1[3]==0
+		assert out1[4]==125.872
+		assert out1[5]==126.096
+		assert out1[29]==127.27799999999999
 	}
 
 	@Test
