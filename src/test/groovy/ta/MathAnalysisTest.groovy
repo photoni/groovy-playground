@@ -4,9 +4,6 @@ import data.TestDataSupport
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
 import org.junit.Test
-import util.ArrayUtil
-
-import java.lang.reflect.Array
 
 /**
  *
@@ -57,14 +54,14 @@ class MathAnalysisTest {
     @Test
     def void highestHighTest(){
 
-        def revHighValues= TestDataSupport.INITIAL_HIGH_VALUES.reverse() as double[]
+        def revHighValues= TestDataSupport.SOO_INITIAL_HIGH_VALUES.reverse() as double[]
         def result=ArrayHelper.closureIterator(0,revHighValues,14){int startIndex,double [] values,int periods ->
             return MathAnalysis.highestHigh(startIndex,values,periods)
         }
         log.debug('Highest High: {}',result)
         assertIsValidHighestHigh(result)
 
-        def revLowValues= TestDataSupport.INITIAL_LOW_VALUES.reverse() as double[]
+        def revLowValues= TestDataSupport.SOO_INITIAL_LOW_VALUES.reverse() as double[]
         result=ArrayHelper.closureIterator(0,revLowValues,14){int startIndex,double [] values,int periods ->
             return MathAnalysis.lowestLow(startIndex,values,periods)
         }

@@ -37,7 +37,7 @@ class SecurityService {
 		long start= System.nanoTime()
 		
 		byte[] csvBinary=hcb.getCsvAsBinary(HTTP_ICHART_YAHOO_TABLE_CSV,[ s: symbol])		
-		Security security = SecurityConverter.fromBinary(csvBinary, symbol);
+		Security security = SecurityConverter.fromBinary(csvBinary, symbol,false);
 		long end= System.nanoTime()
 		//log.debug("Total time nano : {}", end-start)
 		return security;

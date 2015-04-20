@@ -1,13 +1,10 @@
 package ta
 
-import data.TestDataSupport;
-
-import static org.junit.Assert.*
+import data.TestDataSupport
 import groovy.util.logging.Slf4j
 import model.Security
 
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Before
 import org.junit.Test
 
 import service.SecurityService
@@ -42,7 +39,7 @@ class TASingleSecurityTest {
 	@Test
 	public void smaTest() {
 
-		double[] out1=Indicators.sma(0,TestDataSupport.INITIAL_SMA.size(),TestDataSupport.INITIAL_SMA,5); //OK fine
+		double[] out1=Indicators.sma(0,TestDataSupport.SMA_VALUES.size(),TestDataSupport.SMA_VALUES,5); //OK fine
 		log.debug("-------- SMA ---------");
 		out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
 		assert out1[3]==0

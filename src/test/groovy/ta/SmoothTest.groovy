@@ -15,13 +15,13 @@ class SmoothTest {
 
     @Test
     def void smooth2Test(){
-        def setup=setupRsiQaTest()
+        def setup=setupSmoothQaTest()
         double[] ag=Smooth.wSmoothedIterator(0,setup.'prices'.length,setup.'prices',14,2)
         ArrayHelper.log(ag,log,true)
     }
 
     /* Helpers */
-    def setupRsiQaTest() {
+    def setupSmoothQaTest() {
         SecurityService ss = SecurityService.instance
         Map<String, String> mapping = new HashMap<String, String>()
         mapping.put("Date", "dateAsString")
