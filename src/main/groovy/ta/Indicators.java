@@ -22,7 +22,7 @@ public class Indicators {
 	 * @param periods
 	 *            number of period to compute
 	 * @return The Simple Moving Average
-	 * 
+	 *
 	 */
 	public static double[] sma(int startIndex, int endIndex, double[] values,
 			int periods) {
