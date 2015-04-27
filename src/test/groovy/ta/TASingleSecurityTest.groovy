@@ -36,17 +36,7 @@ class TASingleSecurityTest {
 		//s.getHistory().eachWithIndex { val,i -> log.debug(" price: ${i} - val : ${val.adjClose}")}
 	}
 
-	@Test
-	public void smaTest() {
 
-		double[] out1=Indicators.sma(0,TestDataSupport.SMA_VALUES.size(),TestDataSupport.SMA_VALUES,5); //OK fine
-		log.debug("-------- SMA ---------");
-		out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
-		assert out1[3]==0
-		assert out1[4]==125.872
-		assert out1[5]==126.096
-		assert out1[29]==127.27799999999999
-	}
 
 	@Test
 	public void bollingerBandsTest() {
