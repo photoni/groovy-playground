@@ -45,16 +45,16 @@ public class MA {
      */
     public static double[] ema(int startIndex, int endIndex, double[] values,
                                int periods) {
-        int length = endIndex - startIndex;
-        double[] result = new double[length];
-        for (int i = startIndex+periods-1; i < length; i++) {
-            int start = i;
+        int loops = endIndex - startIndex;
+        double[] result = new double[loops];
+        double[] partials= new double[periods];
+        for (int i = 0; i < loops; i++) {
+
             double ema=0;
-            if ((start) <= length) {
-                ema = emaFormula(start, endIndex, values, periods,0);
-                //ema = smaFormula(start, periods, values);
-            }
-            result[start] = ema;
+            ema = emaFormulaFastForward(startIndex, endIndex, values, periods,i,partials);
+            //ema = smaFormula(start, periods, values);
+
+            result[startIndex+i] = ema;
         }
 
         return result;
@@ -138,6 +138,25 @@ public class MA {
         }
 
         return result;
+    }
+
+
+    /*
+    * Smoothing formula for EMA. Fast forward algorithm
+    *
+    * @param startIndex
+    * @param endIndex    *
+    * @param values the array of values ordered from newer to older
+    * @param periods number of period to compute
+    * @param cursor
+    * @param partials
+    *
+    * @return
+    */
+    public static double emaFormulaFastForward(int startIndex, int endIndex,
+                                    double[] values, int periods,int cursor,double[] partials){
+        return 0;
+
     }
 
     /*
