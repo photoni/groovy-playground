@@ -1,6 +1,8 @@
 package ta;
 
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ArrayUtil;
 
 /**
@@ -9,6 +11,7 @@ import util.ArrayUtil;
  * Trendrating SA Created by filippo on 4/27/15.
  */
 public class MA {
+    private static Logger log= LoggerFactory.getLogger(MA.class);
     /**
      * MOVING AVERAGES
      */
@@ -47,12 +50,11 @@ public class MA {
                                int periods) {
         int loops = endIndex - startIndex;
         double[] result = new double[loops];
-        double[] partials= new double[periods];
         for (int i = 0; i < loops; i++) {
 
             double ema=0;
-            ema = emaFormulaFastForward(startIndex, endIndex, values, periods,i,partials);
-            //ema = smaFormula(start, periods, values);
+            ema = emaFormula(startIndex + i, endIndex, values, periods, 0);
+
 
             result[startIndex+i] = ema;
         }
@@ -122,16 +124,12 @@ public class MA {
         double multiplier = 2D / (periods + 1);
         // {Close - EMA(previous day)} x multiplier + EMA(previous day)
         double result = 0D;
-        if (currentIndex+periods > startIndex && Math.abs(cursor)<periods-1) {
+        if (currentIndex-periods > 0 && Math.abs(cursor)<periods) {
             emaPrev = emaFormula(startIndex, endIndex, values, periods,--cursor);
             result = (values[currentIndex] - emaPrev) * multiplier + emaPrev;
-        } else if (Math.abs(cursor)==(periods-1) || startIndex+cursor==0) {
-            double sum = 0;
-            for (int j = 0; j < periods; j++) {
-                sum += values[currentIndex +j];
-            }
+        } else if (Math.abs(cursor)==periods || (currentIndex-periods)==0) {
 
-            result = sum / periods;
+            result = smaFormula(currentIndex,periods,values);
 
         } else {
             result = 0;
@@ -141,23 +139,6 @@ public class MA {
     }
 
 
-    /*
-    * Smoothing formula for EMA. Fast forward algorithm
-    *
-    * @param startIndex
-    * @param endIndex    *
-    * @param values the array of values ordered from newer to older
-    * @param periods number of period to compute
-    * @param cursor
-    * @param partials
-    *
-    * @return
-    */
-    public static double emaFormulaFastForward(int startIndex, int endIndex,
-                                    double[] values, int periods,int cursor,double[] partials){
-        return 0;
-
-    }
 
     /*
      * @param start start index
@@ -176,6 +157,7 @@ public class MA {
             sum += values[startIndex - j];
         }
         sma = sum / periods;
+        log.debug("index: {}, sum: {}, periods:{}, sma: {}",startIndex,sum,periods,sma);
         return sma;
 
     }
