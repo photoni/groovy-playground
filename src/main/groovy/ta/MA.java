@@ -118,22 +118,29 @@ public class MA {
     public static double emaFormula(int startIndex, int endIndex,
                                     double[] values, int periods,int cursor) {
 
+        int backwardIterations=periods-1;
         int currentIndex=startIndex+cursor;
         double emaPrev = 0;
         // (2 / (Time periods + 1) )
         double multiplier = 2D / (periods + 1);
         // {Close - EMA(previous day)} x multiplier + EMA(previous day)
-        double result = 0D;
-        if (currentIndex-periods > 0 && Math.abs(cursor)<periods) {
+        double result = 0D; //
+        if (currentIndex>backwardIterations  && Math.abs(cursor)<(backwardIterations)){
             emaPrev = emaFormula(startIndex, endIndex, values, periods,--cursor);
-            result = (values[currentIndex] - emaPrev) * multiplier + emaPrev;
-        } else if (Math.abs(cursor)==periods || (currentIndex-periods)==0) {
+            double close = values[currentIndex];
+            result = (close - emaPrev) * multiplier + emaPrev;
+            log.debug("ema - index: {}- cursor: {}- ema: {} - close:{} - emaPrev:{}",currentIndex,cursor,result,close,
+                    emaPrev);
+
+        } else if (Math.abs(cursor)==backwardIterations || (currentIndex-backwardIterations)==0) {
 
             result = smaFormula(currentIndex,periods,values);
+            log.debug("sma -    index: {}- cursor: {}- ema: {} - emaPrev:{}",currentIndex,cursor,result,emaPrev);
 
         } else {
             result = 0;
         }
+
 
         return result;
     }

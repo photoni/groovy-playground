@@ -8,6 +8,9 @@ import org.junit.Test
 class MATest {
 
     @Test
+    /*
+      QA=OK
+     */
     public void smaTest() {
 
         double[] out1=MA.sma(0,TestDataSupport.SMA_VALUES.size(),TestDataSupport.SMA_VALUES,5); //OK fine
@@ -20,6 +23,9 @@ class MATest {
     }
 
     @Test
+    /*
+      QA=OK
+     */
     public void emaTest() {
 
         double[] out1=MA.ema(0,TestDataSupport.SMA_VALUES.size(),TestDataSupport.SMA_VALUES,10);
