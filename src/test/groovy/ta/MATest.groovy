@@ -31,6 +31,19 @@ class MATest {
         double[] out1=MA.ema(0,TestDataSupport.SMA_VALUES.size(),TestDataSupport.SMA_VALUES,10);
         log.debug("-------- EMA ---------");
         out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
+        assert out1[8]==0
+        assert out1[9]==125.881
+        assert out1[10]==125.64081818181818
+        assert out1[18]==126.23071955719182
+        assert out1[19]==126.20054362279278
 
+    }
+
+    @Test
+    public void macdTest() {
+        double[][] out=MA.macd(0,TestDataSupport.SMA_VALUES.size(),TestDataSupport.SMA_VALUES); //OK fine
+        out[0].eachWithIndex { val,i -> log.trace(" macd line lower: ${i} - val : ${val}")}
+        out[1].eachWithIndex { val,i -> log.trace(" macd signal: ${i} - val : ${val}")}
+        out[2].eachWithIndex { val,i -> log.trace(" macd histogram: ${i} - val : ${val}")}
     }
 }
