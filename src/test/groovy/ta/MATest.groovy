@@ -42,6 +42,15 @@ class MATest {
     @Test
     public void macdTest() {
         double[][] out=MA.macd(0,TestDataSupport.MACD_VALUES.size(),TestDataSupport.MACD_VALUES);
+        assert out[0][25]==0.20380053583966884
+        assert out[0][26]==0.24674034266928757
+        assert out[0][27]==0.41003825490876267
+        assert out[0][28]==0.4946877085048378
+        assert out[0][29]==0.5421220603720194
+        assert out[0][30]==0.6513165481654788
+        assert out[0][31]==0.659658926871348
+        assert out[0][32]==0.5968873337506793
+        assert out[0][33]==0.5752591669894471
         out[0].eachWithIndex { val,i -> log.trace(" macd line lower: ${i} - val : ${val}")}
         out[1].eachWithIndex { val,i -> log.trace(" macd signal: ${i} - val : ${val}")}
         out[2].eachWithIndex { val,i -> log.trace(" macd histogram: ${i} - val : ${val}")}
