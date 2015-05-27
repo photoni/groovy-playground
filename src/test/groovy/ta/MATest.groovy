@@ -26,10 +26,10 @@ class MATest {
     /*
       QA=OK
      */
-    public void emaTest() {
+    public void ema10Test() {
 
         double[] out1=MA.ema(0,TestDataSupport.SMA_VALUES.size(),TestDataSupport.SMA_VALUES,10);
-        log.debug("-------- EMA ---------");
+        log.debug("-------- EMA 10---------");
         out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
         assert out1[8]==0
         assert out1[9]==125.881
@@ -38,8 +38,45 @@ class MATest {
         assert out1[19]==126.20054362279278
 
     }
+    @Test
+    /*
+      QA=OK
+     */
+    public void ema12Test() {
+
+        double[] out1=MA.ema(0,TestDataSupport.MACD_VALUES.size(),TestDataSupport.MACD_VALUES,12);
+        log.debug("-------- EMA 12---------");
+        assert out1[11]==28.675
+        assert out1[12]==28.317307692307693
+        assert out1[22]==27.55662323187996
+        assert out1[23]==27.79046559697763
+        assert out1[33]==29.58674225206244
+        assert out1[52]==32.633968851578935
+        assert out1[55]==33.138097244770854
+        out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
+    }
 
     @Test
+    /*
+      QA=OK
+     */
+    public void ema26Test() {
+        double[] out1=MA.ema(0,TestDataSupport.MACD_VALUES.size(),TestDataSupport.MACD_VALUES,26);
+        log.debug("-------- EMA 26---------");
+        assert out1[25]==28.01807692307692
+        assert out1[26]==28.084145299145295
+        assert out1[50]==31.46877160099621
+        assert out1[51]==31.598268441769708
+        assert out1[52]==31.688336977804553
+        assert out1[53]==31.809660054758446
+        assert out1[54]==31.952431159717882
+        out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
+    }
+
+    @Test
+    /*
+      QA_MACD_LINE=OK
+     */
     public void macdTest() {
         double[][] out=MA.macd(0,TestDataSupport.MACD_VALUES.size(),TestDataSupport.MACD_VALUES);
         assert out[0][25]==0.20380053583966884
@@ -51,6 +88,9 @@ class MATest {
         assert out[0][31]==0.659658926871348
         assert out[0][32]==0.5968873337506793
         assert out[0][33]==0.5752591669894471
+        assert out[0][52]==0.9456318737743814
+        assert out[0][53]==0.9696966217911296
+        assert out[0][54]==1.0116040765985659
         out[0].eachWithIndex { val,i -> log.trace(" macd line lower: ${i} - val : ${val}")}
         out[1].eachWithIndex { val,i -> log.trace(" macd signal: ${i} - val : ${val}")}
         out[2].eachWithIndex { val,i -> log.trace(" macd histogram: ${i} - val : ${val}")}
