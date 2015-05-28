@@ -2,7 +2,11 @@ package ta
 
 import data.TestDataSupport
 import groovy.util.logging.Slf4j
+import model.Security
+import org.apache.commons.lang.ArrayUtils
+import org.junit.Ignore
 import org.junit.Test
+import service.SecurityService
 
 @Slf4j
 class MATest {
@@ -94,5 +98,29 @@ class MATest {
         out[0].eachWithIndex { val,i -> log.trace(" macd line lower: ${i} - val : ${val}")}
         out[1].eachWithIndex { val,i -> log.trace(" macd signal: ${i} - val : ${val}")}
         out[2].eachWithIndex { val,i -> log.trace(" macd histogram: ${i} - val : ${val}")}
+    }
+
+    @Test
+    @Ignore
+    public void ema20Test() {
+        Security s;double[] prices;double[] highs;double[] lows;long[] dates;TechnicalAnalisys ta;SecurityService ss;
+        ss= SecurityService.instance
+        s=ss.getSecurity('GOOGL')
+        int historyLength=s.getHistory().size()
+        prices=new double[historyLength]
+        highs=new double[historyLength]
+        lows=new double[historyLength]
+        dates=new double[historyLength]
+        s.getHistory().eachWithIndex { obj, i ->
+            prices[i]=obj.adjClose
+            highs[i]=obj.high
+            lows[i]=obj.low
+            dates[i]=obj.date
+        }
+        double[] out1=MA.ema(0,prices.length,ArrayUtils.reverse(prices),20);
+        log.debug("-------- EMA 20---------");
+        out1.eachWithIndex { val,i -> log.trace(" index: ${i} - val : ${val}")}
+
+
     }
 }

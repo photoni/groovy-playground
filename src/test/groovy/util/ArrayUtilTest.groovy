@@ -13,4 +13,11 @@ class ArrayUtilTest {
 		def sliced=ArrayUtil.slice(values, 2, 4)
 		log.debug("sliced: {}",sliced);
 	}
+
+	@Test
+	public void reverse() {
+		def values=[1, 2, 3, 4, 5, 6, 7, 8, 9] as double[]
+		def reversed=ArrayUtil.reverse(values)
+		log.debug("reversed: {}",reversed);
+	}
 }

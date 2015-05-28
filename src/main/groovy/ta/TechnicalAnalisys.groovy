@@ -1,7 +1,9 @@
 package ta
 
 import groovy.lang.Singleton;
-import groovy.util.logging.Slf4j;
+import groovy.util.logging.Slf4j
+import org.apache.commons.lang.ArrayUtils
+import util.ArrayUtil;
 
 
 @Slf4j
@@ -18,10 +20,14 @@ class TechnicalAnalisys {
 	Map<String,double[]> multi(double[] prices,double[] highs,double[] lows,List<String> types, boolean cutOut){
 		Map<String,double[]> result= new HashMap<String,double[]>()
 		types.each {obj ->
-			if("isma".equalsIgnoreCase(obj))
-				result.put("isma", Indicators.sma(0,prices.length,prices, 20))
-			else if("iema".equalsIgnoreCase(obj))
-				result.put("iema", Indicators.ema(0,prices.length,prices, 20))
+			if("isma".equalsIgnoreCase(obj)) {
+				def sma = MA.sma(0,prices.length,ArrayUtil.reverse(prices), 20)
+				result.put("isma", ArrayUtil.reverse(sma))
+			}
+			else if("iema".equalsIgnoreCase(obj)) {
+				def ema = MA.ema(0, prices.length, ArrayUtil.reverse(prices), 20)
+				result.put("iema", ArrayUtil.reverse(ema))
+			}
 			else if("iroc".equalsIgnoreCase(obj))
 				result.put("iroc", Indicators.roc(0,prices.length,prices, 20))
 			else if("iboll".equalsIgnoreCase(obj)){

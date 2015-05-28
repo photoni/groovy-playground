@@ -22,7 +22,7 @@ class JerseyRestContainer {
 	}
 
 	URI getURI() {
-		return UriBuilder.fromUri("http://" + getHostName() + "/").port(8080).build()
+		return UriBuilder.fromUri("http://" + getHostName() + "/").port(8989).build()
 	}
 
 	String getHostName() {

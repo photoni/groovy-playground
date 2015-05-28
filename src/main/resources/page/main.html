@@ -65,7 +65,7 @@
             console.log( "queryString: "+ queryString);
 
             /* remote call */
-            jQuery.getJSON('http://local.piggy-trade.com/api/series?'+queryString, function (data) {
+            jQuery.getJSON('/api/series?'+queryString, function (data) {
             var dates=data.dates;
             var resultSeries= new Array();
 
