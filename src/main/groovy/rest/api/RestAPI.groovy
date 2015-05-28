@@ -54,8 +54,8 @@ public class RestAPI {
 		//result.put("prices", prices)
 
 		ta=TechnicalAnalisys.instance
-		Map<String,double[]> multi=ta.multi(prices,highs,lows, types,cut)
-		multi.put("prices", prices);
+		Map<String,Map> multi=ta.multi(prices,highs,lows, types,cut)
+		multi.get("o").put("prices", prices);
 		//    	obj.put("a", 1.1);
 		//    	JSONObject outputJsonObj = new JSONObject();
 		//        outputJsonObj.put("output", obj);

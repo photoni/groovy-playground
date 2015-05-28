@@ -38,8 +38,13 @@
             <button type="submit" class="btn btn-default">Go!</button>
         </form>
     </div>
-      <div class="row">
-      <div class="col-md-12"> <div id="container" style="height: 900px; min-width: 310px"></div></div>
+    <div class="row">
+      <div class="col-md-12"> <div id="container" style="height: 700px; min-width: 310px"></div></div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12"> <div id="container-indicators" style="height: 500px; min-width: 310px"></div></div>
+
     </div>
 
      <script>
@@ -67,15 +72,20 @@
             /* remote call */
             jQuery.getJSON('/api/series?'+queryString, function (data) {
             var dates=data.dates;
-            var resultSeries= new Array();
+            var o=data.results.o;
+            var oSeries= new Array();
+            buildSeries(o,dates,oSeries);
 
-            for(var entryN in  data.results) {
+            var i=data.results.i;
+            var iSeries= new Array();
+            buildSeries(i,dates,iSeries);
+            /*for(var entryN in  o) {
               console.log("result entry: "+entryN);
-                var entryD=data.results[entryN];
+                var entryD=data.results.o[entryN];
                 var entryT= integrate(entryD,dates);
                 var entrySerie= createSeries(entryN,entryT.reverse());
-                resultSeries.push(entrySerie);
-            }
+                oSeries.push(entrySerie);
+            }*/
 
              jQuery('#container').highcharts('StockChart', {
                 rangeSelector : {
@@ -86,7 +96,19 @@
                     text : ' Stock Prices'
                 },
 
-                series : resultSeries
+                series : oSeries
+             });
+
+             jQuery('#container-indicators').highcharts('StockChart', {
+                rangeSelector : {
+                    selected : 5,
+                    inputEnabled: jQuery('#container').width() > 480
+                },
+                title : {
+                    text : ' Stock Prices'
+                },
+
+                series : iSeries
              });
 
         });
@@ -118,6 +140,15 @@
                 }
             }
         return seriesObject;
+    }
+    function buildSeries(inSeries, dates,outSeries) {
+        for(var entryN in  inSeries) {
+          console.log("result entry: "+entryN);
+            var entryD=inSeries[entryN];
+            var entryT= integrate(entryD,dates);
+            var entrySerie= createSeries(entryN,entryT.reverse());
+            outSeries.push(entrySerie);
+        }
     }
      </script>
 </body>
