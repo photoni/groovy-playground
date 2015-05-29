@@ -75,13 +75,18 @@ public class MA {
      */
     public static double[][] macd(int startIndex, int endIndex, double[] values) {
         int length = endIndex - startIndex;
-        double[][] result= new double[3][length];
+        double[][] result= new double[5][length];
 
         //MACD Line: (12-day EMA - 26-day EMA)
         double[] macdLineResult = new double[length];
+        double[] ema12Result = new double[length];
+        double[] ema26Result = new double[length];
         for (int i = 0; i < length; i++) {
-            double macdLine =macdLineFormula(startIndex+i, endIndex, values);
-            macdLineResult[i]=macdLine;
+            double[] macdLine =macdLineFormula(startIndex+i, endIndex, values);
+
+            macdLineResult[i]=macdLine[0];
+            ema12Result[i]=macdLine[1];
+            ema26Result[i]=macdLine[2];
         }
 
         double[] macdSignalResult = new double[length];
@@ -100,6 +105,8 @@ public class MA {
         result[0]=macdLineResult;
         result[1]=macdSignalResult;
         result[2]=macdHistogramResult;
+        result[3]=ema12Result;
+        result[4]=ema26Result;
 
         return result;
 
@@ -169,12 +176,12 @@ public class MA {
 
     }
     /* period based formulas */
-    public static double macdLineFormula(int startIndex, int endIndex,
+    public static double[] macdLineFormula(int startIndex, int endIndex,
                                          double[] values) {
         double ema12=emaFormula(startIndex, endIndex, values, 12, 0);
         double ema26=emaFormula(startIndex, endIndex, values, 26, 0);
         double emaLine=(ema26>0&&ema12>0)?ema12-ema26:0;
-        return emaLine;
+        return new double[]{emaLine,ema12,ema26};
     }
 
 
