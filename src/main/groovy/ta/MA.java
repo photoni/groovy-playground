@@ -75,25 +75,29 @@ public class MA {
      */
     public static double[][] macd(int startIndex, int endIndex, double[] values) {
         int length = endIndex - startIndex;
-        double[][] result= new double[5][length];
+        double[][] result= new double[7][length];
 
         //MACD Line: (12-day EMA - 26-day EMA)
         double[] macdLineResult = new double[length];
         double[] ema12Result = new double[length];
         double[] ema26Result = new double[length];
+        double[] centerLineCrossResult = new double[length];
         for (int i = 0; i < length; i++) {
             double[] macdLine =macdLineFormula(startIndex+i, endIndex, values);
 
             macdLineResult[i]=macdLine[0];
             ema12Result[i]=macdLine[1];
             ema26Result[i]=macdLine[2];
+            centerLineCrossResult[i]=macdLine[3];
         }
 
         double[] macdSignalResult = new double[length];
+        double[] signalLineCrossResult = new double[length];
         //Signal Line: 9-day EMA of MACD Line
         for (int i = 0; i < length; i++) {
             double macdSignal =emaFormula(startIndex+i, endIndex, macdLineResult,9,0);
             macdSignalResult[i]=macdSignal;
+
         }
 
         double[] macdHistogramResult = new double[length];
@@ -101,12 +105,18 @@ public class MA {
         for (int i = 0; i < length; i++) {
             double macdHistogram =macdLineResult[startIndex+i]-macdSignalResult[startIndex+i];
             macdHistogramResult[i]=macdHistogram;
+            signalLineCrossResult[i]=macdHistogram>0?1:(macdHistogram<0?-1:0);
         }
+
+
+
         result[0]=macdLineResult;
         result[1]=macdSignalResult;
         result[2]=macdHistogramResult;
         result[3]=ema12Result;
         result[4]=ema26Result;
+        result[5]=centerLineCrossResult;
+        result[6]=signalLineCrossResult;
 
         return result;
 
@@ -181,7 +191,10 @@ public class MA {
         double ema12=emaFormula(startIndex, endIndex, values, 12, 0);
         double ema26=emaFormula(startIndex, endIndex, values, 26, 0);
         double emaLine=(ema26>0&&ema12>0)?ema12-ema26:0;
-        return new double[]{emaLine,ema12,ema26};
+        /* Centerline Crossovers */
+        double centerLineCross=emaLine>0?1:(emaLine<0?-1:0);
+
+        return new double[]{emaLine,ema12,ema26,centerLineCross};
     }
 
 
