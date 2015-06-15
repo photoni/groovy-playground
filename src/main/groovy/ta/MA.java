@@ -6,9 +6,18 @@ import org.slf4j.LoggerFactory;
 import util.ArrayUtil;
 
 /**
- * MOOVING AVERAGES
+ *  MACD
  *
- * Trendrating SA Created by filippo on 4/27/15.
+ *  MOVING AVERAGES CONVERGENCE/DIVERGENCE
+ *  Calculation:
+ *  MACD Line: (12-day EMA - 26-day EMA)
+ *  Signal Line: 9-day EMA of MACD Line
+ *  MACD Histogram: MACD Line - Signal Line
+ *  Interpretation;
+ *  Signal Line Crossovers - A bullish crossover occurs when the MACD turns up and crosses above the signal line. A bearish crossover occurs when the MACD turns down and crosses below the signal line
+ *  Centerline Crossovers - A bullish centerline crossover occurs when the MACD Line moves above the zero line to turn positive. This happens when the 12-day EMA of the underlying security moves above the 26-day EMA. A bearish centerline crossover occurs when the MACD moves below the zero line to turn negative. This happens when the 12-day EMA moves below the 26-day EMA.
+ *
+ *  Created by filippo on 4/27/15.
  */
 public class MA {
     private static Logger log= LoggerFactory.getLogger(MA.class);
@@ -62,9 +71,7 @@ public class MA {
         return result;
     }
 
-    /**
-     *  MOVING AVERAGES CONVERGENCE/DIVERGENCE
-     */
+
 
     /**
      * MACD iterator

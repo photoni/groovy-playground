@@ -12,10 +12,23 @@ import org.junit.Test
 class AroonTest {
 
     @Test
+    /*
+    QA=OK
+     */
     def void aroonUpTest(){
         def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37] as double[]
         double[] aroonUp=Aroon.aroonUp(highs,25)
-        ArrayHelper.log(aroonUp,log,true)
+        assert aroonUp[0]==100
+        assert aroonUp[7]==96
+        assert aroonUp[8]==92
+        assert aroonUp[9]==88
+        assert aroonUp[10]==84
+        assert aroonUp[11]==80
+        assert aroonUp[17]==96
+        assert aroonUp[18]==92
+        assert aroonUp[19]==88
+        assert aroonUp[aroonUp.size()-1]==100
+        //ArrayHelper.log(aroonUp,log,true)
 
     }
 
