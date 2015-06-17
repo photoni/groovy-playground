@@ -38,7 +38,7 @@ public class Aroon {
      * @return
      */
     public static double[] aroonDown(double[] lows,int periods){
-        int[]elapsedTrendDown=MathAnalysis.getElapsedTrend(lows, periods, 1);
+        int[]elapsedTrendDown=MathAnalysis.getElapsedTrend(lows, periods, -1);
         double[] aroonDown=aroonFormula(periods, elapsedTrendDown);
         return aroonDown;
     }
@@ -59,7 +59,7 @@ public class Aroon {
     private static double[] aroonFormula(int periods, int[] elapsedTrend) {
         double[] aroon=new double[elapsedTrend.length];
         for (int i = 0; i < elapsedTrend.length; i++) {
-            aroon[i]=((double)(periods-elapsedTrend[i])/periods)*100;
+            aroon[i]=Math.max(0,((double)(periods-elapsedTrend[i])/periods))*100;
 
         }
         return aroon;

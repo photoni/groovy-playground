@@ -68,7 +68,7 @@ public class MathAnalysis {
                 elapsed[i]=xDay;
 
             }else{//stop elapsed. Resetting all
-                xDay=0;
+                //xDay=0;
                 elapsed[i]=xDay;
 
             }
