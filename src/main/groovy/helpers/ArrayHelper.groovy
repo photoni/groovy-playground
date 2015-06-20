@@ -25,14 +25,14 @@ class ArrayHelper {
         if (withIndex)
             array.eachWithIndex { def entry, int i ->
                 switch (upperCase){
-                    case 'DEBUG':
+                    case 'WARN':
                         log.debug('Index: {} - Value: {}', i, entry)
                         break;
                     case 'TRACE':
                         log.trace('Index: {} - Value: {}', i, entry)
                         break;
                     default:
-                        log.warn('Index: {} - Value: {}', i, entry)
+                        log.debug('Index: {} - Value: {}', i, entry)
 
                 }
 
@@ -40,14 +40,14 @@ class ArrayHelper {
         else
             array.each { def entry ->
                 switch (upperCase){
-                    case 'DEBUG':
+                    case 'WARN':
                         log.debug('Value: {}', entry)
                         break;
                     case 'TRACE':
                         log.trace('Value: {}', entry)
                         break;
                     default:
-                        log.warn('Value: {}', entry)
+                        log.debug('Value: {}', entry)
 
                 }
 
