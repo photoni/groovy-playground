@@ -80,7 +80,7 @@ public class MA {
      * @param values
      * @return
      */
-    public static double[][] macd(int startIndex, int endIndex, double[] values) {
+    public static double[][] macd(int startIndex, int endIndex, double[] values,int shortPeriods,int longPeriods) {
         int length = endIndex - startIndex;
         double[][] result= new double[7][length];
 
@@ -90,7 +90,7 @@ public class MA {
         double[] ema26Result = new double[length];
         double[] centerLineCrossResult = new double[length];
         for (int i = 0; i < length; i++) {
-            double[] macdLine =macdLineFormula(startIndex+i, endIndex, values);
+            double[] macdLine =macdLineFormula(startIndex+i, endIndex, values,shortPeriods,longPeriods);
 
             macdLineResult[i]=macdLine[0];
             ema12Result[i]=macdLine[1];
@@ -197,6 +197,18 @@ public class MA {
                                          double[] values) {
         double ema12=emaFormula(startIndex, endIndex, values, 12, 0);
         double ema26=emaFormula(startIndex, endIndex, values, 26, 0);
+        double emaLine=(ema26>0&&ema12>0)?ema12-ema26:0;
+        /* Centerline Crossovers */
+        double centerLineCross=emaLine>0?1:(emaLine<0?-1:0);
+
+        return new double[]{emaLine,ema12,ema26,centerLineCross};
+    }
+
+    /* period based formulas */
+    public static double[] macdLineFormula(int startIndex, int endIndex,
+                                           double[] values,int shortPeriods,int longPeriods) {
+        double ema12=emaFormula(startIndex, endIndex, values, shortPeriods, 0);
+        double ema26=emaFormula(startIndex, endIndex, values, longPeriods, 0);
         double emaLine=(ema26>0&&ema12>0)?ema12-ema26:0;
         /* Centerline Crossovers */
         double centerLineCross=emaLine>0?1:(emaLine<0?-1:0);
