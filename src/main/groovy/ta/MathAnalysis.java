@@ -60,14 +60,17 @@ public class MathAnalysis {
         double current= values[0];
         int xDay=0;
         for (int i = 0; i < values.length; i++) {
-            if((values[i]-current)*signum<=0 && xDay<=maxElapsed){//keep trend
+            if((values[i]-current)*signum<0 && xDay<=maxElapsed){//keep trend
                 elapsed[i]=xDay;
 
             }else if((values[i]-current)*signum>0){//reversal
                 xDay=0;
                 elapsed[i]=xDay;
 
-            }else{//stop elapsed. Resetting all
+            }else if(xDay>maxElapsed){//stop elapsed. Resetting all
+                elapsed[i]=xDay;
+
+            }else{//keep elapsed.
                 //xDay=0;
                 elapsed[i]=xDay;
 
