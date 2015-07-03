@@ -82,6 +82,35 @@ public class MathAnalysis {
     }
 
     /**
+     *
+     * @param values
+     * @param maxElapsed
+     * @param signum 1 for uptrends and -1 for downtrends
+     * @return An array containing the number of position from the extrema point computed in the period
+     */
+    public static int[] getElapsedExtrema(double[] values, int maxElapsed, int signum) {
+        int[] elapsed= new int[values.length];
+        double extremeValueInitial = signum == 1 ? Double.MIN_VALUE : Double.MAX_VALUE;
+
+        double current= values[0];
+        int xDay=0;
+        for (int i = 0; i < values.length; i++) {
+            double extrema=extremeValueInitial;
+            int extremaIndex=i;
+
+            for (int j =0 ; j<maxElapsed-1 ; j++) {
+                int index = i - j;
+                if((values[index]-extrema)*signum>0){
+                    extrema=values[index];
+                    extremaIndex= index;
+                }
+            }
+            elapsed[i]=i-extremaIndex;
+        }
+        return elapsed;
+    }
+
+    /**
      * Deltas. Combined Gain and Losses. Losses are expressed in Abs values
      * @param values
      * @return two array of length n-1 containing gain and losses
