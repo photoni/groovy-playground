@@ -48,7 +48,13 @@ class TechnicalAnalisys {
                 double[][] dmCombined=ADX.dm(0, setup['prices'].length, setup['highs'], setup['lows'])
                 result.put("di+", dmCombined[0])
                 result.put("di-", dmCombined[1])
-            }
+            }else if("iaroon".equalsIgnoreCase(obj)){
+				indicators.put("iaroon-signal", Aroon.aroonSignal(ArrayUtil.reverse(prices),ArrayUtil.reverse(prices),
+						25,50,-50))
+				indicators.put("iaroon-oscillator", Aroon.aroonOscillator(ArrayUtil.reverse(prices),ArrayUtil.reverse
+						(prices),25))
+
+			}
 		}
 		result.put("i",indicators);
 		result.put("o",overlays);

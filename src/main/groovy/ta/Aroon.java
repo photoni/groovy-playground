@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 public class Aroon {
     private static Logger log= LoggerFactory.getLogger(Aroon.class);
 
+    public static final byte AROON_BULL=1;
+    public static final byte AROON_BEAR=-1;
+    public static final byte AROON_NEUTRAL=0;
+
     /**
      * combined Aroon indicators
      * @return AroonUp,AroonDown and AroonOscillator in this order
@@ -51,6 +55,29 @@ public class Aroon {
             aroonOscillator[i]=aroonUp[i]-aroonDown[i];
         }
         return aroonOscillator;
+    }
+    /**
+     * @param   highs curve of highs or close price
+     * @param   lows curve of lows or close price
+     * @param   periods how many days (backwards) to consider in computing indicators
+     * @param   bullishThreshold above this value of the oscillator we consider a bullish phase
+     * @param   bearThreshold below this value of the oscillator we consider a bearish phase
+     * @return 1 if the oscillator is above the bullishThreshold and -1 if the oscillator is below the bearThreshold
+     **/
+    public static short[] aroonSignal(double[] highs,double[] lows,int periods,int bullishThreshold,int bearThreshold){
+        double[] aroonOscillator=aroonOscillator(highs,lows,periods);
+        short[] aroonSignal=new short[aroonOscillator.length];
+
+        for (int i = 0; i < aroonOscillator.length; i++) {
+            if(aroonOscillator[i]>=bullishThreshold)
+                aroonSignal[i]=AROON_BULL;
+            else if(aroonOscillator[i]<=bearThreshold)
+                aroonSignal[i]=AROON_BEAR;
+            else
+                aroonSignal[i]=AROON_NEUTRAL;
+        }
+
+        return aroonSignal;
     }
 
     /**
