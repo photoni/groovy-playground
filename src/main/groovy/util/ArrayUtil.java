@@ -24,6 +24,16 @@ public class ArrayUtil {
 
 	}
 
+	public static double[] reverse(short[] values) {
+		double[] result = new double[values.length];
+
+		for (int i = 0; i <values.length ; i++) {
+			result[values.length-i-1]=values[i];
+		}
+		return result;
+
+	}
+
 
 
 

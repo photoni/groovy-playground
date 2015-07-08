@@ -2,7 +2,11 @@ package ta
 
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
+import model.Security
+import org.junit.Ignore
 import org.junit.Test
+import service.SecurityService
+import util.ArrayUtil
 
 /**
  * groovy-playground
@@ -17,17 +21,17 @@ class AroonTest {
      */
     def void aroonUpTest(){
         def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
-        double[] aroonUp=Aroon.aroonUp(highs,25)
+        double[] aroonUp=Aroon.aroonUp(highs,10)
         ArrayHelper.log(aroonUp,log,true)
         assert aroonUp[0]==100
-        assert aroonUp[7]==96
-        assert aroonUp[8]==92
-        assert aroonUp[9]==88
-        assert aroonUp[10]==84
-        assert aroonUp[11]==80
-        assert aroonUp[17]==96
-        assert aroonUp[18]==92
-        assert aroonUp[19]==88
+        assert aroonUp[9]==100
+        assert aroonUp[10]==60
+        assert aroonUp[11]==50
+        assert aroonUp[12]==100
+        assert aroonUp[16]==100
+        assert aroonUp[17]==90
+        assert aroonUp[19]==70
+        assert aroonUp[20]==100
         assert aroonUp[aroonUp.size()-1]==100
 
 
@@ -78,6 +82,24 @@ class AroonTest {
 
 
     }
+
+    @Test
+    @Ignore
+    def void aroonOscillatorGoogle(){
+        SecurityService ss= SecurityService.instance
+        Security s=ss.getSecurity("GOOGL");
+        double[] prices=new double[s.getHistory().size()];
+        s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}");
+            prices[i]=obj.adjClose}
+
+        double[] aroonOscillator=Aroon.aroonOscillator(ArrayUtil.reverse(prices),25)
+
+
+        ArrayHelper.log(aroonOscillator,log,true)
+
+
+    }
+
 
     @Test
     def void aroonSignal(){

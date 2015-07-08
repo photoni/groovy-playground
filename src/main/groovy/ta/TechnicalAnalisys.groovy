@@ -49,10 +49,11 @@ class TechnicalAnalisys {
                 result.put("di+", dmCombined[0])
                 result.put("di-", dmCombined[1])
             }else if("iaroon".equalsIgnoreCase(obj)){
-				indicators.put("iaroon-signal", Aroon.aroonSignal(ArrayUtil.reverse(prices),ArrayUtil.reverse(prices),
-						25,50,-50))
-				indicators.put("iaroon-oscillator", Aroon.aroonOscillator(ArrayUtil.reverse(prices),ArrayUtil.reverse
-						(prices),25))
+				indicators.put("iaroon-up", ArrayUtil.reverse(Aroon.aroonUp(ArrayUtil.reverse(prices),25)))
+				indicators.put("iaroon-down", ArrayUtil.reverse(Aroon.aroonDown(ArrayUtil.reverse(prices),25)))
+				indicators.put("iaroon-signal", ArrayUtil.reverse(Aroon.aroonSignal(ArrayUtil.reverse(prices),25,50,-50)))
+				indicators.put("iaroon-oscillator", ArrayUtil.reverse(Aroon.aroonOscillator(ArrayUtil.reverse(prices)
+						,25)))
 
 			}
 		}

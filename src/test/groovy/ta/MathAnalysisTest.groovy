@@ -3,7 +3,10 @@ package ta
 import data.TestDataSupport
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
+import model.Security
 import org.junit.Test
+import service.SecurityService
+import util.ArrayUtil
 
 /**
  *
@@ -20,6 +23,24 @@ class MathAnalysisTest {
         ArrayHelper.log(results,log,true)
         assertIsValidElapsedMax(results)
     }
+    @Test
+    def void getElapsedMaxTest1(){
+        def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,12,13,22,23,24,25,26,27,28,29,30,31,32,33,34,35,
+                   36,37] as double[]
+        int[]results=MathAnalysis.getElapsedTrend(highs, 6, 1);
+        log.debug('xElapsedMax');
+        ArrayHelper.log(results,log,true)
+        assertIsValidElapsedMax(results)
+    }
+    @Test
+    def void getElapsedExtremaMaxTest(){
+        def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,12,13,22,23,24,25,26,27,28,29,30,31,32,33,34,35,
+                   36,37] as double[]
+        int[]results=MathAnalysis.getElapsedExtrema(highs, 6, 1);
+        log.debug('xElapsedExtremaMax');
+        ArrayHelper.log(results,log,true)
+        //assertIsValidElapsedMax(results)
+    }
 
 
     @Test
@@ -28,6 +49,26 @@ class MathAnalysisTest {
         int[]results=MathAnalysis.getElapsedTrend(lows, 25, -1);
         log.debug('xElapsedMin');
         assertIsValidElapsedMin(results)
+    }
+    @Test
+    def void getElapsedExtremaMinTest(){
+        def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,12,13,22,23,24,25,26,27,28,29,30,31,32,33,34,35,
+                   36,37] as double[]
+        int[]results=MathAnalysis.getElapsedExtrema(highs, 12, -1);
+        log.debug('xElapsedExtremaMax');
+        ArrayHelper.log(results,log,true)
+        //assertIsValidElapsedMax(results)
+    }
+
+    @Test
+    def void getElapsedExtremaMinGoogleTest(){
+        SecurityService ss= SecurityService.instance
+        Security s=ss.getSecurity("GOOGL");
+        double[] prices=new double[s.getHistory().size()];
+        s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}");
+            prices[i]=obj.adjClose}
+        int[]results=MathAnalysis.getElapsedExtrema(ArrayUtil.reverse(prices), 25, -1);
+        ArrayHelper.log(results,log,true)
     }
 
     @Test

@@ -95,17 +95,19 @@ public class MathAnalysis {
         double current= values[0];
         int xDay=0;
         for (int i = 0; i < values.length; i++) {
-            double extrema=extremeValueInitial;
-            int extremaIndex=i;
+            if (i>=maxElapsed) {
+                double extrema=extremeValueInitial;
+                int extremaIndex=i;
 
-            for (int j =0 ; j<maxElapsed-1 ; j++) {
-                int index = i - j;
-                if((values[index]-extrema)*signum>0){
-                    extrema=values[index];
-                    extremaIndex= index;
+                for (int j =0 ; j<maxElapsed ; j++) {
+                    int index = i - j;
+                    if((values[index]-extrema)*signum>0){
+                        extrema=values[index];
+                        extremaIndex= index;
+                    }
                 }
+                elapsed[i]=i-extremaIndex;
             }
-            elapsed[i]=i-extremaIndex;
         }
         return elapsed;
     }
