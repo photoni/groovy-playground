@@ -99,7 +99,7 @@ public class MathAnalysis {
                 double extrema=extremeValueInitial;
                 int extremaIndex=i;
 
-                for (int j =0 ; j<maxElapsed ; j++) {
+                for (int j =0 ; j<=maxElapsed ; j++) {
                     int index = i - j;
                     if((values[index]-extrema)*signum>0){
                         extrema=values[index];

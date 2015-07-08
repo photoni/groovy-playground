@@ -63,16 +63,19 @@ public class Aroon {
      * @param   periods how many days (backwards) to consider in computing indicators
      * @param   bullishThreshold above this value of the oscillator we consider a bullish phase
      * @param   bearThreshold below this value of the oscillator we consider a bearish phase
-     * @return 1 if the oscillator is above the bullishThreshold and -1 if the oscillator is below the bearThreshold
+     * @return 1 if the oscillator is above the bullishThreshold and is greater than 0 since 1 day and -1 if the
+     * oscillator is below the bearThreshold and is lower than 0 since 1 day. A signal is given if the crossing of a
+     * threshold is confirming a trend of the oscillator, either positive or negative
      **/
     public static short[] aroonSignal(double[] prices,int periods,int bullishThreshold,int bearThreshold){
         double[] aroonOscillator=aroonOscillator(prices,periods);
         short[] aroonSignal=new short[aroonOscillator.length];
 
         for (int i = 0; i < aroonOscillator.length; i++) {
-            if(aroonOscillator[i]>=bullishThreshold)
+            if(i>1&&aroonOscillator[i]>=bullishThreshold && aroonOscillator[i-1]>0){
                 aroonSignal[i]=AROON_BULL;
-            else if(aroonOscillator[i]<=bearThreshold)
+            }
+            else if(i>1&&aroonOscillator[i]<=bearThreshold && aroonOscillator[i-1]<0)
                 aroonSignal[i]=AROON_BEAR;
             else
                 aroonSignal[i]=AROON_NEUTRAL;
