@@ -38,44 +38,47 @@ class AroonTest {
     }
 
     @Test
+    /*
+    QA=OK
+    */
     def void aroonDownTest(){
         def lows=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
         double[] aroonDown=Aroon.aroonDown(lows,10)
         ArrayHelper.log(aroonDown,log,true)
         assert aroonDown[0]==100
-        assert aroonDown[1]==96
-        assert aroonDown[2]==92
-        assert aroonDown[3]==88
-        assert aroonDown[7]==100
-        assert aroonDown[8]==96
-        assert aroonDown[12]==96
-        assert aroonDown[13]==92
-        assert aroonDown[17]==100
-        assert aroonDown[20]==96
+        assert aroonDown[12]==90
+        assert aroonDown[13]==80
+        assert aroonDown[17]==40
+        assert aroonDown[20]==10
+        assert aroonDown[21]==0
+        assert aroonDown[22]==70
+        assert aroonDown[28]==10
+        assert aroonDown[29]==0
         assert aroonDown[aroonDown.size()-1]==0
 
 
     }
 
     @Test
+    /*
+    QA=OK
+   */
     def void aroonOscillator(){
-        def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
-        //double[] aroonUp=Aroon.aroonUp(highs,25)
+        def prices=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,
+                   37,38,39,40,41,42,43,44,45,46] as double[]
 
-        def lows=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
-        //double[] aroonDown=Aroon.aroonDown(lows,25)
-
-        double[] aroonOscillator=Aroon.aroonOscillator(highs,lows,25)
+        double[] aroonOscillator=Aroon.aroonOscillator(prices,10)
 
         assert aroonOscillator[0]==0
-        assert aroonOscillator[1]==4
-        assert aroonOscillator[2]==8
-        assert aroonOscillator[7]==-4
-        assert aroonOscillator[8]==-4
-        assert aroonOscillator[12]==4
-        assert aroonOscillator[13]==8
-        assert aroonOscillator[17]==-4
-        assert aroonOscillator[18]==-8
+        assert aroonOscillator[10]==60
+        assert aroonOscillator[11]==50
+        assert aroonOscillator[12]==10
+        assert aroonOscillator[21]==100
+        assert aroonOscillator[22]==30
+        assert aroonOscillator[23]==40
+        assert aroonOscillator[24]==50
+        assert aroonOscillator[25]==60
+        assert aroonOscillator[29]==100
         assert aroonOscillator[aroonOscillator.size()-1]==100
 
         ArrayHelper.log(aroonOscillator,log,true)
@@ -103,19 +106,23 @@ class AroonTest {
 
     @Test
     def void aroonSignal(){
-        def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
-        //double[] aroonUp=Aroon.aroonUp(highs,25)
+        def prices=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,
+                   37,38,39,40,41,42,43,44,45,46] as double[]
 
-        def lows=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
-        //double[] aroonDown=Aroon.aroonDown(lows,25)
-
-        byte[] aroonSignal=Aroon.aroonSignal(highs,lows,25,50,-50)
+        byte[] aroonSignal=Aroon.aroonSignal(prices,25,50,-50)
 
         assert aroonSignal[0]==0
         assert aroonSignal[1]==0
         assert aroonSignal[32]==1
         assert aroonSignal[33]==1
         assert aroonSignal[34]==1
+        assert aroonSignal[37]==1
+        assert aroonSignal[38]==1
+        assert aroonSignal[39]==1
+        assert aroonSignal[40]==1
+        assert aroonSignal[41]==1
+        assert aroonSignal[42]==1
+        assert aroonSignal[43]==1
         assert aroonSignal[45]==1
         assert aroonSignal[aroonSignal.size()-1]==1
 
