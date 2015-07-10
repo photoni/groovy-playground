@@ -15,6 +15,8 @@ import util.StopWatch
  */
 @Slf4j
 class SOOTest {
+    double[] revHighs = TestDataSupport.SOO_INITIAL_HIGH_VALUES.reverse() as double[]
+    double[] revLow = TestDataSupport.SOO_INITIAL_LOW_VALUES.reverse() as double[]
     double[] revClose = TestDataSupport.SOO_INITIAL_CLOSE_VALUES.reverse() as double[]
 
     @Test
@@ -24,7 +26,8 @@ class SOOTest {
         double[] result
         def watch = new StopWatch('nanosecond')
         watch.withTimeRecording("total") {
-            result=SOO.stochasticOscillator(0, revClose,14)
+            result=SOO.stochasticOscillator(0, revHighs,
+                    revLow, revClose,14)
 
         }
         ArrayHelper.log(result,log,true)
@@ -33,5 +36,45 @@ class SOOTest {
 
 
     }
+
+    @Test
+    @CompileStatic
+    def void highestHighsQATest(){
+
+        double[] result
+        def watch = new StopWatch('nanosecond')
+        watch.withTimeRecording("total") {
+            result= ArrayHelper.closureIterator(0, revHighs, 14){int start,double [] values,int prds ->
+                return MathAnalysis.highestHigh(start,values,prds)
+            }
+
+        }
+        ArrayHelper.log(result,log,true)
+        watch.printResult()
+
+
+
+    }
+
+    @Test
+    @CompileStatic
+    def void lowestLowsQATest(){
+
+        double[] result
+        def watch = new StopWatch('nanosecond')
+        watch.withTimeRecording("total") {
+            result= ArrayHelper.closureIterator(0, revLow, 14){int start,double [] values,int prds ->
+                return MathAnalysis.lowestLow(start,values,prds)
+            }
+
+        }
+        ArrayHelper.log(result,log,true)
+        watch.printResult()
+
+
+
+    }
+
+
 
 }
