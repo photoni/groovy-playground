@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
  * above 50 and Aroon-Down is below 50. This indicates a greater propensity for new x-day highs than lows. The
  * converse is true for a downtrend. The bears have the edge when Aroon-Up is below 50 and Aroon-Down is above 50.
  * groovy-playground
+ * Aroon signal(my own variation): 1 if the oscillator is above the bullishThreshold and is greater than 0 since 1 day and -1 if the
+ * oscillator is below the bearishThreshold and is lower than 0 since 1 day. <b>A signal is given if the crossing of a
+ * threshold is confirming a trend of the oscillator, either positive or negative</b>
  * Created by filippo on 19/10/14.
  */
 public class Aroon {

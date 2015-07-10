@@ -1,4 +1,6 @@
-package rest.api;
+package rest.api
+
+import util.ArrayUtil;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET
@@ -54,7 +56,7 @@ public class RestAPI {
 		//result.put("prices", prices)
 
 		ta=TechnicalAnalisys.instance
-		Map<String,Map> multi=ta.multi(prices,highs,lows, types,cut)
+		Map<String,Map> multi=ta.multi(prices,highs,lows,types,cut)
 		multi.get("o").put("prices", prices);
 		//    	obj.put("a", 1.1);
 		//    	JSONObject outputJsonObj = new JSONObject();

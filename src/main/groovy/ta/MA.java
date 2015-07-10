@@ -15,7 +15,8 @@ import util.ArrayUtil;
  *  MACD Histogram: MACD Line - Signal Line
  *  Interpretation;
  *  Signal Line Crossovers - A bullish crossover occurs when the MACD turns up and crosses above the signal line. A bearish crossover occurs when the MACD turns down and crosses below the signal line
- *  Centerline Crossovers - A bullish centerline crossover occurs when the MACD Line moves above the zero line to turn positive. This happens when the 12-day EMA of the underlying security moves above the 26-day EMA. A bearish centerline crossover occurs when the MACD moves below the zero line to turn negative. This happens when the 12-day EMA moves below the 26-day EMA.
+ *  Center line Crossovers - A bullish centerline crossover occurs when the MACD Line moves above the zero line to
+ *  turn positive. This happens when the 12-day EMA of the underlying security moves above the 26-day EMA. A bearish centerline crossover occurs when the MACD moves below the zero line to turn negative. This happens when the 12-day EMA moves below the 26-day EMA.
  *
  *  Created by filippo on 4/27/15.
  */
@@ -27,7 +28,7 @@ public class MA {
 
     /**
      * @param values
-     *            the array of values ordered from newer to older
+     *            the array of values ordered from older to newer
      * @param periods
      *            number of period to compute
      * @return The Simple Moving Average
@@ -50,7 +51,7 @@ public class MA {
 
     /**
      * @param values
-     *            the array of values ordered from newer to older
+     *            the array of values ordered from older to newer
      * @param periods
      *            number of period to compute
      * @return
@@ -77,7 +78,7 @@ public class MA {
      * MACD iterator
      * @param startIndex
      * @param endIndex
-     * @param values
+     * @param values from older to newer
      * @return
      */
     public static double[][] macd(int startIndex, int endIndex, double[] values,int shortPeriods,int longPeriods) {
@@ -133,7 +134,7 @@ public class MA {
 
     /*
 	 * Smoothing formula for EMA
-	 * @param values the array of values ordered from newer to older
+	 * @param values the array of values ordered from older to newer
 	 *
 	 * @param periods number of period to compute
 	 *

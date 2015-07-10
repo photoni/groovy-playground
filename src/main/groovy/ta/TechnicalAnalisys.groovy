@@ -43,11 +43,12 @@ class TechnicalAnalisys {
 				overlays.put("macd-ema26", ArrayUtil.reverse(macd[4]))
 			}else if("iatr".equalsIgnoreCase(obj))
 				result.put("iatr", Indicators.atr(0,prices.length,highs,lows, 14))
-            else if("adx".equalsIgnoreCase(obj)){
-                result.put("adx", ADX.adx(0, prices.length, highs, lows,14))
-                double[][] dmCombined=ADX.dm(0, setup['prices'].length, setup['highs'], setup['lows'])
-                result.put("di+", dmCombined[0])
-                result.put("di-", dmCombined[1])
+            else if("iadx".equalsIgnoreCase(obj)){
+				indicators.put("adx", ArrayUtil.reverse(ADX.adx(0, prices.length, ArrayUtil.reverse(highs), ArrayUtil
+						.reverse(lows),14)))
+                double[][] dmCombined=ADX.dm(0,prices.length, ArrayUtil.reverse(highs), ArrayUtil.reverse(lows))
+				indicators.put("di+", ArrayUtil.reverse(dmCombined[0]))
+				indicators.put("di-", ArrayUtil.reverse(dmCombined[1]))
             }else if("iaroon".equalsIgnoreCase(obj)){
 				indicators.put("iaroon-up", ArrayUtil.reverse(Aroon.aroonUp(ArrayUtil.reverse(prices),25)))
 				indicators.put("iaroon-down", ArrayUtil.reverse(Aroon.aroonDown(ArrayUtil.reverse(prices),25)))
@@ -55,6 +56,10 @@ class TechnicalAnalisys {
 				//indicators.put("iaroon-low", ArrayUtil.reverse(MathAnalysis.getElapsedExtrema(ArrayUtil.reverse(prices),25,-1)))
 				indicators.put("iaroon-signal", ArrayUtil.reverse(Aroon.aroonSignal(ArrayUtil.reverse(prices),25,50,-50)))
 				indicators.put("iaroon-oscillator", ArrayUtil.reverse(Aroon.aroonOscillator(ArrayUtil.reverse(prices),25)))
+
+			}else if("isoo".equalsIgnoreCase(obj)){
+
+				indicators.put("isoo", ArrayUtil.reverse(SOO.stochasticOscillator(0, prices,24)))
 
 			}
 		}

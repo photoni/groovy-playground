@@ -16,6 +16,7 @@
 
     <!-- TEST -->
     <logger name="ta.MATest" level="TRACE"/>
+    <logger name="service.SecurityServiceTest" level="TRACE"/>
 
 
   <!-- Strictly speaking, the level attribute is not necessary since -->

@@ -15,8 +15,6 @@ import util.StopWatch
  */
 @Slf4j
 class SOOTest {
-    double[] revHighs = TestDataSupport.SOO_INITIAL_HIGH_VALUES.reverse() as double[]
-    double[] revLow = TestDataSupport.SOO_INITIAL_LOW_VALUES.reverse() as double[]
     double[] revClose = TestDataSupport.SOO_INITIAL_CLOSE_VALUES.reverse() as double[]
 
     @Test
@@ -26,8 +24,7 @@ class SOOTest {
         double[] result
         def watch = new StopWatch('nanosecond')
         watch.withTimeRecording("total") {
-            result=SOO.stochasticOscillator(0, revHighs,
-                    revLow, revClose,14)
+            result=SOO.stochasticOscillator(0, revClose,14)
 
         }
         ArrayHelper.log(result,log,true)
