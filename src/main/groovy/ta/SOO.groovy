@@ -32,12 +32,14 @@ public class SOO {
             return MathAnalysis.lowestLow(start,values,prds)
         }
         double[] stochasticOscillator=ArrayHelper.closureIterator(startIndex,revClose.length,periods){int start,int prds ->
-            log.debug("index: {} - highestHigh : {} - lowestLow: {} - close: {}",start,highestHighs[start],
-                    lowestLows[start],revClose[start])
-            return stochasticOscillatorFormula(highestHighs[start],lowestLows[start],revClose[start])
+
+            def soo=stochasticOscillatorFormula(highestHighs[start],lowestLows[start],revClose[start])
+            log.debug("index: {} - highestHigh : {} - lowestLow: {} - close: {} -soo: {}",start,highestHighs[start],
+                    lowestLows[start],revClose[start],soo)
+            return soo
         }
-        double[] stochasticOscillatorSubArray=ArrayUtils.subarray(ArrayUtil.reverse(stochasticOscillator),periods,stochasticOscillator
-                .length)
+        double[] stochasticOscillatorSubArray=ArrayUtils.subarray(ArrayUtil.reverse(stochasticOscillator),periods-1,
+                stochasticOscillator.length)
         def stochasticOscillatorFinal=MA.sma(0,stochasticOscillatorSubArray.length,stochasticOscillatorSubArray,3)
 
     }
@@ -45,7 +47,7 @@ public class SOO {
     public static double stochasticOscillatorFormula(double highestHigh,double lowestLow, double close){
 
 
-        double result=(highestHigh-lowestLow)!=0?(close-lowestLow)/(highestHigh-lowestLow)*100:0
+        double result=(highestHigh-lowestLow)!=0?((close-lowestLow)/(highestHigh-lowestLow))*100:0
 
 
     }
