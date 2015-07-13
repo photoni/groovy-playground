@@ -22,7 +22,7 @@ public class SOO {
 
     public static double[] stochasticOscillator(int startIndex, double[] revHighs,double[] revLows,double[]
             revClose,int
-            periods){
+            periods, int smooth){
         def highestHighs= ArrayHelper.closureIterator(startIndex, revHighs, periods){int start,double [] values,int prds ->
             return MathAnalysis.highestHigh(start,values,prds)
         }
@@ -40,7 +40,7 @@ public class SOO {
         }
         double[] stochasticOscillatorSubArray=ArrayUtils.subarray(ArrayUtil.reverse(stochasticOscillator),periods-1,
                 stochasticOscillator.length)
-        def stochasticOscillatorFinal=MA.sma(0,stochasticOscillatorSubArray.length,stochasticOscillatorSubArray,3)
+        def stochasticOscillatorFinal=MA.sma(0,stochasticOscillatorSubArray.length,stochasticOscillatorSubArray,smooth)
 
     }
 
