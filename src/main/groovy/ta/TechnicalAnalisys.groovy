@@ -59,7 +59,14 @@ class TechnicalAnalisys {
 
 			}else if("isoo".equalsIgnoreCase(obj)){
 
-				indicators.put("isoo", ArrayUtil.reverse(SOO.stochasticOscillator(0, prices,24)))
+				double[] oscillator = SOO.stochasticOscillator(0, ArrayUtil.reverse(prices),ArrayUtil.reverse(prices),
+						ArrayUtil
+						.reverse(prices), 14,3)
+				//indicators.put("isoo", ArrayUtil.reverse(oscillator))
+
+				short[] overBOverS = SOO.overBOverS(oscillator, 80, 20)
+				indicators.put("isooOver", ArrayUtil.reverse(overBOverS))
+				indicators.put("isooOverContinous", ArrayUtil.reverse(SOO.overBOverSContinous(overBOverS)))
 
 			}
 		}

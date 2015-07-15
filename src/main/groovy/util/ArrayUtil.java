@@ -42,6 +42,7 @@ public class ArrayUtil {
 		return result;
 
 	}
+
 	public static double[] reverse(int[] values) {
 		double[] result = new double[values.length];
 

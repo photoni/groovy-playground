@@ -98,4 +98,27 @@ class ArrayHelper {
     }
 
 
+    /**
+     * Iterator over an array of values. It calls the closure on the array of values at each loop
+     * @param values
+     * @param formula
+     * @return
+     */
+    @CompileStatic
+    public static double[] closureIterator(double[] values,Closure formula) {
+        def endIndex=values.length;
+        double[] result = new double[endIndex];
+
+        for (int i = 0; i < endIndex; i++) {
+            log.debug("-------->>>>>>>>Cycle: {} - startIndex: {}  - value: {}",i,values[i]);
+            result[i]=(Double)formula.call(i,values[i])
+        }
+        return result;
+
+    }
+
+
+
+
+
 }

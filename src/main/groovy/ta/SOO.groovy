@@ -20,6 +20,16 @@ import util.ArrayUtil;
 @CompileStatic
 public class SOO {
 
+    /**
+     *
+     * @param startIndex
+     * @param revHighs highs in descending time order
+     * @param revLows lows in descending time order
+     * @param revClose close in descending time order
+     * @param periods
+     * @param smooth
+     * @return stochastic oscillator oin ascending time order
+     */
     public static double[] stochasticOscillator(int startIndex, double[] revHighs,double[] revLows,double[]
             revClose,int
             periods, int smooth){
@@ -41,6 +51,34 @@ public class SOO {
         double[] stochasticOscillatorSubArray=ArrayUtils.subarray(ArrayUtil.reverse(stochasticOscillator),periods-1,
                 stochasticOscillator.length)
         def stochasticOscillatorFinal=MA.sma(0,stochasticOscillatorSubArray.length,stochasticOscillatorSubArray,smooth)
+
+    }
+    public static short[] overBOverS(double[] stocasticOscillator,int overBThreshold,int overSThreshold){
+        short[] overBOverS= ArrayHelper.closureIterator( stocasticOscillator){int i,double value ->
+            short resultVal=0;
+            if(value>overBThreshold)
+                resultVal=1
+            else if(value<=overSThreshold)
+                resultVal=-1
+            return resultVal
+        }
+
+
+    }
+    public static short[] overBOverSContinous(short[] overBOverS){
+        short[] continousSignal=new short[overBOverS.length]
+        short prev=0;
+        for (int i = 1; i < overBOverS.length; i++) {
+            if(overBOverS[i]==0){
+                continousSignal[i]=prev
+            }
+            else{
+                continousSignal[i]=overBOverS[i]
+            }
+            prev=continousSignal[i];
+
+        }
+        return continousSignal
 
     }
 
