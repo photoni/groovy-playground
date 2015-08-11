@@ -25,32 +25,45 @@ public class SOO {
      * @param startIndex
      * @param revHighs highs in descending time order
      * @param revLows lows in descending time order
-     * @param revClose close in descending time order
+     * @param revClose close in ascending time order
      * @param periods
      * @param smooth
      * @return stochastic oscillator oin ascending time order
      */
-    public static double[] stochasticOscillator(int startIndex, double[] revHighs,double[] revLows,double[]
-            revClose,int
+    public static double[][] stochasticOscillator(int startIndex, double[] revHighs,double[] revLows,double[]
+            close,int
             periods, int smooth){
-        def highestHighs= ArrayHelper.closureIterator(startIndex, revHighs, periods){int start,double [] values,int prds ->
+        double[][] result=new double[3][close.length]
+        double[] highestHighs= ArrayHelper.closureIterator(startIndex, revHighs, periods){int start,double [] values,int prds ->
             return MathAnalysis.highestHigh(start,values,prds)
         }
 
 
-        def lowestLows=ArrayHelper.closureIterator(startIndex,revLows,periods){int start,double [] values,int prds ->
+        double[] lowestLows=ArrayHelper.closureIterator(startIndex,revLows,periods){int start,double [] values,int prds ->
             return MathAnalysis.lowestLow(start,values,prds)
         }
-        double[] stochasticOscillator=ArrayHelper.closureIterator(startIndex,revClose.length,periods){int start,int prds ->
+        result[1]=highestHighs
+        result[2]=lowestLows
+        /* ascending order like prices */
+        highestHighs=ArrayUtil.reverse(highestHighs)
+        lowestLows=ArrayUtil.reverse(lowestLows)
 
-            def soo=stochasticOscillatorFormula(highestHighs[start],lowestLows[start],revClose[start])
+
+        double[] stochasticOscillator=ArrayHelper.closureIterator(startIndex,close.length,periods){int start,int prds ->
+
+            def soo=stochasticOscillatorFormula(highestHighs[start],lowestLows[start],close[start])
             log.debug("index: {} - highestHigh : {} - lowestLow: {} - close: {} -soo: {}",start,highestHighs[start],
-                    lowestLows[start],revClose[start],soo)
+                    lowestLows[start],close[start],soo)
             return soo
         }
+        result[0]=stochasticOscillator
+
+        return result
+        /*
         double[] stochasticOscillatorSubArray=ArrayUtils.subarray(ArrayUtil.reverse(stochasticOscillator),periods-1,
                 stochasticOscillator.length)
         def stochasticOscillatorFinal=MA.sma(0,stochasticOscillatorSubArray.length,stochasticOscillatorSubArray,smooth)
+        */
 
     }
     public static short[] overBOverS(double[] stocasticOscillator,int overBThreshold,int overSThreshold){
