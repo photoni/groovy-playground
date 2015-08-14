@@ -4,9 +4,7 @@ import data.TestDataSupport
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
-import model.Security
 import org.junit.Test
-import service.SecurityService
 import util.StopWatch
 
 /**
@@ -15,8 +13,8 @@ import util.StopWatch
  */
 @Slf4j
 class SOOTest {
-    double[] revHighs = TestDataSupport.SOO_INITIAL_HIGH_VALUES.reverse() as double[]
-    double[] revLow = TestDataSupport.SOO_INITIAL_LOW_VALUES.reverse() as double[]
+    double[] revHighs = TestDataSupport.SOO_INITIAL_CLOSE_VALUES.reverse() as double[]
+    double[] revLow = TestDataSupport.SOO_INITIAL_CLOSE_VALUES.reverse() as double[]
     double[] revClose = TestDataSupport.SOO_INITIAL_CLOSE_VALUES.reverse() as double[]
 
     @Test
@@ -26,56 +24,26 @@ class SOOTest {
         double[][] result
         def watch = new StopWatch('nanosecond')
         watch.withTimeRecording("total") {
-            result=SOO.stochasticOscillator(0, revHighs,
-                    revLow, revClose,14,3)
+            result=SOO.stochasticOscillator(0,revClose,14,3)
 
         }
         ArrayHelper.log(result,log,true)
         watch.printResult()
         assert result[0][0]==0
         assert result[0][1]==0
-        assert result[0][2]==75.79672695951754
-        assert result[0][3]==74.24633936261826
-        assert result[0][4]==78.9836347975881
-        assert result[0][5]==70.80103359173118
-        assert result[0][6]==73.72490022775223
-        assert result[0][7]==79.27912594438196
-        assert result[0][8]==81.07225099332106
-        assert result[0][9]==80.5481964315308
-        assert result[0][15]==49.35587761674702
-        assert result[0][16]==52.67973856209158
+        assert result[0][13]==100.0
+        assert result[0][14]==99.9135831565716
+        assert result[0][15]==100.0
+        assert result[0][16]==99.29692992734942
+        assert result[0][20]==100.0
+        assert result[0][21]==99.34737005671664
+        assert result[0][26]==32.72727272727213
+        assert result[0][27]==32.72727272727213
+        assert result[0][28]==98.78787878787817
+        assert result[0][29]==73.33333333333356
 
 
     }
-    @Test
-    @CompileStatic
-    def void sooOnlyAdjustedTest(){
-
-        double[][] result
-        def watch = new StopWatch('nanosecond')
-        watch.withTimeRecording("total") {
-            result=SOO.stochasticOscillator(0, revClose,
-                    revClose, revClose,14,3)
-
-        }
-        ArrayHelper.log(result,log,true)
-        watch.printResult()
-        assert result[0][0]==0
-        assert result[0][1]==0
-        assert result[0][2]==75.79672695951754
-        assert result[0][3]==74.24633936261826
-        assert result[0][4]==78.9836347975881
-        assert result[0][5]==70.80103359173118
-        assert result[0][6]==73.72490022775223
-        assert result[0][7]==79.27912594438196
-        assert result[0][8]==81.07225099332106
-        assert result[0][9]==80.5481964315308
-        assert result[0][15]==49.35587761674702
-        assert result[0][16]==52.67973856209158
-
-
-    }
-
     @Test
     @CompileStatic
     def void highestHighsQATest(){

@@ -60,9 +60,7 @@ class TechnicalAnalisys {
 
 			}else if("isoo".equalsIgnoreCase(obj)){
 
-				double[][] oscillator = SOO.stochasticOscillator(0, prices,prices,
-						ArrayUtil
-						.reverse(prices), 14,3)
+				double[][] oscillator = SOO.stochasticOscillator(0,	prices, 14,3)
 				/*double[] hh= ArrayHelper.closureIterator(0, prices, 14){int start,double [] values,
 																						 int prds ->
 					return MathAnalysis.highestHigh(start,values,prds)
@@ -75,10 +73,11 @@ class TechnicalAnalisys {
 				}*/
 				//indicators.put("isoo", ArrayUtil.reverse(oscillator))
 
-				short[] overBOverS = SOO.overBOverS(oscillator[0], 80, 20)
-				indicators.put("isoo", ArrayUtil.reverse(oscillator[0]))
-				//indicators.put("isooOver", ArrayUtil.reverse(overBOverS))
-				//indicators.put("isooOverContinous", ArrayUtil.reverse(SOO.overBOverSContinous(overBOverS)))
+				short[] overBOverS = SOO.overBOverS(oscillator[3], 80, 20)
+				//indicators.put("isoo", ArrayUtil.reverse(oscillator[0]))
+				//indicators.put("isooma", ArrayUtil.reverse(oscillator[3]))
+				indicators.put("isooOver", ArrayUtil.reverse(overBOverS))
+				indicators.put("isooOverContinous", ArrayUtil.reverse(SOO.overBOverSContinous(overBOverS)))
 				overlays.put("hh", oscillator[1])
 				overlays.put("ll", oscillator[2])
 

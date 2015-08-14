@@ -136,7 +136,7 @@ public class MathAnalysis {
     /**
      *
      * @param startIndex    the index to start from(included)
-     * @param highs    the array of values
+     * @param highs    the array of values. It must be in descending order
      * @param periods   how many position to span the computation
      * @return the highest high
      */
@@ -155,7 +155,7 @@ public class MathAnalysis {
     /**
      *
      * @param startIndex    the index to start from(included)
-     * @param lows    the array of values
+     * @param lows    the array of values. It must be in descending order
      * @param periods   how many position to span the computation
      * @return the lowest low
      */

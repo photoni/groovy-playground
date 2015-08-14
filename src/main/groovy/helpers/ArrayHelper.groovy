@@ -97,6 +97,25 @@ class ArrayHelper {
 
     }
 
+    /**
+     * Pure iterator. It simply calls the closure at each loop
+     * @param startIndex
+     * @param endIndex
+     * @param formula The closure to be called(defined as ; {index -> <your code here>})
+     * @return
+     */
+    @CompileStatic
+    public static double[] closureIterator(int startIndex, int endIndex,Closure formula) {
+        int length = endIndex - startIndex;
+        double[] result = new double[length];
+        for (int i = 0; i < length; i++) {
+            def startIndexOffset = startIndex + i;
+            result[i]=(Double)formula.call(startIndexOffset)
+        }
+        return result;
+
+    }
+
 
     /**
      * Iterator over an array of values. It calls the closure on the array of values at each loop
