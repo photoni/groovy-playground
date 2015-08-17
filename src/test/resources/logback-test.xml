@@ -15,13 +15,14 @@
     <logger name="ta.Smooth" level="DEBUG"/>
 
     <!-- TEST -->
-    <logger name="ta.MATest" level="TRACE"/>
-    <logger name="service.SecurityServiceTest" level="TRACE"/>
 
 
+
+    <logger name="helpers.ArrayHelper" level="DEBUG"/>
+    <logger name="ta.SOOTest" level="DEBUG"/>
   <!-- Strictly speaking, the level attribute is not necessary since -->
   <!-- the level of the root level is set to DEBUG by default.       -->
-  <root level="debug">
+  <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>  
   

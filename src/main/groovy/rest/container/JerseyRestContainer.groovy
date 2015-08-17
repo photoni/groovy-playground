@@ -36,12 +36,13 @@ class JerseyRestContainer {
 	}
 	
 	void start(){
-		log.debug("Starting Embedded Jersey HTTPServer...\n")
+		log.info("Starting Embedded Jersey HTTPServer...\n")
 		HttpServer server = createHttpServer()
 		
 		server.start()
-		log.debug(String.format("\nJersey Application Server started with WADL available at " + "%sapplication.wadl\n", getURI()))
-		log.debug("Started Embedded Jersey HTTPServer Successfully !!!")
+		log.info(String.format("\nJersey Application Server started with WADL available at " + "%sapplication.wadl\n",
+				getURI()))
+		log.info("Started Embedded Jersey HTTPServer Successfully !!!")
 		
 	}
 	public static void main(String[] args) throws IOException {
