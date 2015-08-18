@@ -1,5 +1,7 @@
 package ta;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 /**
  * groovy-playground
  * Created by filippo on 29/10/14.
@@ -36,6 +38,8 @@ public class RSI {
 
         for (int i = 0; i < rs.length; i++) {
             rsi[i]=100 - (100/(1+rs[i]));
+            if(Double.isNaN(rs[i]))
+                rsi[i]=0;
         }
         return rsi;
     }

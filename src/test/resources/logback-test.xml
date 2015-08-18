@@ -12,7 +12,7 @@
   </appender>
 
    <logger name="chapters.configuration" level="DEBUG"/>
-    <logger name="ta.Smooth" level="DEBUG"/>
+    <logger name="ta.Smooth" level="INFO"/>
 
     <!-- TEST -->
 

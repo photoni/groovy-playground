@@ -48,8 +48,8 @@ class TechnicalAnalisys {
 				indicators.put("adx", ArrayUtil.reverse(ADX.adx(0, prices.length, ArrayUtil.reverse(highs), ArrayUtil
 						.reverse(lows),14)))
                 double[][] dmCombined=ADX.dm(0,prices.length, ArrayUtil.reverse(highs), ArrayUtil.reverse(lows))
-				indicators.put("di+", ArrayUtil.reverse(dmCombined[0]))
-				indicators.put("di-", ArrayUtil.reverse(dmCombined[1]))
+				//indicators.put("di+", ArrayUtil.reverse(dmCombined[0]))
+				//indicators.put("di-", ArrayUtil.reverse(dmCombined[1]))
             }else if("iaroon".equalsIgnoreCase(obj)){
 				indicators.put("iaroon-up", ArrayUtil.reverse(Aroon.aroonUp(ArrayUtil.reverse(prices),25)))
 				indicators.put("iaroon-down", ArrayUtil.reverse(Aroon.aroonDown(ArrayUtil.reverse(prices),25)))
@@ -80,6 +80,12 @@ class TechnicalAnalisys {
 				indicators.put("isooOverContinous", ArrayUtil.reverse(SOO.overBOverSContinous(overBOverS)))
 				overlays.put("hh", oscillator[1])
 				overlays.put("ll", oscillator[2])
+
+			}else if("irsi".equalsIgnoreCase(obj)){
+
+				double[] rs=RSI.rsi(prices,14)
+				indicators.put("irsi", rs)
+
 
 			}
 		}
