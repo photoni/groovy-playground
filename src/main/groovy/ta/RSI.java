@@ -43,5 +43,18 @@ public class RSI {
         }
         return rsi;
     }
+    public static double[] overBOverS(double[] rsi, int overBoughtThreshold,int overSoldThreshold){
+        double[] overBOverS=new double[rsi.length];
+        for (int i = 0; i < rsi.length ; i++) {
+            if(rsi[i]>overBoughtThreshold)
+                overBOverS[i]=1;
+            else if((rsi[i]<overSoldThreshold))
+                overBOverS[i]=-1;
+            else
+                overBOverS[i]=0;
+
+        }
+        return overBOverS;
+    }
 
 }

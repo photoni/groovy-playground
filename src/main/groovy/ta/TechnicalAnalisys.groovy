@@ -83,8 +83,10 @@ class TechnicalAnalisys {
 
 			}else if("irsi".equalsIgnoreCase(obj)){
 
-				double[] rs=RSI.rsi(prices,14)
-				indicators.put("irsi", rs)
+				double[] rsi=RSI.rsi(prices,14)
+				double[] overBOverS= RSI.overBOverS(rsi,70,30)
+				//indicators.put("irsi", rsi)
+				indicators.put("irsiOverBOverS", overBOverS)
 
 
 			}
