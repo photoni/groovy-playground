@@ -44,27 +44,6 @@ public class Indicators {
 	}
 
 
-    /**
-     * RATE OF CHANGE
-     */
-
-	/**
-	 * @param values
-	 *            the array of values ordered from newer to older
-	 * @param periods
-	 *            number of period to compute
-	 * @return Rate of change
-	 */
-	public static double[] roc(int startIndex, int endIndex, double[] values,
-			int periods) {
-		int length = endIndex - startIndex;
-		double[] result = new double[length];
-		for (int i = 0; i < length; i++) {
-			result[i] = rocFormula(startIndex + i, endIndex, values, periods);
-		}
-
-		return result;
-	}
 
     /**
      * WILDER:
@@ -195,21 +174,6 @@ public class Indicators {
 
 		return result;
 		
-	}
-
-
-	
-
-	
-	public static double rocFormula(int startIndex, int endIndex,
-			double[] values, int periods) {
-		double result = 0;
-
-		int prevCloseIndex = startIndex + periods;
-		if (prevCloseIndex < endIndex)
-			result = ((values[startIndex] - values[prevCloseIndex]) / values[prevCloseIndex]) * 100;
-
-		return result;
 	}
 
 

@@ -26,8 +26,6 @@ class TechnicalAnalisys {
 				def ema = MA.ema(0, prices.length, ArrayUtil.reverse(prices), 20)
 				overlays.put("iema", ArrayUtil.reverse(ema))
 			}
-			else if("iroc".equalsIgnoreCase(obj))
-				result.put("iroc", Indicators.roc(0,prices.length,prices, 20))
 			else if("iboll".equalsIgnoreCase(obj)){
 				def bollingerBands = Indicators.bollingerBands(0,prices.length,prices, 20)
 				result.put("iboll-lower", bollingerBands[0])
@@ -65,8 +63,6 @@ class TechnicalAnalisys {
 																						 int prds ->
 					return MathAnalysis.highestHigh(start,values,prds)
 				}
-
-
 				double[] ll=ArrayHelper.closureIterator(0,prices,14){int start,double [] values,
 																						int prds ->
 					return MathAnalysis.lowestLow(start,values,prds)
@@ -89,6 +85,15 @@ class TechnicalAnalisys {
 				indicators.put("irsiOverBOverS", overBOverS)
 
 
+			}else if("iroc".equalsIgnoreCase(obj)){
+				double[] roc21=ROC.roc(prices,21)
+				double[] roc63=ROC.roc(prices,63)
+				double[] roc125=ROC.roc(prices,125)
+				double[] roc250=ROC.roc(prices,250)
+				indicators.put("iroc21", roc21)
+				indicators.put("iroc63", roc63)
+				indicators.put("iroc125", roc125)
+				indicators.put("iroc250", roc250)
 			}
 		}
 		result.put("i",indicators);
