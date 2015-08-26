@@ -11,14 +11,14 @@ public class ZIGZAG {
 
     double[] zigZag(double[] values, int rate){
         double [] result= new double[values.length];
-        double hh=Double.MIN_VALUE;
         double ll=Double.MAX_VALUE;
+        double hh=Double.MIN_VALUE;
+       
 
-        for (int i = 0; i < values.length; i++) {
-            hh=Math.max(hh,values[i]);
-            ll=Math.min(ll, values[i]);
-            if(Math.abs((hh-ll)/ll)>rate)
-                result[i]=values[i];
+        for (int i = 2; i < values.length; i++) {
+            int lastMoveDirection=(int)Math.signum(values[i]-values[i-1]);
+            int prevMoveDirection=(int)Math.signum(values[i-1]-values[i-2]);
+
 
         }
         return null;
