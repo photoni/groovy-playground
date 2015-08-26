@@ -91,8 +91,8 @@ class TechnicalAnalisys {
 				double[] roc125=ROC.roc(prices,125)
 				double[] roc250=ROC.roc(prices,250)
 				indicators.put("iroc21", roc21)
-				indicators.put("iroc63", roc63)
-				indicators.put("iroc125", roc125)
+				//indicators.put("iroc63", roc63)
+				//indicators.put("iroc125", roc125)
 				indicators.put("iroc250", roc250)
 			}
 		}
