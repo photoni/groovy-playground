@@ -9,33 +9,50 @@ package ta;
  */
 public class ZIGZAG {
 
-    double[] zigZag(double[] values, int rate){
-        double [] result= new double[values.length];
+    /**
+     * @param values arrays of values
+     * @param rate price movements smaller that it are ignored
+     **/
+    static double[] zigZag(double[] values, int rate) {
+        double[] result = new double[values.length];
         /* the return from the last confirmed pivot to the current value */
-        double exploringReturn=0;
+        double exploringReturn = 0;
         /* the index of the last confirmed pivot */
-        int pivotCandidateIndex=0;
+        int pivotCandidateIndex = 0;
          /* the value of the last confirmed pivot */
-        double pivotCandidateVal=0;
+        double pivotCandidateVal = 0;
         /* the type of pivot: -1 marks a minimum and +1 marks a maximum */
-        int pivotCandidateType=0;
+        int pivotCandidateType = 0;
         for (int i = 1; i < values.length; i++) {
-            exploringReturn+=((values[i]-pivotCandidateVal)/pivotCandidateVal);
+            exploringReturn = ((values[i] - pivotCandidateVal) / pivotCandidateVal);
             /* if the exploring return exceed the rate we have a new pivot candidate */
-            if(Math.abs(exploringReturn)>rate){
+            if (Math.abs(exploringReturn) > rate) {
                 /* the current pivot is saved int the result */
-                result[pivotCandidateIndex]=pivotCandidateVal;
+                result[pivotCandidateIndex] = pivotCandidateVal;
                 /* we set the new pivot candidate to the current value */
-                pivotCandidateIndex=i;
-                pivotCandidateVal=values[i];
-                pivotCandidateType=(int)Math.signum(exploringReturn);
-            }else if(((values[i]-pivotCandidateVal)*pivotCandidateType)>0){
-                pivotCandidateIndex=i;
-                pivotCandidateVal=values[i];
+                stroke(pivotCandidateVal,pivotCandidateIndex,values[i],i,values);
+                pivotCandidateIndex = i;
+                pivotCandidateVal = values[i];
+                pivotCandidateType = (int) Math.signum(exploringReturn);
+            } else if (((values[i] - pivotCandidateVal) * pivotCandidateType) > 0) {
+                /* if the exploringReturn doesn't exceed the rate and the current value is a new min/max we have a new
+                 candidate  */
+                pivotCandidateIndex = i;
+                pivotCandidateVal = values[i];
             }
 
         }
         return result;
+    }
+
+    private static void stroke(double lastValue,int lastIndex,double value, int index,double[] values) {
+        int positions=index-lastIndex;
+        double increment=(value-lastValue)/positions;
+        for (int i = lastIndex+1; i < index ; i++) {
+            int multi=i-lastIndex;
+            double val=multi*lastValue;
+            values[i]=val;
+        }
     }
 
 }
