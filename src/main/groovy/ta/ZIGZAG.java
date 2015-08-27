@@ -11,17 +11,31 @@ public class ZIGZAG {
 
     double[] zigZag(double[] values, int rate){
         double [] result= new double[values.length];
-        double ll=Double.MAX_VALUE;
-        double hh=Double.MIN_VALUE;
-       
-
-        for (int i = 2; i < values.length; i++) {
-            int lastMoveDirection=(int)Math.signum(values[i]-values[i-1]);
-            int prevMoveDirection=(int)Math.signum(values[i-1]-values[i-2]);
-
+        /* the return from the last confirmed pivot to the current value */
+        double exploringReturn=0;
+        /* the index of the last confirmed pivot */
+        int pivotCandidateIndex=0;
+         /* the value of the last confirmed pivot */
+        double pivotCandidateVal=0;
+        /* the type of pivot: -1 marks a minimum and +1 marks a maximum */
+        int pivotCandidateType=0;
+        for (int i = 1; i < values.length; i++) {
+            exploringReturn+=((values[i]-pivotCandidateVal)/pivotCandidateVal);
+            /* if the exploring return exceed the rate we have a new pivot candidate */
+            if(Math.abs(exploringReturn)>rate){
+                /* the current pivot is saved int the result */
+                result[pivotCandidateIndex]=pivotCandidateVal;
+                /* we set the new pivot candidate to the current value */
+                pivotCandidateIndex=i;
+                pivotCandidateVal=values[i];
+                pivotCandidateType=(int)Math.signum(exploringReturn);
+            }else if(((values[i]-pivotCandidateVal)*pivotCandidateType)>0){
+                pivotCandidateIndex=i;
+                pivotCandidateVal=values[i];
+            }
 
         }
-        return null;
+        return result;
     }
 
 }
