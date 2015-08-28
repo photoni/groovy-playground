@@ -15,26 +15,33 @@ public class ZIGZAG {
      **/
     static double[] zigZag(double[] values, int rate) {
         double[] result = new double[values.length];
+
+
         /* the return from the last confirmed pivot to the current value */
         double exploringReturn = 0;
         /* the index of the last confirmed pivot */
         int pivotCandidateIndex = 0;
          /* the value of the last confirmed pivot */
-        double pivotCandidateVal = 0;
+        double pivotCandidateVal = values[pivotCandidateIndex];
         /* the type of pivot: -1 marks a minimum and +1 marks a maximum */
         int pivotCandidateType = 0;
+        /* the previous pivot used to stroke points */
+        int previousPivotIndex = pivotCandidateIndex;
+        double previousPivotVal =pivotCandidateVal;
         for (int i = 1; i < values.length; i++) {
-            exploringReturn = ((values[i] - pivotCandidateVal) / pivotCandidateVal);
+            exploringReturn = ((values[i] - pivotCandidateVal) / pivotCandidateVal)*100;
             /* if the exploring return exceed the rate we have a new pivot candidate */
             if (Math.abs(exploringReturn) > rate) {
                 /* the current pivot is saved int the result */
                 result[pivotCandidateIndex] = pivotCandidateVal;
                 /* we set the new pivot candidate to the current value */
-                stroke(pivotCandidateVal,pivotCandidateIndex,values[i],i,values);
+                stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
+                previousPivotIndex = pivotCandidateIndex;
+                previousPivotVal =pivotCandidateVal;
                 pivotCandidateIndex = i;
                 pivotCandidateVal = values[i];
                 pivotCandidateType = (int) Math.signum(exploringReturn);
-            } else if (((values[i] - pivotCandidateVal) * pivotCandidateType) > 0) {
+            } else if (pivotCandidateType!=0 && ((values[i] - pivotCandidateVal) * pivotCandidateType) > 0) {
                 /* if the exploringReturn doesn't exceed the rate and the current value is a new min/max we have a new
                  candidate  */
                 pivotCandidateIndex = i;
@@ -42,6 +49,7 @@ public class ZIGZAG {
             }
 
         }
+        //stroke(pivotCandidateVal,pivotCandidateIndex,values[values.length-1],values.length-1,result);
         return result;
     }
 
@@ -50,7 +58,7 @@ public class ZIGZAG {
         double increment=(value-lastValue)/positions;
         for (int i = lastIndex+1; i < index ; i++) {
             int multi=i-lastIndex;
-            double val=multi*lastValue;
+            double val=(multi*increment)+lastValue;
             values[i]=val;
         }
     }
