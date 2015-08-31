@@ -31,7 +31,7 @@ public class ZIGZAG {
         for (int i = 1; i < values.length; i++) {
             exploringReturn = ((values[i] - pivotCandidateVal) / pivotCandidateVal)*100;
             /* if the exploring return exceed the rate we have a new pivot candidate */
-            if (Math.abs(exploringReturn) > rate) {
+            if (Math.abs(exploringReturn) > rate && (Math.signum(pivotCandidateType)!= Math.signum(exploringReturn))) {
                 /* the current pivot is saved int the result */
                 result[pivotCandidateIndex] = pivotCandidateVal;
                 /* we set the new pivot candidate to the current value */
@@ -49,7 +49,19 @@ public class ZIGZAG {
             }
 
         }
-        //stroke(pivotCandidateVal,pivotCandidateIndex,values[values.length-1],values.length-1,result);
+
+        result[pivotCandidateIndex] = pivotCandidateVal;
+        stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
+
+        previousPivotIndex = pivotCandidateIndex;
+        previousPivotVal =pivotCandidateVal;
+        pivotCandidateIndex = values.length-1;
+        pivotCandidateVal = values[values.length-1];
+        pivotCandidateType = (int) Math.signum(exploringReturn);
+
+        result[pivotCandidateIndex] = pivotCandidateVal;
+        stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
+
         return result;
     }
 
