@@ -1,7 +1,7 @@
 package ta;
 
 /**
- * The ZigZag feature on SharpCharts is not an indicator per se, but rather a means to filter out smaller price
+ * The ZigZag is not an indicator per se, but rather a means to filter out smaller price
  * movements. A ZigZag set at 10% would ignore all price movements less than 10%. Only price movements greater than 10%
  * would be shown
  * <p/>
@@ -33,7 +33,7 @@ public class ZIGZAG {
             /* if the exploring return exceed the rate we have a new pivot candidate */
             if (Math.abs(exploringReturn) > rate && (Math.signum(pivotCandidateType)!= Math.signum(exploringReturn))) {
                 /* the current pivot is saved int the result */
-                result[pivotCandidateIndex] = pivotCandidateVal;
+                //result[pivotCandidateIndex] = pivotCandidateVal;
                 /* we set the new pivot candidate to the current value */
                 stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
                 previousPivotIndex = pivotCandidateIndex;
@@ -50,7 +50,7 @@ public class ZIGZAG {
 
         }
 
-        result[pivotCandidateIndex] = pivotCandidateVal;
+
         stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
 
         previousPivotIndex = pivotCandidateIndex;
@@ -59,13 +59,14 @@ public class ZIGZAG {
         pivotCandidateVal = values[values.length-1];
         pivotCandidateType = (int) Math.signum(exploringReturn);
 
-        result[pivotCandidateIndex] = pivotCandidateVal;
+        //result[pivotCandidateIndex] = pivotCandidateVal;
         stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
 
         return result;
     }
 
     private static void stroke(double lastValue,int lastIndex,double value, int index,double[] values) {
+        values[index] = value;
         int positions=index-lastIndex;
         double increment=(value-lastValue)/positions;
         for (int i = lastIndex+1; i < index ; i++) {

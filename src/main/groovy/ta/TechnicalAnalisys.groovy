@@ -95,8 +95,8 @@ class TechnicalAnalisys {
 				//indicators.put("iroc125", roc125)
 				indicators.put("iroc250", roc250)
 			}else if("izigzag".equalsIgnoreCase(obj)){
-				double[] zigzag10=ZIGZAG.zigZag(ArrayUtil.reverse(prices),15)
-				overlays.put("izigzag10", ArrayUtil.reverse(zigzag10))
+				double[] zigzag=ZIGZAG.zigZag(ArrayUtil.reverse(prices),5)
+				overlays.put("izigzag", ArrayUtil.reverse(zigzag))
 			}
 		}
 		result.put("i",indicators);
