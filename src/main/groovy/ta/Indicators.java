@@ -47,7 +47,7 @@ public class Indicators {
 
     /**
      * WILDER:
-     * Average True range, Average Directional Index
+     * Average True range.
      */
 
 	/**
