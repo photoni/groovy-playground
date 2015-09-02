@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
  * threshold is confirming a trend of the oscillator, either positive or negative</b>
  * Created by filippo on 19/10/14.
  */
-public class Aroon {
-    private static Logger log= LoggerFactory.getLogger(Aroon.class);
+public class AROON {
+    private static Logger log= LoggerFactory.getLogger(AROON.class);
 
     public static final byte AROON_BULL=1;
     public static final byte AROON_BEAR=-1;

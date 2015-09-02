@@ -21,7 +21,7 @@ class AroonTest {
      */
     def void aroonUpTest(){
         def highs=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
-        double[] aroonUp=Aroon.aroonUp(highs,10)
+        double[] aroonUp=AROON.aroonUp(highs,10)
         ArrayHelper.log(aroonUp,log,true)
         assert aroonUp[0]==100
         assert aroonUp[9]==100
@@ -43,7 +43,7 @@ class AroonTest {
     */
     def void aroonDownTest(){
         def lows=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46] as double[]
-        double[] aroonDown=Aroon.aroonDown(lows,10)
+        double[] aroonDown=AROON.aroonDown(lows,10)
         ArrayHelper.log(aroonDown,log,true)
         assert aroonDown[0]==100
         assert aroonDown[12]==90
@@ -67,7 +67,7 @@ class AroonTest {
         def prices=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,
                    37,38,39,40,41,42,43,44,45,46] as double[]
 
-        double[] aroonOscillator=Aroon.aroonOscillator(prices,10)
+        double[] aroonOscillator=AROON.aroonOscillator(prices,10)
 
         assert aroonOscillator[0]==0
         assert aroonOscillator[10]==60
@@ -95,7 +95,7 @@ class AroonTest {
         s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}");
             prices[i]=obj.adjClose}
 
-        double[] aroonOscillator=Aroon.aroonOscillator(ArrayUtil.reverse(prices),25)
+        double[] aroonOscillator=AROON.aroonOscillator(ArrayUtil.reverse(prices),25)
 
 
         ArrayHelper.log(aroonOscillator,log,true)
@@ -109,7 +109,7 @@ class AroonTest {
         def prices=[1,2,3,4,5,6,7,6,6,5,4,3,13,14,15,16,17,16,15,11,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,
                    37,38,39,40,41,42,43,44,45,46] as double[]
 
-        byte[] aroonSignal=Aroon.aroonSignal(prices,25,50,-50)
+        byte[] aroonSignal=AROON.aroonSignal(prices,25,50,-50)
 
         assert aroonSignal[0]==0
         assert aroonSignal[1]==0

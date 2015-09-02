@@ -1,9 +1,6 @@
 package ta
 
-import groovy.lang.Singleton;
 import groovy.util.logging.Slf4j
-import helpers.ArrayHelper
-import org.apache.commons.lang.ArrayUtils
 import util.ArrayUtil;
 
 
@@ -49,12 +46,12 @@ class TechnicalAnalisys {
 				//indicators.put("di+", ArrayUtil.reverse(dmCombined[0]))
 				//indicators.put("di-", ArrayUtil.reverse(dmCombined[1]))
             }else if("iaroon".equalsIgnoreCase(obj)){
-				indicators.put("iaroon-up", ArrayUtil.reverse(Aroon.aroonUp(ArrayUtil.reverse(prices),25)))
-				indicators.put("iaroon-down", ArrayUtil.reverse(Aroon.aroonDown(ArrayUtil.reverse(prices),25)))
+				indicators.put("iaroon-up", ArrayUtil.reverse(AROON.aroonUp(ArrayUtil.reverse(prices),25)))
+				indicators.put("iaroon-down", ArrayUtil.reverse(AROON.aroonDown(ArrayUtil.reverse(prices),25)))
 				//indicators.put("iaroon-high", ArrayUtil.reverse(MathAnalysis.getElapsedExtrema(ArrayUtil.reverse(prices),25,1)))
 				//indicators.put("iaroon-low", ArrayUtil.reverse(MathAnalysis.getElapsedExtrema(ArrayUtil.reverse(prices),25,-1)))
-				indicators.put("iaroon-signal", ArrayUtil.reverse(Aroon.aroonSignal(ArrayUtil.reverse(prices),25,50,-50)))
-				indicators.put("iaroon-oscillator", ArrayUtil.reverse(Aroon.aroonOscillator(ArrayUtil.reverse(prices),25)))
+				indicators.put("iaroon-signal", ArrayUtil.reverse(AROON.aroonSignal(ArrayUtil.reverse(prices),25,50,-50)))
+				indicators.put("iaroon-oscillator", ArrayUtil.reverse(AROON.aroonOscillator(ArrayUtil.reverse(prices),25)))
 
 			}else if("isoo".equalsIgnoreCase(obj)){
 
