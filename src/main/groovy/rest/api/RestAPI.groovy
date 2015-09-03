@@ -37,11 +37,12 @@ public class RestAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("series")
 	public Map<String,Object> getSeries(@QueryParam(value = "type")
-			final List<String> types,@DefaultValue(value="false") @QueryParam(value = "cut") final boolean cut) {
+			final List<String> types,@QueryParam(value = "ticker")
+			final List<String> ticker,@DefaultValue(value="false") @QueryParam(value = "cut") final boolean cut) {
 		Map<String,Object> result= new HashMap<String,Object>();
 		/* Getting ticker */
 		ss= SecurityService.instance
-		s=ss.getSecurity(TICKER)
+		s=ss.getSecurity(ticker)
 		int historyLength=s.getHistory().size()
 		prices=new double[historyLength]
 		highs=new double[historyLength]

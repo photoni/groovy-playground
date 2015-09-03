@@ -7,7 +7,7 @@
  <body>
     <div class="row">
         <form id="seriesForm" action="javascript:void(0)">
-            <div class="col-md-8">
+            <div class="col-md-5">
                 <label class="checkbox-inline">
                     <input type="checkbox" id="price" value="price"> price
                 </label>
@@ -50,6 +50,9 @@
                     <input type="checkbox" id="iadx" value="iadx"> iadx
                 </label-->
             </div>
+            <div class="col-md-2">
+                <input type="text" class="form-control" id="ticker" placeholder="AAPL? GOOGLE?">
+            </div>
             <button type="submit" class="btn btn-default">Go!</button>
         </form>
     </div>
@@ -76,10 +79,12 @@
 
 
             queryString="";
-            form.find('input, textarea, select').each(function(el) {
+            form.find('input, select').each(function(el) {
                console.log( this.value+  ": " +this.checked);
                 if(this.checked)
                     queryString+='type='+this.value+'&';
+                if(this.id=='ticker')
+                    queryString+='ticker='+this.value+'&';
             });
             queryString+='_end';
             console.log( "queryString: "+ queryString);

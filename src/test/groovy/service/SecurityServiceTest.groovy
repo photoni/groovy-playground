@@ -32,7 +32,10 @@ class SecurityServiceTest {
 	@Test
 	public void loadSecurityAndStoreTest() {
 		SecurityService ss= SecurityService.instance
-		Security s=ss.loadSecurityAndStore("GOOGL");
+
+		//def sec = "GOOGL"
+		def sec = "IBM"
+		Security s=ss.loadSecurityAndStore(sec);
 		/* define here assertions */
 	}
 	
