@@ -1,5 +1,7 @@
 package ta;
 
+import util.ArrayUtil;
+
 /**
  * The ZigZag is not an indicator per se, but rather a means to filter out smaller price
  * movements. A ZigZag set at 10% would ignore all price movements less than 10%. Only price movements greater than 10%
@@ -35,7 +37,7 @@ public class ZIGZAG {
                 /* the current pivot is saved int the result */
                 //result[pivotCandidateIndex] = pivotCandidateVal;
                 /* we set the new pivot candidate to the current value */
-                stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
+                ArrayUtil.stroke(previousPivotVal, previousPivotIndex, pivotCandidateVal, pivotCandidateIndex, result);
                 previousPivotIndex = pivotCandidateIndex;
                 previousPivotVal =pivotCandidateVal;
                 pivotCandidateIndex = i;
@@ -51,7 +53,7 @@ public class ZIGZAG {
         }
 
 
-        stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
+        ArrayUtil.stroke(previousPivotVal, previousPivotIndex, pivotCandidateVal, pivotCandidateIndex, result);
 
         previousPivotIndex = pivotCandidateIndex;
         previousPivotVal =pivotCandidateVal;
@@ -60,20 +62,12 @@ public class ZIGZAG {
         pivotCandidateType = (int) Math.signum(exploringReturn);
 
         //result[pivotCandidateIndex] = pivotCandidateVal;
-        stroke(previousPivotVal,previousPivotIndex,pivotCandidateVal,pivotCandidateIndex,result);
+        ArrayUtil.stroke(previousPivotVal, previousPivotIndex, pivotCandidateVal, pivotCandidateIndex, result);
+
 
         return result;
     }
 
-    private static void stroke(double lastValue,int lastIndex,double value, int index,double[] values) {
-        values[index] = value;
-        int positions=index-lastIndex;
-        double increment=(value-lastValue)/positions;
-        for (int i = lastIndex+1; i < index ; i++) {
-            int multi=i-lastIndex;
-            double val=(multi*increment)+lastValue;
-            values[i]=val;
-        }
-    }
+
 
 }
