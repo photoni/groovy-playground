@@ -19,7 +19,7 @@
 
 
     <logger name="helpers.ArrayHelper" level="DEBUG"/>
-    <logger name="ta.ZIGZAGTest" level="DEBUG"/>
+    <logger name="ta.RETRACEMENTTest" level="DEBUG"/>
   <!-- Strictly speaking, the level attribute is not necessary since -->
   <!-- the level of the root level is set to DEBUG by default.       -->
   <root level="INFO">

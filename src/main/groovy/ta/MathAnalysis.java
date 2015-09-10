@@ -172,4 +172,10 @@ public class MathAnalysis {
         return lowest;
     }
 
+
+    public static double gain(double from,double to){
+
+        return (to-from)/from;
+    }
+
 }
