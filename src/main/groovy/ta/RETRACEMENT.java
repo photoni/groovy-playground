@@ -1,11 +1,17 @@
 package ta;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ArrayUtil;
+
+import java.text.DecimalFormat;
 
 /**
  * created by filippo on 9/2/15.
  */
 public class RETRACEMENT {
+    private static Logger log = LoggerFactory.getLogger(RETRACEMENT.class);
+    private static final DecimalFormat df = new DecimalFormat("#.000");
     private double level38 = 0.382;
     private double level50 = 0.50;
     private double level61 = 0.618;
@@ -36,13 +42,16 @@ public class RETRACEMENT {
             double val_2 = zigzag[i - 2];
             double val_1 = zigzag[i - 1];
             double val = zigzag[i];
+            log.debug("val: {} - val_1:{} - val_2:{}", df.format(val), df.format(val_1), df.format(val_2));
             if (ArrayUtil.isPivot(val_2, val_1, val)) {
+                log.debug("isPivot val_1:{}", val_1);
                 impulse = MathAnalysis.gain(trendStartVal, val_1);
+                impulse = Math.abs(impulse);
                 trendStartVal = val_1;
                 trendStartIndex = i - 1;
             }
             double rate = MathAnalysis.gain(trendStartVal, val);
-            double rate_1 = MathAnalysis.gain(trendStartVal, val - 1);
+            double rate_1 = MathAnalysis.gain(trendStartVal, val_1);
             if (isCrossinLevels(rate_1, rate, impulse))
                 result[i - 1] = val_1;
 
@@ -56,12 +65,18 @@ public class RETRACEMENT {
     }
 
     private boolean isCrossingLevel(double rate_1, double rate, double level, double impulse) {
-        if (impulse > 0) {
-            double retracement = Math.abs(rate/impulse);
-            double retracement_1 = Math.abs(rate_1/impulse);
-            return ((retracement_1 < level && level < retracement) || (retracement_1 > level && level > retracement));
-        }else
-            return false;
+        if (log.isDebugEnabled())
+            log.debug("isCrossingLevel level:{} - rate_1:{} - rate:{} - impulse:{}", level, df.format(rate_1), df.format(rate),
+                    df.format(impulse));
+
+            double retracement = Math.abs(rate / impulse);
+            double retracement_1 = Math.abs(rate_1 / impulse);
+            boolean result = (retracement_1 < level && level < retracement) || (retracement_1 > level && level > retracement);
+
+            log.debug("isCrossingLevel result ratracement:{} - retracement_1:{} - result:{}", df.format(retracement),
+                    df.format(retracement_1), result);
+            return result;
+       
     }
 
 
