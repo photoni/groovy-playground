@@ -76,7 +76,7 @@ public class RETRACEMENT {
             log.debug("isCrossingLevel result ratracement:{} - retracement_1:{} - result:{}", df.format(retracement),
                     df.format(retracement_1), result);
             return result;
-       
+
     }
 
 

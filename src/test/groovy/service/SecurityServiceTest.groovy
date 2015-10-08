@@ -20,7 +20,7 @@ class SecurityServiceTest {
 	@Test
 	public void loadSecurityTest() {
 		SecurityService ss= SecurityService.instance
-		Security s=ss.loadSecurity("GOOGL")
+		Security s=ss.loadSecurity("AAPL")
 		//s.getHistory().eachWithIndex { obj, i -> log.debug(" index: ${i}: - entry day: ${obj.adjClose}")}
         ArrayHelper.log(s.getHistory(),log,true,'TRACE')
 		/* define here assertions */
@@ -34,7 +34,7 @@ class SecurityServiceTest {
 		SecurityService ss= SecurityService.instance
 
 		//def sec = "GOOGL"
-		def sec = "IBM"
+		def sec = "AAPL"
 		Security s=ss.loadSecurityAndStore(sec);
 		/* define here assertions */
 	}
@@ -45,7 +45,7 @@ class SecurityServiceTest {
 	@Test
 	public void getSecurity() {
 		SecurityService ss= SecurityService.instance
-		Security s=ss.getSecurity("GOOGL");
+		Security s=ss.getSecurity("AAPL");
 		s.getHistory().eachWithIndex { obj, i -> log.trace(" index: ${i}: - date: ${obj.dateAsString} - close: ${obj.adjClose}")}
 	}
 

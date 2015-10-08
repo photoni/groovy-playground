@@ -13,6 +13,7 @@ class TechnicalAnalisys {
 	Map<String,Map> multi(double[] prices,double[] highs,double[] lows,List<String> types, boolean cutOut){
 		Map<String,double[]> overlays= new HashMap<String,double[]>()
 		Map<String,double[]> indicators= new HashMap<String,double[]>()
+		Map<String,double[]> markers= new HashMap<String,double[]>()
 		Map<String,Map> result= new HashMap<String,Map>()
 		types.each {obj ->
 			if("isma".equalsIgnoreCase(obj)) {
@@ -94,12 +95,20 @@ class TechnicalAnalisys {
 			}else if("izigzag".equalsIgnoreCase(obj)){
 				double[] zigzag7=ZIGZAG.zigZag(ArrayUtil.reverse(prices),7)
 				double[] zigzag10=ZIGZAG.zigZag(ArrayUtil.reverse(prices),10)
-				overlays.put("izigzag7", ArrayUtil.reverse(zigzag7))
+				//overlays.put("izigzag7", ArrayUtil.reverse(zigzag7))
 				overlays.put("izigzag10", ArrayUtil.reverse(zigzag10))
+			}else if("iretracement".equalsIgnoreCase(obj)){
+
+				double[] zigzag10=ZIGZAG.zigZag(ArrayUtil.reverse(prices),10)
+				overlays.put("izigzag10", ArrayUtil.reverse(zigzag10))
+				RETRACEMENT retr= new RETRACEMENT();
+				double[] retracement10=retr.fibonacci(ArrayUtil.reverse(prices),10)
+				markers.put("iretracement",retracement10)
 			}
 		}
 		result.put("i",indicators);
 		result.put("o",overlays);
+		result.put("m",markers);
 		return result;
 	}
 

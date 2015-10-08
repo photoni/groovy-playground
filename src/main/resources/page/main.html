@@ -7,7 +7,7 @@
  <body>
     <div class="row">
         <form id="seriesForm" action="javascript:void(0)">
-            <div class="col-md-5">
+            <div class="col-md-7">
                 <label class="checkbox-inline">
                     <input type="checkbox" id="price" value="price"> price
                 </label>
@@ -45,6 +45,9 @@
                 </label>
                 <label class="checkbox-inline">
                     <input type="checkbox" id="izigzag" value="izigzag"> izigzag
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="iretracement" value="iretracement"> iretracement
                 </label>
                 <!--label class="checkbox-inline">
                     <input type="checkbox" id="iadx" value="iadx"> iadx
@@ -94,18 +97,12 @@
             var dates=data.dates;
             var o=data.results.o;
             var oSeries= new Array();
-            buildSeries(o,dates,oSeries);
+            buildSeries(o,dates,oSeries,false);
 
             var i=data.results.i;
             var iSeries= new Array();
-            buildSeries(i,dates,iSeries);
-            /*for(var entryN in  o) {
-              console.log("result entry: "+entryN);
-                var entryD=data.results.o[entryN];
-                var entryT= integrate(entryD,dates);
-                var entrySerie= createSeries(entryN,entryT.reverse());
-                oSeries.push(entrySerie);
-            }*/
+            buildSeries(i,dates,iSeries,false);
+
 
              jQuery('#container').highcharts('StockChart', {
                 rangeSelector : {
@@ -113,7 +110,7 @@
                     inputEnabled: jQuery('#container').width() > 480
                 },
                 title : {
-                    text : ' Stock Prices'
+                    text : ' Overlays'
                 },
 
                 series : oSeries
@@ -125,7 +122,7 @@
                     inputEnabled: jQuery('#container').width() > 480
                 },
                 title : {
-                    text : ' Stock Prices'
+                    text : ' Indicators'
                 },
 
                 series : iSeries
@@ -141,16 +138,26 @@
         });
 
 
-    function integrate(values, dates) {
+    function integrate(values, dates,isMarker) {
         var result=new Array();
         for (i = 0; i < values.length; i++) {
-            var entry=new Array();
-            entry[0]=dates[i];
-            entry[1]=values[i];
-            result.push(entry);
+            if(!isMarker){
+                var entry=new Array();
+                entry[0]=dates[i];
+                entry[1]=values[i];
+                result.push(entry);
+            }else{
+                if(values[i]>0){
+                    var entry=new Array();
+                    entry[0]=dates[i];
+                    entry[1]=values[i];
+                    result.push(entry);
+                }
+            }
         }
         return result;
     }
+
     function createSeries(name,data) {
         var seriesObject={
                 name : name,
@@ -161,15 +168,17 @@
             }
         return seriesObject;
     }
-    function buildSeries(inSeries, dates,outSeries) {
+    function buildSeries(inSeries, dates,outSeries,isMarker) {
         for(var entryN in  inSeries) {
           console.log("result entry: "+entryN);
             var entryD=inSeries[entryN];
-            var entryT= integrate(entryD,dates);
+            var entryT= integrate(entryD,dates,false,isMarker);
             var entrySerie= createSeries(entryN,entryT.reverse());
             outSeries.push(entrySerie);
         }
     }
+
+
      </script>
 </body>
 
