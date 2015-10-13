@@ -2,7 +2,12 @@ package ta
 
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
+import model.Security
+import model.SecurityQuote
+import org.junit.Ignore
 import org.junit.Test
+import service.SecurityService
+import util.ArrayUtil
 
 /**
  * groovy-playground
@@ -18,6 +23,22 @@ class RETRACEMENTTest {
                          124,123,127,128,130,131,132]
         RETRACEMENT retr= new RETRACEMENT();
         double[] result=retr.fibonacci(values,10)
+        ArrayHelper.log(result,log,true)
+
+    }
+
+    @Test
+    @Ignore
+    def void retracementTestAAPL(){
+        SecurityService ss= SecurityService.instance
+        Security s=ss.getSecurity("AAPL");
+        List<SecurityQuote> listVal= s.history
+        double[] values=new double[listVal.size()]
+        listVal.eachWithIndex { SecurityQuote entry, int i ->
+            values[i]=entry.getAdjClose()
+        }
+        RETRACEMENT retr= new RETRACEMENT();
+        double[] result=retr.fibonacci(ArrayUtil.reverse(values),10)
         ArrayHelper.log(result,log,true)
 
     }

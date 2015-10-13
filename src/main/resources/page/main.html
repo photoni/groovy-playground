@@ -103,6 +103,10 @@
             var iSeries= new Array();
             buildSeries(i,dates,iSeries,false);
 
+            var m=data.results.m;
+            buildSeries(m,dates,oSeries,false);
+
+
 
              jQuery('#container').highcharts('StockChart', {
                 rangeSelector : {
@@ -172,7 +176,7 @@
         for(var entryN in  inSeries) {
           console.log("result entry: "+entryN);
             var entryD=inSeries[entryN];
-            var entryT= integrate(entryD,dates,false,isMarker);
+            var entryT= integrate(entryD,dates,isMarker);
             var entrySerie= createSeries(entryN,entryT.reverse());
             outSeries.push(entrySerie);
         }

@@ -103,7 +103,7 @@ class TechnicalAnalisys {
 				overlays.put("izigzag10", ArrayUtil.reverse(zigzag10))
 				RETRACEMENT retr= new RETRACEMENT();
 				double[] retracement10=retr.fibonacci(ArrayUtil.reverse(prices),10)
-				markers.put("iretracement",retracement10)
+				markers.put("iretracement",ArrayUtil.reverse(retracement10))
 			}
 		}
 		result.put("i",indicators);
