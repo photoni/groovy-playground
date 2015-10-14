@@ -76,13 +76,15 @@ public class ArrayUtil {
     }
 
     public  static boolean isPivot(double val_2,double val_1,double val){
-        boolean isPivot=false;
-        if((val_1>val_2 && val_1>val) || (val_1<val_2 && val_1<val))
-            isPivot=true;
-        else
-            isPivot=false;
-        return isPivot;
+        return (val_1>val_2 && val_1>val) || (val_1<val_2 && val_1<val);
+    }
 
+    public  static boolean isUpperPivot(double val_2,double val_1,double val){
+        return  (val_1>val_2 && val_1>val) ;
+    }
+
+    public  static boolean isLowerPivot(double val_2,double val_1,double val){
+        return  (val_1<val_2 && val_1<val) ;
     }
 
 

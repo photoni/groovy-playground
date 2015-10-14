@@ -1,5 +1,6 @@
 package ta;
 
+import com.sun.jersey.server.wadl.generators.resourcedoc.xhtml.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ArrayUtil;
@@ -29,7 +30,7 @@ public class RETRACEMENT {
     /**
      * @param values
      * @param minimumReatracementRate price movements under this rate are ignored
-     * @return the zigzag for the given rate and fibonacci levels
+     * @return the fibonacci levels
      */
     public double[] fibonacci(double[] values, int minimumReatracementRate) {
 
@@ -56,6 +57,39 @@ public class RETRACEMENT {
                 result[i - 1] = val_1;
 
         }
+        return result;
+    }
+
+    /* @param values
+    *  @param minimumReatracementRate
+    *  @return 0 if fibonacci is neutral(i.e no level have been crossed). 1,2,3(-1,-2,-3) depending which is the last
+     *  level of fibonacci that has been croseed. The signum depends if levels refers to a positive slope or
+     *  negative slope
+    */
+    public double[] fibonacciIndicator(double[] values, int minimumReatracementRate) {
+
+        double[] result = new double[values.length];
+        double[] zigzag = ZIGZAG.zigZag(values, minimumReatracementRate);
+        double[] ficonacciLevels=fibonacci(values,minimumReatracementRate);
+
+        for (int i = 2; i < zigzag.length; i++) {
+            double val_2 = zigzag[i - 2];
+            double val_1 = zigzag[i - 1];
+            double val = zigzag[i];
+            /* The signum determines if we are in an ascending or descending slope */
+            int signum=1;
+            log.debug("val: {} - val_1:{} - val_2:{}", df.format(val), df.format(val_1), df.format(val_2));
+            if (ArrayUtil.isUpperPivot(val_2, val_1, val)) {
+                /* after a maximum we are in a descending slope */
+                signum=-1;
+            }if (ArrayUtil.isLowerPivot(val_2, val_1, val)) {
+                /* after a minimum we are in an ascending slope */
+                signum=1;
+            }
+
+
+        }
+
         return result;
     }
 
