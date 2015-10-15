@@ -20,6 +20,15 @@ class ArrayHelper {
 
     }
 
+    def static logCompare(def array1,def array2,Logger log){
+        _logCompare(array1, array2, log, '')
+
+    }
+    def static logCompare(def array1,def array2,def array3,Logger log){
+        _logCompare(array1, array2,array3, log, '')
+
+    }
+
     private static _log(boolean withIndex, array, log, String level) {
         def upperCase = level.toUpperCase()
         if (withIndex)
@@ -52,6 +61,46 @@ class ArrayHelper {
                 }
 
             }
+    }
+
+    private static _logCompare(array1,array2, log, String level) {
+        def upperCase = level.toUpperCase()
+
+            array1.eachWithIndex { def entry, int i ->
+                switch (upperCase){
+                    case 'WARN':
+                        log.debug('Index: {} - Value1: {} - Value2: {}', i, entry,array2[i])
+                        break;
+                    case 'TRACE':
+                        log.trace('Index: {} - Value1: {} - Value2: {}', i, entry,array2[i])
+                        break;
+                    default:
+                        log.debug('Index: {} - Value1: {} - Value2: {}', i, entry,array2[i])
+
+                }
+
+            }
+
+    }
+
+    private static _logCompare(array1,array2,array3, log, String level) {
+        def upperCase = level.toUpperCase()
+
+        array1.eachWithIndex { def entry, int i ->
+            switch (upperCase){
+                case 'WARN':
+                    log.debug('Index: {} - Value1: {} - Value2: {} - Value3: {}', i, entry,array2[i],array3[i])
+                    break;
+                case 'TRACE':
+                    log.trace('Index: {} - Value1: {} - Value2: {} - Value3: {}', i, entry,array2[i],array3[i])
+                    break;
+                default:
+                    log.debug('Index: {} - Value1: {} - Value2: {} - Value3: {}', i, entry,array2[i],array3[i])
+
+            }
+
+        }
+
     }
 
     /**

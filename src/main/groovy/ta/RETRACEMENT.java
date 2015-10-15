@@ -63,30 +63,42 @@ public class RETRACEMENT {
     /* @param values
     *  @param minimumReatracementRate
     *  @return 0 if fibonacci is neutral(i.e no level have been crossed). 1,2,3(-1,-2,-3) depending which is the last
-     *  level of fibonacci that has been croseed. The signum depends if levels refers to a positive slope or
-     *  negative slope
+     *  level of fibonacci that has been crossed. The signum depends if reatracement levels refers to a positive
+     *  impulse or negative slope
     */
     public double[] fibonacciIndicator(double[] values, int minimumReatracementRate) {
 
         double[] result = new double[values.length];
         double[] zigzag = ZIGZAG.zigZag(values, minimumReatracementRate);
-        double[] ficonacciLevels=fibonacci(values,minimumReatracementRate);
-
+        double[] fibonacciLevels=fibonacci(values,minimumReatracementRate);
+        int level=0;
+        int signum=1;
         for (int i = 2; i < zigzag.length; i++) {
             double val_2 = zigzag[i - 2];
             double val_1 = zigzag[i - 1];
             double val = zigzag[i];
             /* The signum determines if we are in an ascending or descending slope */
-            int signum=1;
-            log.debug("val: {} - val_1:{} - val_2:{}", df.format(val), df.format(val_1), df.format(val_2));
-            if (ArrayUtil.isUpperPivot(val_2, val_1, val)) {
-                /* after a maximum we are in a descending slope */
-                signum=-1;
-            }if (ArrayUtil.isLowerPivot(val_2, val_1, val)) {
-                /* after a minimum we are in an ascending slope */
-                signum=1;
-            }
 
+
+            log.debug("val: {} - val_1:{} - val_2:{} - level:{}", df.format(val), df.format(val_1), df.format(val_2));
+            if (ArrayUtil.isPivot(val_2, val_1, val)) {
+                /* whenever we find a pivot we reset the level */
+                log.debug("pivot:val_1:{}", df.format(val_1));
+                level=0;
+                if (ArrayUtil.isUpperPivot(val_2, val_1, val)) {
+                    /* after a maximum we are in a negative slope */
+                    signum = -1;
+
+                }else if (ArrayUtil.isLowerPivot(val_2, val_1, val)) {
+                    /* after a minimum we are in a positive slope */
+                    signum = 1;
+
+                }
+            }
+            if(fibonacciLevels[i]!=0)
+                level+=1;
+
+            result[i]=level*signum;
 
         }
 
