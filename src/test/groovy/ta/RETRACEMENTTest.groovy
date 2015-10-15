@@ -4,6 +4,7 @@ import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
 import model.Security
 import model.SecurityQuote
+import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
 import service.SecurityService
@@ -37,6 +38,10 @@ class RETRACEMENTTest {
         double[] result=retr.fibonacci(values,10)
         double[] resultIndicator=retr.fibonacciIndicator(values,10)
         ArrayHelper.logCompare(zigZag,result,resultIndicator,log)
+        result.eachWithIndex { double entry, int i ->
+            if(entry!=0)
+                Assert.assertTrue(resultIndicator[i]!=0)
+        }
 
 
     }
