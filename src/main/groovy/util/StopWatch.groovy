@@ -5,11 +5,13 @@ package util
  * Created by filippo on 20/12/14.
  */
 class StopWatch {
+
+    private units
+    private timeRecoreds = [:].withDefault { 0.0 }
+
     StopWatch(units) {
         this.units = units
     }
-    private units
-    private timeRecoreds = [:].withDefault { 0.0 }
 
     private long getTime(){
         if(units=='millisecond')
