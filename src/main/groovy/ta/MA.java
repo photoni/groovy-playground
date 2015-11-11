@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ArrayUtil;
 
+import static ta.MA.emaFormula;
+
 /**
  *  MACD
  *
@@ -133,7 +135,7 @@ public class MA {
 
 
     /*
-	 * Smoothing formula for EMA
+	 * Smoothing formula for EMA with default smoothing constant 2D / (periods + 1)
 	 * @param values the array of values ordered from older to newer
 	 *
 	 * @param periods number of period to compute
@@ -142,12 +144,29 @@ public class MA {
 	 */
     public static double emaFormula(int startIndex, int endIndex,
                                     double[] values, int periods,int cursor) {
+        double multiplier = 2D / (periods + 1);
+        return emaFormula(startIndex,endIndex,values,periods,multiplier,cursor);
+    }
+
+    /*
+	 * Smoothing formula for EMA
+	 * @param startIndex
+	 * @param endIndex
+	 * @param values the array of values ordered from older to newer
+	 * @param periods number of period to compute
+	 * @param smoothingConstant the constant used to smooth the curve
+	 * @param cursor the current offset
+	 *
+	 * @return
+	 */
+    public static double emaFormula(int startIndex, int endIndex,
+                                    double[] values, int periods,double smoothingConstant,int cursor) {
 
         int backwardIterations=periods-1;
         int currentIndex=startIndex+cursor;
         double emaPrev = 0;
         // (2 / (Time periods + 1) )
-        double multiplier = 2D / (periods + 1);
+        double multiplier = smoothingConstant;
         // {Close - EMA(previous day)} x multiplier + EMA(previous day)
         double result = 0D; //
         if (currentIndex>backwardIterations  && Math.abs(cursor)<(backwardIterations)){

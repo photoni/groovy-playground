@@ -1,7 +1,16 @@
 package ta;
 
+/**
+ * Efficient Ratio(ER) indicator. The ER is basically the price change adjusted for the daily volatility
+ */
 public class ER {
 
+    /**
+     * Computes ER
+     * @param values
+     * @param periods
+     * @return
+     */
     public static double[] er(double[] values, int periods) {
         final int length = values.length;
         double[] result = new double[length];
@@ -10,6 +19,24 @@ public class ER {
         for (int i = 0; i < length; i++) {
             if (volatility[i] > 0)
                 result[i] = change[i] / volatility[i];
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param values
+     * @param periods
+     * @param fastest the fastest constant (suggested 2)
+     * @param slowest the slowest constant (suggested 30)
+     * @return
+     */
+    public static double[] sc(double[] values, int periods,int fastest,int slowest) {
+        final int length = values.length;
+        double[] result = new double[length];
+        double[] er=er(values,periods);
+        for (int i = 0; i < length; i++) {
+            result[i]=scFormula(er[i],fastest,slowest);
         }
         return result;
     }
@@ -29,6 +56,17 @@ public class ER {
             result[i] = sumFormula(values, i - periods, i);
         }
         return result;
+    }
+
+    /**
+     *
+     * @param er efficiency ratio
+     * @param fastest the fastest constant (suggested 2)
+     * @param slowest the slowest constant (suggested 30)
+     * @return
+     */
+    private static double scFormula(double er,int fastest, int slowest) {
+        return Math.pow(((er * (2D/(fastest+1) - 2D/(slowest+1))) + 2D/(slowest+1)),2);
     }
 
     private static double baseFormula(double close, double priorClose) {
