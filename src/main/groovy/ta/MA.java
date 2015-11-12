@@ -1,9 +1,12 @@
 package ta;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ArrayUtil;
+
+import java.util.Arrays;
 
 import static ta.MA.emaFormula;
 
@@ -60,12 +63,41 @@ public class MA {
      */
     public static double[] ema(int startIndex, int endIndex, double[] values,
                                int periods) {
+        double[] sc=new double[values.length];
+        double multiplier = 2D / (periods + 1);
+        Arrays.fill(sc,multiplier);
+        // (2 / (Time periods + 1) )
+
         int loops = endIndex - startIndex;
         double[] result = new double[loops];
         for (int i = 0; i < loops; i++) {
 
             double ema=0;
-            ema = emaFormula(startIndex + i, endIndex, values, periods, 0);
+            ema = emaFormula(startIndex + i, endIndex, values, periods,sc, 0);
+
+
+            result[startIndex+i] = ema;
+        }
+
+        return result;
+    }
+
+    /**
+     * @param values
+     *            the array of values ordered from older to newer
+     * @param sc smoothing constant values
+     * @param periods
+     *            number of period to compute
+     * @return
+     */
+    public static double[] ema(int startIndex, int endIndex, double[] values,double[] sc,
+                               int periods) {
+        int loops = endIndex - startIndex;
+        double[] result = new double[loops];
+        for (int i = 0; i < loops; i++) {
+
+            double ema=0;
+            ema = emaFormula(startIndex + i, endIndex, values, periods,sc, 0);
 
 
             result[startIndex+i] = ema;
@@ -132,6 +164,20 @@ public class MA {
 
     }
 
+    /**
+     *
+     * @param values
+     * @param periods look back period
+     * @param fastest fastest moving constant(suggested 2)
+     * @param slowest slowest moving constant(suggested 30)
+     * @return
+     */
+    public static double[] kama(double[] values,int periods,int fastest,int slowest){
+        double[] sc=ER.sc(values,periods,fastest,slowest);
+        double[] kama = MA.ema(0, values.length, values, periods);
+        return kama;
+    }
+
 
 
     /*
@@ -144,8 +190,12 @@ public class MA {
 	 */
     public static double emaFormula(int startIndex, int endIndex,
                                     double[] values, int periods,int cursor) {
+        double[] sc=new double[values.length];
         double multiplier = 2D / (periods + 1);
-        return emaFormula(startIndex,endIndex,values,periods,multiplier,cursor);
+        Arrays.fill(sc,multiplier);
+        // (2 / (Time periods + 1) )
+
+        return emaFormula(startIndex,endIndex,values,periods,sc,cursor);
     }
 
     /*
@@ -160,18 +210,19 @@ public class MA {
 	 * @return
 	 */
     public static double emaFormula(int startIndex, int endIndex,
-                                    double[] values, int periods,double smoothingConstant,int cursor) {
+                                    double[] values, int periods,double[] smoothingConstant,int cursor) {
+
+
+        int currentIndex=startIndex+cursor;
 
         int backwardIterations=periods-1;
-        int currentIndex=startIndex+cursor;
         double emaPrev = 0;
-        // (2 / (Time periods + 1) )
-        double multiplier = smoothingConstant;
         // {Close - EMA(previous day)} x multiplier + EMA(previous day)
-        double result = 0D; //
+        double result = 0D;
         if (currentIndex>backwardIterations  && Math.abs(cursor)<(backwardIterations)){
-            emaPrev = emaFormula(startIndex, endIndex, values, periods,--cursor);
+            emaPrev = emaFormula(startIndex, endIndex, values, periods,smoothingConstant,--cursor);
             double close = values[currentIndex];
+            double multiplier = smoothingConstant[currentIndex];
             result = (close - emaPrev) * multiplier + emaPrev;
             log.debug("ema - index: {}- cursor: {}- ema: {} - close:{} - emaPrev:{}",currentIndex,cursor,result,close,
                     emaPrev);
@@ -181,8 +232,6 @@ public class MA {
             result = smaFormula(currentIndex,periods,values);
             log.debug("sma -    index: {}- cursor: {}- ema: {} - emaPrev:{}",currentIndex,cursor,result,emaPrev);
 
-        } else {
-            result = 0;
         }
 
 

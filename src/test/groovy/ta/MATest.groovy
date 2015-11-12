@@ -2,11 +2,13 @@ package ta
 
 import data.TestDataSupport
 import groovy.util.logging.Slf4j
+import helpers.ArrayHelper
 import model.Security
 import org.apache.commons.lang.ArrayUtils
 import org.junit.Ignore
 import org.junit.Test
 import service.SecurityService
+import util.MathUtil
 
 @Slf4j
 class MATest {
@@ -100,6 +102,18 @@ class MATest {
         out[0].eachWithIndex { val,i -> log.trace(" macd line lower: ${i} - val : ${val}")}
         out[1].eachWithIndex { val,i -> log.trace(" macd signal: ${i} - val : ${val}")}
         out[2].eachWithIndex { val,i -> log.trace(" macd histogram: ${i} - val : ${val}")}
+    }
+
+
+    @Test
+    public void kamaTest() {
+        double[] result=MA.kama(TestDataSupport.KAMA_VALUES,10,2,30);
+
+        for (int i = 0; i < result.length; i++) {
+            result[i]=MathUtil.nDecimal(result[i],2);
+        }
+        ArrayHelper.log(result,log,true)
+
     }
 
 

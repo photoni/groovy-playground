@@ -22,6 +22,9 @@ class TechnicalAnalisys {
             } else if ("iema".equalsIgnoreCase(obj)) {
                 def ema = MA.ema(0, prices.length, ArrayUtil.reverse(prices), 20)
                 overlays.put("iema", ArrayUtil.reverse(ema))
+            } else if ("ikama".equalsIgnoreCase(obj)) {
+                def kama = MA.kama(ArrayUtil.reverse(prices),10,2,30);
+                overlays.put("ikama", ArrayUtil.reverse(kama))
             } else if ("iboll".equalsIgnoreCase(obj)) {
                 def bollingerBands = Indicators.bollingerBands(0, prices.length, prices, 20)
                 result.put("iboll-lower", bollingerBands[0])
