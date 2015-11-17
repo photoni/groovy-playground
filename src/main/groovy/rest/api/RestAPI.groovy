@@ -16,7 +16,7 @@ import util.DateUtil;
 
 @Path("api")
 public class RestAPI {
-	static final String TICKER = "GOOGL"
+	static final String TICKER = "AAPL"
 	Security s;double[] prices;double[] highs;double[] lows;long[] dates;TechnicalAnalisys ta;SecurityService ss;
 
 	@GET

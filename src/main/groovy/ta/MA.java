@@ -174,7 +174,7 @@ public class MA {
      */
     public static double[] kama(double[] values,int periods,int fastest,int slowest){
         double[] sc=ER.sc(values,periods,fastest,slowest);
-        double[] kama = MA.ema(0, values.length, values, periods);
+        double[] kama = MA.ema(0, values.length, values,sc, periods);
         return kama;
     }
 
