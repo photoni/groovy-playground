@@ -21,13 +21,7 @@ public class AROON {
     public static final byte AROON_BEAR=-1;
     public static final byte AROON_NEUTRAL=0;
 
-    /**
-     * combined Aroon indicators
-     * @return AroonUp,AroonDown and AroonOscillator in this order
-     */
-    public static double[] aroonSignal(){
-        return null;
-    }
+
 
     /**
      * Aroon-Up = ((25 - Days Since 25-day High)/25) x 100

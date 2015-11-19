@@ -94,6 +94,18 @@ class MathAnalysisTest {
     }
 
     @Test
+    def void slopeTest(){
+        def values=[1,1,1,1,1,1,1,2,3,6,7,17,81,81,81,81,81,81,81,80,79,50,16,15,10,9,8,7,6,5,4,3.2,1,1,1,1,1] as
+                double[]
+        double[]slope =MathAnalysis.slope(values,5)
+        log.debug('slope')
+        ArrayHelper.log(slope,log,true)
+
+
+
+    }
+
+    @Test
     def void highestHighTest(){
 
         def revHighValues= TestDataSupport.SOO_INITIAL_HIGH_VALUES.reverse() as double[]

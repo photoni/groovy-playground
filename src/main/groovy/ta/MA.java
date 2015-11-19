@@ -180,6 +180,11 @@ public class MA {
 
 
 
+
+
+
+
+
     /*
 	 * Smoothing formula for EMA with default smoothing constant 2D / (periods + 1)
 	 * @param values the array of values ordered from older to newer

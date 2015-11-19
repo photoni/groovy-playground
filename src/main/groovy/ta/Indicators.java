@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import util.ArrayUtil;
 
 
-
+@Deprecated
 public class Indicators {
 	
 	private static Logger log= LoggerFactory.getLogger(Indicators.class);

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * groovy-playground
  * Created by filippo on 21/09/14.
  */
-
+@Deprecated
 public class ADX {
     private static Logger log= LoggerFactory.getLogger(Indicators.class);
 

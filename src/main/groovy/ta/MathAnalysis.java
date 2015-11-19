@@ -1,6 +1,7 @@
 package ta;
 
 import helpers.ArrayHelper;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +133,40 @@ public class MathAnalysis {
         deltas[1]=losses;
         return deltas;
     }
+
+
+    public static double[] slope(double[] values,int periods){
+        double[] slope=new double[values.length];
+
+
+        for (int i = periods-1; i < values.length; i++) {
+            SimpleRegression sr=new SimpleRegression();
+            log.debug("-----> i: {}",i);
+            for (int j = periods-1; j >=0; j--) {
+                log.debug("adding--> {} to {}",values[i - j],i - j);
+                sr.addData(i - j, values[i - j]);
+            }
+            slope[i]= sr.getSlope();
+            log.debug("slope --> {}",slope[i]);
+        }
+        return slope;
+    }
+
+    public static double[] trend(double[] slopes,float threshold){
+        double[] trend=new double[slopes.length];
+        for (int i = 1; i < slopes.length; i++) {
+            if(slopes[i]>0 && slopes[i]>threshold)
+                trend[i]=1;
+            else if(slopes[i]<0 && Math.abs(slopes[i])>threshold)
+                trend[i]=-1;
+            else
+                trend[i]=trend[i-1];
+        }
+
+        return trend;
+    }
+
+
 
     /**
      *

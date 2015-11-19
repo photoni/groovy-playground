@@ -23,12 +23,20 @@ class TechnicalAnalisys {
                 def ema = MA.ema(0, prices.length, ArrayUtil.reverse(prices), 20)
                 overlays.put("iema", ArrayUtil.reverse(ema))
             } else if ("ikama".equalsIgnoreCase(obj)) {
-                def kama = MA.kama(ArrayUtil.reverse(prices),30,2,30);
-                overlays.put("ikama", ArrayUtil.reverse(kama))
-                def ema2 = MA.ema(0, prices.length, ArrayUtil.reverse(prices), 2)
-                overlays.put("iema2", ArrayUtil.reverse(ema2))
-                def ema30 = MA.ema(0, prices.length, ArrayUtil.reverse(prices), 30)
-                overlays.put("iema30", ArrayUtil.reverse(ema30))
+                def kama2 = MA.kama(ArrayUtil.reverse(prices),30,2,30);
+                overlays.put("ikama2", ArrayUtil.reverse(kama2))
+                def kama5 = MA.kama(ArrayUtil.reverse(prices),30,5,30);
+                overlays.put("ikama5", ArrayUtil.reverse(kama5))
+                def ikama5Slope = MathAnalysis.slope(kama5,15)
+                indicators.put("ikama5Slope", ArrayUtil.reverse(ikama5Slope))
+                def ikama5Trend = MathAnalysis.trend(ikama5Slope,0.1)
+                indicators.put("ikama5Trend", ArrayUtil.reverse(ikama5Trend))
+                def ikama2Slope = MathAnalysis.slope(kama2,5)
+                indicators.put("ikama2Slope", ArrayUtil.reverse(ikama2Slope))
+                def ikama2Trend = MathAnalysis.trend(ikama2Slope,0.1)
+                indicators.put("ikama2Trend", ArrayUtil.reverse(ikama2Trend))
+
+
             } else if ("iboll".equalsIgnoreCase(obj)) {
                 def bollingerBands = Indicators.bollingerBands(0, prices.length, prices, 20)
                 result.put("iboll-lower", bollingerBands[0])
