@@ -164,25 +164,6 @@ public class MA {
 
     }
 
-    /**
-     *
-     * @param values
-     * @param periods look back period
-     * @param fastest fastest moving constant(suggested 2)
-     * @param slowest slowest moving constant(suggested 30)
-     * @return
-     */
-    public static double[] kama(double[] values,int periods,int fastest,int slowest){
-        double[] sc=ER.sc(values,periods,fastest,slowest);
-        double[] kama = MA.ema(0, values.length, values,sc, periods);
-        return kama;
-    }
-
-
-
-
-
-
 
 
     /*

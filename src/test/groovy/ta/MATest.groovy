@@ -105,16 +105,7 @@ class MATest {
     }
 
 
-    @Test
-    public void kamaTest() {
-        double[] result=MA.kama(TestDataSupport.KAMA_VALUES,10,2,30);
 
-        for (int i = 0; i < result.length; i++) {
-            result[i]=MathUtil.nDecimal(result[i],2);
-        }
-        ArrayHelper.log(result,log,true)
-
-    }
 
 
 }
