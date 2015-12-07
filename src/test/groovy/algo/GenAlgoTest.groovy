@@ -4,6 +4,7 @@ import groovy.util.logging.Log
 import groovy.util.logging.Slf4j
 import org.apache.commons.math3.genetics.AbstractListChromosome
 import org.apache.commons.math3.genetics.BinaryChromosome
+import org.apache.commons.math3.genetics.BinaryMutation
 import org.apache.commons.math3.genetics.Chromosome
 import org.apache.commons.math3.genetics.ElitisticListPopulation
 import org.apache.commons.math3.genetics.FixedGenerationCount
@@ -39,10 +40,37 @@ class GenAlgoTest {
 
     @Test
     public void evolveBinaryCromosome(){
+        // initialize a new genetic algorithm
+        GeneticAlgorithm ga = new GeneticAlgorithm(
+                new OnePointCrossover<Integer>(),
+                1,
+                new BinaryMutation(),
+                0.10,
+                new TournamentSelection(2)
+        );
         BinaryChromosome chrome1 = new DummyBinaryChromosome([0, 0, 0, 0, 0,0,1]);
         BinaryChromosome chrome2 = new DummyBinaryChromosome([1, 0, 0, 0, 0,0,1]);
+        BinaryChromosome chrome3 = new DummyBinaryChromosome([0, 1, 0, 0, 0,0,1]);
+        BinaryChromosome chrome4 = new DummyBinaryChromosome([0, 1, 1, 0, 0,0,1]);
+        BinaryChromosome chrome5 = new DummyBinaryChromosome([0, 1, 0, 1, 0,0,1]);
+
+        Population initialPop = new ElitisticListPopulation(30, 0.2);
+        initialPop.addChromosome(chrome1)
+        initialPop.addChromosome(chrome2)
+        initialPop.addChromosome(chrome3)
+        initialPop.addChromosome(chrome4)
+        initialPop.addChromosome(chrome5)
 
 
+        StoppingCondition stopCond = new FixedGenerationCount(20);
+
+// run the algorithm
+        Population finalPopulation = ga.evolve(initialPop, stopCond);
+
+// best chromosome from the final population
+        Chromosome bestFinal = finalPopulation.getFittestChromosome();
+
+        log.debug("best final: {}",bestFinal)
 
     }
 
