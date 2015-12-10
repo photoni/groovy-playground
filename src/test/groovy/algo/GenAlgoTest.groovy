@@ -172,3 +172,23 @@ public class DummyBinaryChromosome extends BinaryChromosome{
         return sum
     }
 }
+
+public interface BinaryIndexedGene<T>{
+    public T get(int i);
+}
+
+public abstract class BinaryByteGene implements BinaryIndexedGene<Byte>{
+
+    private Byte[] sequence;
+
+    BinaryByteGene(Double[] sequence) {
+        this.sequence = evaluate(sequence)
+    }
+
+    @Override
+    Byte get(int i) {
+        return sequence[i]
+    }
+
+    protected abstract Byte[] evaluate(Double[] sequence);
+}
