@@ -10,6 +10,7 @@ import service.SecurityService
  * Created by filippo on 21/09/14.
  */
 @Slf4j
+@Deprecated
 class ADXTest {
 
 

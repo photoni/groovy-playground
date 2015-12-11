@@ -1,15 +1,18 @@
 package ta;
 
 /**
- * Efficient Ratio(ER) indicator. The ER is basically the price change adjusted for the daily volatility
+ * Efficient Ratio(ER) indicator. The ER is basically the price change adjusted for the daily volatility.<br/> ER
+ * measures the efficiency of the current movement of a curve.ER would be 1 if prices moved up 10 consecutive periods or
+ * down 10 consecutive periods
  */
 public class ER {
 
     /**
      * Computes ER
+     *
      * @param values
-     * @param periods
-     * @return
+     * @param periods the number of periods to look back
+     * @return A number between 0 and 1. The greater the number the bigger the efficiency
      */
     public static double[] er(double[] values, int periods) {
         final int length = values.length;
@@ -24,6 +27,7 @@ public class ER {
     }
 
     /**
+     * Adaptive smoothing constant
      *
      * @param values
      * @param periods
@@ -31,12 +35,12 @@ public class ER {
      * @param slowest the slowest constant (suggested 30)
      * @return
      */
-    public static double[] sc(double[] values, int periods,int fastest,int slowest) {
+    public static double[] sc(double[] values, int periods, int fastest, int slowest) {
         final int length = values.length;
         double[] result = new double[length];
-        double[] er=er(values,periods);
+        double[] er = er(values, periods);
         for (int i = 0; i < length; i++) {
-            result[i]=scFormula(er[i],fastest,slowest);
+            result[i] = scFormula(er[i], fastest, slowest);
         }
         return result;
     }
@@ -59,14 +63,13 @@ public class ER {
     }
 
     /**
-     *
-     * @param er efficiency ratio
+     * @param er      efficiency ratio
      * @param fastest the fastest constant (suggested 2)
      * @param slowest the slowest constant (suggested 30)
      * @return
      */
-    private static double scFormula(double er,int fastest, int slowest) {
-        return Math.pow(((er * (2D/(fastest+1) - 2D/(slowest+1))) + 2D/(slowest+1)),2);
+    private static double scFormula(double er, int fastest, int slowest) {
+        return Math.pow(((er * (2D / (fastest + 1) - 2D / (slowest + 1))) + 2D / (slowest + 1)), 2);
     }
 
     private static double baseFormula(double close, double priorClose) {

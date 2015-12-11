@@ -1,6 +1,5 @@
 package algo
 
-import groovy.util.logging.Log
 import groovy.util.logging.Slf4j
 import org.apache.commons.math3.genetics.AbstractListChromosome
 import org.apache.commons.math3.genetics.BinaryChromosome
@@ -10,7 +9,6 @@ import org.apache.commons.math3.genetics.ElitisticListPopulation
 import org.apache.commons.math3.genetics.FixedGenerationCount
 import org.apache.commons.math3.genetics.GeneticAlgorithm
 import org.apache.commons.math3.genetics.InvalidRepresentationException
-import org.apache.commons.math3.genetics.ListPopulation
 import org.apache.commons.math3.genetics.OnePointCrossover
 import org.apache.commons.math3.genetics.Population
 import org.apache.commons.math3.genetics.RandomKey
@@ -18,6 +16,7 @@ import org.apache.commons.math3.genetics.RandomKeyMutation
 import org.apache.commons.math3.genetics.StoppingCondition
 import org.apache.commons.math3.genetics.TournamentSelection
 import org.junit.Test
+import ta.ER
 
 @Slf4j
 class GenAlgoTest {
@@ -173,22 +172,42 @@ public class DummyBinaryChromosome extends BinaryChromosome{
     }
 }
 
+
+/** Model **/
+
+/**
+ * Basic interface for all indexed genes. An indexed gene is backed by an indexed structure
+ * @param < T >
+ */
 public interface BinaryIndexedGene<T>{
     public T get(int i);
 }
 
-public abstract class BinaryByteGene implements BinaryIndexedGene<Byte>{
+public abstract class BinaryGeneBase implements BinaryIndexedGene<Double>{
 
-    private Byte[] sequence;
+    private Double[] sequence;
 
-    BinaryByteGene(Double[] sequence) {
+    BinaryGeneBase(Double[] sequence) {
         this.sequence = evaluate(sequence)
     }
 
     @Override
-    Byte get(int i) {
+    Double get(int i) {
         return sequence[i]
     }
 
-    protected abstract Byte[] evaluate(Double[] sequence);
+    protected abstract Double[] evaluate(Double[] sequence);
+}
+
+public class ERGene extends BinaryGeneBase{
+    private int periods=10
+    ERGene(Double[] sequence) {
+        super(sequence)
+    }
+
+    @Override
+    protected Double[] evaluate(Double[] sequence) {
+        double[] result=ER.er(sequence,periods);
+        return result
+    }
 }
