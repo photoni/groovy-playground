@@ -17,6 +17,9 @@ import org.apache.commons.math3.genetics.StoppingCondition
 import org.apache.commons.math3.genetics.TournamentSelection
 import org.junit.Test
 import ta.ER
+import ta.KAMA
+import ta.MathAnalysis
+import util.ArrayUtil
 
 @Slf4j
 class GenAlgoTest {
@@ -209,5 +212,30 @@ public class ERGene extends BinaryGeneBase{
     protected Double[] evaluate(Double[] sequence) {
         double[] result=ER.er(sequence,periods);
         return result
+    }
+}
+
+public class KamaGene extends BinaryGeneBase{
+    private int periods=10
+    KamaGene(Double[] sequence) {
+        super(sequence)
+    }
+
+    @Override
+    protected Double[] evaluate(Double[] sequence) {
+        def eRP=30;//Efficiency Ratio periods
+        def f5=5;// fastest constant 5 periods
+        def f2=2;// fastest constant 2 periods
+        def slow=30;// slowest constant 30 periods
+        def regression20=20;// regression periods 20
+        def regression5=5;// regression periods 5
+        def threshold=0.1;//neutral trend boundaries
+        def ikama5Trend = KAMA.trend(ArrayUtil.reverse(sequence),eRP,f5,slow,regression20,threshold)
+
+        def ikama2Trend = KAMA.trend(ArrayUtil.reverse(sequence),eRP,f2,slow,regression5,threshold)
+
+        double[] ikamaConvergence=MathAnalysis.convergence(ikama5Trend,ikama2Trend)
+
+        return ikamaConvergence
     }
 }
