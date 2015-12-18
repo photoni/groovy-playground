@@ -86,7 +86,7 @@ class TechnicalAnalisys {
                 }*/
                 //indicators.put("isoo", ArrayUtil.reverse(oscillator))
 
-                short[] overBOverS = SOO.overBOverS(oscillator[3], 80, 20)
+                short[] overBOverS = SOO.overBOverS(oscillator[3], 80, 20,1)
                 //indicators.put("isoo", ArrayUtil.reverse(oscillator[0]))
                 //indicators.put("isooma", ArrayUtil.reverse(oscillator[3]))
                 indicators.put("isooOver", ArrayUtil.reverse(overBOverS))

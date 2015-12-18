@@ -19,6 +19,7 @@ import org.junit.Test
 import ta.ER
 import ta.KAMA
 import ta.MathAnalysis
+import ta.SOO
 import util.ArrayUtil
 
 @Slf4j
@@ -237,5 +238,20 @@ public class KamaGene extends BinaryGeneBase{
         double[] ikamaConvergence=MathAnalysis.convergence(ikama5Trend,ikama2Trend)
 
         return ikamaConvergence
+    }
+}
+
+public class SooGene extends BinaryGeneBase{
+    private int periods=10
+    SooGene(Double[] sequence) {
+        super(sequence)
+    }
+
+    @Override
+    protected Double[] evaluate(Double[] sequence) {
+
+        double[][] oscillator = SOO.stochasticOscillator(0, sequence, 14, 3)
+        double[] signal = SOO.signal(oscillator[3], 80, 20,-1)
+
     }
 }

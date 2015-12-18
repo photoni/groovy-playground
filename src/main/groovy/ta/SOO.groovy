@@ -64,16 +64,34 @@ public class SOO {
         */
 
     }
-    public static short[] overBOverS(double[] stocasticOscillator,int overBThreshold,int overSThreshold){
-        short[] overBOverS= ArrayHelper.closureIterator( stocasticOscillator){int i,double value ->
-            short resultVal=0;
+
+    /*
+     * @param stocasticOscillator the computed stocastic oscillator
+     * @param overBThreshold Overbought threshold
+     * @param overSThreshold Oversold threshold
+     *
+     */
+    public static double[] overBOverS(double[] stocasticOscillator,int overBThreshold,int overSThreshold,int signum){
+        double[] overBOverS= ArrayHelper.closureIterator( stocasticOscillator){int i,double value ->
+            double resultVal=0;
             if(value>overBThreshold)
                 resultVal=1
             else if(value<=overSThreshold)
                 resultVal=-1
-            return resultVal
+            return resultVal*signum
         }
 
+
+    }
+
+    /*
+    * @param stocasticOscillator the computed stocastic oscillator
+    * @param overBThreshold Overbought threshold
+    * @param overSThreshold Oversold threshold
+    *
+    */
+    public static double[] signal(double[] stocasticOscillator,int overBThreshold,int overSThreshold){
+        return overBOverS(stocasticOscillator,overBThreshold,overSThreshold,-1)
 
     }
     public static short[] overBOverSContinous(short[] overBOverS){
