@@ -109,9 +109,10 @@
             var m=data.results.m;
             buildSeries(m,dates,oSeries,false);
 
-
-
-             jQuery('#container').highcharts('StockChart', {
+            jQuery('#container').highcharts('StockChart', {
+                chart : {
+                zoomType : 'x'
+                },
                 rangeSelector : {
                     selected : 5,
                     inputEnabled: jQuery('#container').width() > 480
@@ -120,16 +121,34 @@
                     text : ' Overlays'
                 },
 
+                legend: {
+                    enabled: true,
+                    backgroundColor: '#FCFFC5',
+                    align:'right',
+                    verticalAlign:'middle',
+                    layout:'vertical'
+                },
+                marginRight:150,
                 series : oSeries
              });
 
              jQuery('#container-indicators').highcharts('StockChart', {
+                chart : {
+                    zoomType : 'x'
+                },
                 rangeSelector : {
                     selected : 5,
                     inputEnabled: jQuery('#container').width() > 480
                 },
                 title : {
                     text : ' Indicators'
+                },
+                legend: {
+                    enabled: true,
+                    backgroundColor: '#FCFFC5',
+                    align:'right',
+                    verticalAlign:'middle',
+                    layout:'vertical'
                 },
 
                 series : iSeries
