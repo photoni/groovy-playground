@@ -71,6 +71,8 @@ class TechnicalAnalisys {
 				// (prices),25,-1)))
                 indicators.put("iaroon-signal", ArrayUtil.reverse(AROON.aroonSignal(ArrayUtil.reverse(prices), 25,
 						50, -50)))
+                indicators.put("iaroon-compound-signal", ArrayUtil.reverse(AROON.aroonCompoundSignal(ArrayUtil.reverse(prices),
+                        25, 50, -50)))
                 indicators.put("iaroon-oscillator", ArrayUtil.reverse(AROON.aroonOscillator(ArrayUtil.reverse(prices)
 						, 25)))
 
@@ -119,13 +121,15 @@ class TechnicalAnalisys {
                 overlays.put("izigzag10", ArrayUtil.reverse(zigzag10))
             } else if ("iretracement".equalsIgnoreCase(obj)) {
 
-                double[] zigzag10 = ZIGZAG.zigZag(ArrayUtil.reverse(prices), 10)
+                double[] zigzag10 = ZIGZAG.zigZag(ArrayUtil.reverse(prices), 7)
                 overlays.put("izigzag10", ArrayUtil.reverse(zigzag10))
                 RETRACEMENT retr = new RETRACEMENT();
-                double[] retracement10 = retr.fibonacci(ArrayUtil.reverse(prices), 10)
-                markers.put("iretracement", ArrayUtil.reverse(retracement10))
-                double[] retracementInd10 = retr.fibonacciIndicator(ArrayUtil.reverse(prices), 10)
-                indicators.put("iretracementInd", ArrayUtil.reverse(retracementInd10))
+                double[] retracement = retr.fibonacci(ArrayUtil.reverse(prices), 7)
+                markers.put("iretracement", ArrayUtil.reverse(retracement))
+                double[] retracementInd = retr.fibonacciIndicator(ArrayUtil.reverse(prices), 7)
+                indicators.put("iretracementInd", ArrayUtil.reverse(retracementInd))
+                double[] retracementSignal = retr.fibonacciSignal(ArrayUtil.reverse(prices), 7,1)
+                indicators.put("iretracementSignal", ArrayUtil.reverse(retracementSignal))
             }
         }
         result.put("i", indicators);

@@ -16,9 +16,12 @@ import org.apache.commons.math3.genetics.RandomKeyMutation
 import org.apache.commons.math3.genetics.StoppingCondition
 import org.apache.commons.math3.genetics.TournamentSelection
 import org.junit.Test
+import ta.AROON
 import ta.ER
 import ta.KAMA
+import ta.MA
 import ta.MathAnalysis
+import ta.RETRACEMENT
 import ta.SOO
 import util.ArrayUtil
 
@@ -242,17 +245,17 @@ public class KamaGene extends BinaryGeneBase{
 }
 
 public class SooGene extends BinaryGeneBase{
-    private int periods=10
+    def periods=14
+    def smooth=3
+    def overBThreshold=80
+    def overSThreshold=20
     SooGene(Double[] sequence) {
         super(sequence)
     }
 
     @Override
     protected Double[] evaluate(Double[] sequence) {
-        def periods=14
-        def smooth=3
-        def overBThreshold=80
-        def overSThreshold=20
+
         double[][] oscillator = SOO.stochasticOscillator(0, sequence, periods, smooth)
         double[] signal = SOO.signal(oscillator[3], overBThreshold, overSThreshold)
 
@@ -260,3 +263,56 @@ public class SooGene extends BinaryGeneBase{
 
     }
 }
+
+public class MacdGene extends BinaryGeneBase{
+    private int fastEma=12
+    private int slowEma=26
+    MacdGene(Double[] sequence) {
+        super(sequence)
+    }
+
+    @Override
+    protected Double[] evaluate(Double[] sequence) {
+
+        def macd = MA.macd(0, sequence.length, sequence, fastEma, slowEma)
+        return macd[7]
+
+    }
+}
+
+public class AroonGene extends BinaryGeneBase{
+    private int periods=25
+    private int bullish=50
+    private int bearish=-50
+
+    AroonGene(Double[] sequence) {
+        super(sequence)
+    }
+
+    @Override
+    protected Double[] evaluate(Double[] sequence) {
+
+        def compoundSignal = AROON.aroonCompoundSignal(sequence, periods, bullish, bearish)
+        return compoundSignal
+
+    }
+}
+
+public class RetracementGene extends BinaryGeneBase{
+    private int zigzag=7
+    private int retracementThrashold=1
+
+    RetracementGene(Double[] sequence) {
+        super(sequence)
+    }
+
+    @Override
+    protected Double[] evaluate(Double[] sequence) {
+
+        RETRACEMENT retr = new RETRACEMENT();
+        def retracementSignal = retr.fibonacciSignal(ArrayUtil.reverse(sequence), zigzag,retracementThrashold)
+        return retracementSignal
+
+    }
+}
+

@@ -2,6 +2,7 @@ package ta;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ArrayUtil;
 
 /**
  * The Aroon indicators fluctuate above/below a centerline (50) and are bound between 0 and 100.
@@ -79,6 +80,28 @@ public class AROON {
         }
 
         return aroonSignal;
+    }
+
+    /**
+     * @param   prices curve of  price
+     * @param   periods how many days (backwards) to consider in computing indicators
+     * @param   bullishThreshold above this value of the oscillator we consider a bullish phase
+     * @param   bearThreshold below this value of the oscillator we consider a bearish phase
+     * @return 1 Similar to #aroonSignal. In case of neutral signal it keep the last value
+     **/
+    public static double[] aroonCompoundSignal(double[] prices,int periods,int bullishThreshold,int bearThreshold){
+        short[] aroonSignal=AROON.aroonSignal(prices, 25,50, -50);
+        double[] aroonCompound=new double[aroonSignal.length];
+
+
+        for (int i = 1; i < aroonSignal.length; i++) {
+            if(aroonSignal[i]==AROON_NEUTRAL)
+                aroonCompound[i]=aroonCompound[i-1];
+            else
+                aroonCompound[i]=aroonSignal[i];
+        }
+
+        return aroonCompound;
     }
 
     /**

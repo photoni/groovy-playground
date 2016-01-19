@@ -70,9 +70,9 @@ public class RETRACEMENT {
 
         double[] result = new double[values.length];
         double[] zigzag = ZIGZAG.zigZag(values, minimumReatracementRate);
-        double[] fibonacciLevels=fibonacci(values,minimumReatracementRate);
-        int level=0;
-        int signum=1;
+        double[] fibonacciLevels = fibonacci(values, minimumReatracementRate);
+        int level = 0;
+        int signum = 1;
         for (int i = 2; i < zigzag.length; i++) {
             double val_2 = zigzag[i - 2];
             double val_1 = zigzag[i - 1];
@@ -84,24 +84,43 @@ public class RETRACEMENT {
             if (ArrayUtil.isPivot(val_2, val_1, val)) {
                 /* whenever we find a pivot we reset the level */
                 log.debug("pivot:val_1:{}", df.format(val_1));
-                level=0;
+                level = 0;
                 if (ArrayUtil.isUpperPivot(val_2, val_1, val)) {
                     /* after a maximum we are in a negative slope */
                     signum = -1;
 
-                }else if (ArrayUtil.isLowerPivot(val_2, val_1, val)) {
+                } else if (ArrayUtil.isLowerPivot(val_2, val_1, val)) {
                     /* after a minimum we are in a positive slope */
                     signum = 1;
 
                 }
             }
-            if(fibonacciLevels[i]!=0)
-                level+=1;
+            if (fibonacciLevels[i] != 0)
+                level += 1;
 
-            result[i]=level*signum;
+            result[i] = level * signum;
 
         }
 
+        return result;
+    }
+
+    /* @param values
+    *  @param minimumReatracementRate
+    *  @return 1 if fibonacci indicator is positive and -1 if negative. When neutral keeps the last value
+    */
+    public double[] fibonacciSignal(double[] values, int minimumReatracementRate,int retracementThreshold) {
+
+        double[] fibonacciIndicator = fibonacciIndicator(values, minimumReatracementRate);
+        double[] result = new double[fibonacciIndicator.length];
+        for (int i = 1; i < fibonacciIndicator.length; i++) {
+            if (result[i - 1] >= 0 && fibonacciIndicator[i] < -retracementThreshold)
+                result[i] = -1;
+            else if(result[i - 1] <= 0 && fibonacciIndicator[i] > retracementThreshold)
+                result[i] = 1;
+            else
+                result[i]=result[i-1];
+        }
         return result;
     }
 
@@ -115,13 +134,13 @@ public class RETRACEMENT {
             log.debug("isCrossingLevel level:{} - rate_1:{} - rate:{} - impulse:{}", level, df.format(rate_1), df.format(rate),
                     df.format(impulse));
 
-            double retracement = Math.abs(rate / impulse);
-            double retracement_1 = Math.abs(rate_1 / impulse);
-            boolean result = (retracement_1 < level && level < retracement) || (retracement_1 > level && level > retracement);
+        double retracement = Math.abs(rate / impulse);
+        double retracement_1 = Math.abs(rate_1 / impulse);
+        boolean result = (retracement_1 < level && level < retracement) || (retracement_1 > level && level > retracement);
 
-            log.debug("isCrossingLevel result ratracement:{} - retracement_1:{} - result:{}", df.format(retracement),
-                    df.format(retracement_1), result);
-            return result;
+        log.debug("isCrossingLevel result ratracement:{} - retracement_1:{} - result:{}", df.format(retracement),
+                df.format(retracement_1), result);
+        return result;
 
     }
 
