@@ -117,7 +117,7 @@ public class MA {
      */
     public static double[][] macd(int startIndex, int endIndex, double[] values,int shortPeriods,int longPeriods) {
         int length = endIndex - startIndex;
-        double[][] result= new double[7][length];
+        double[][] result= new double[8][length];
 
         //MACD Line: (12-day EMA - 26-day EMA)
         double[] macdLineResult = new double[length];
@@ -150,6 +150,13 @@ public class MA {
             signalLineCrossResult[i]=macdHistogram>0?1:(macdHistogram<0?-1:0);
         }
 
+        double[] macdCompoundSignalResult = new double[length];
+        //MACD Compound Signal: MACD signal Line crossover - Macd Center Line crossover
+        for (int i = 0; i < length; i++) {
+
+            macdCompoundSignalResult[i]=Math.min(centerLineCrossResult[i],signalLineCrossResult[i]);
+        }
+
 
 
         result[0]=macdLineResult;
@@ -159,6 +166,7 @@ public class MA {
         result[4]=ema26Result;
         result[5]=centerLineCrossResult;
         result[6]=signalLineCrossResult;
+        result[7]=macdCompoundSignalResult;
 
         return result;
 

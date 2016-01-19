@@ -51,6 +51,7 @@ class TechnicalAnalisys {
                 indicators.put("macd-histogram", ArrayUtil.reverse(macd[2]))
                 indicators.put("centerLineCross", ArrayUtil.reverse(macd[5]))
                 indicators.put("signalLineCross", ArrayUtil.reverse(macd[6]))
+                indicators.put("compoundLineCross", ArrayUtil.reverse(macd[7]))
                 overlays.put("macd-ema12", ArrayUtil.reverse(macd[3]))
                 overlays.put("macd-ema26", ArrayUtil.reverse(macd[4]))
             } else if ("iatr".equalsIgnoreCase(obj))

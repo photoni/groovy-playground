@@ -249,9 +249,14 @@ public class SooGene extends BinaryGeneBase{
 
     @Override
     protected Double[] evaluate(Double[] sequence) {
+        def periods=14
+        def smooth=3
+        def overBThreshold=80
+        def overSThreshold=20
+        double[][] oscillator = SOO.stochasticOscillator(0, sequence, periods, smooth)
+        double[] signal = SOO.signal(oscillator[3], overBThreshold, overSThreshold)
 
-        double[][] oscillator = SOO.stochasticOscillator(0, sequence, 14, 3)
-        double[] signal = SOO.signal(oscillator[3], 80, 20,-1)
+        return signal
 
     }
 }
