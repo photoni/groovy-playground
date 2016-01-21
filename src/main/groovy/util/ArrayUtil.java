@@ -1,6 +1,18 @@
 package util;
 
+import org.apache.commons.lang.ArrayUtils;
+
+import java.util.Collection;
+
 public class ArrayUtil {
+
+    public static Double[] toDoubleArray(Collection<Double> collection){
+        Double[] result=new Double[collection.size()];
+        int i=0;
+        for (Double entry:collection)
+            result[i++]=entry;
+        return result;
+    }
 
     public static double[] slice(double[] values, int startIndex, int endIndex) {
         double[] result = new double[endIndex - startIndex];
