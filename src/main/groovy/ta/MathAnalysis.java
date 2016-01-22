@@ -163,17 +163,32 @@ public class MathAnalysis {
         return trend;
     }
 
-    public static double[] convergence(double[] trend1, double[] trend2) {
-        double[] convergence = new double[trend1.length];
-        for (int i = 1; i < trend1.length; i++) {
-            if (trend1[i] == trend2[i])
-                convergence[i] = trend1[i];
+    public static double[] convergence(double[] slowest, double[] fastest) {
+        double[] convergence = new double[slowest.length];
+        for (int i = 1; i < slowest.length; i++) {
+            if (slowest[i] == fastest[i])
+                convergence[i] = slowest[i];
             else
                 convergence[i] = convergence[i - 1];
         }
 
         return convergence;
     }
+
+    public static double[] convergence(double[] slowest, double[] fastest,double[] hyperloop) {
+        double[] convergence = new double[slowest.length];
+        for (int i = 1; i < slowest.length; i++) {
+            if (slowest[i] == fastest[i])
+                convergence[i] = slowest[i];
+            else if(hyperloop[i]==1)
+                convergence[i] = fastest[i - 1];
+            else
+                convergence[i] = convergence[i - 1];
+        }
+
+        return convergence;
+    }
+
 
 
     /**

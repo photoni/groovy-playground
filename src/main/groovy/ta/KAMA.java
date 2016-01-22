@@ -42,4 +42,23 @@ public class KAMA {
         double[] trend = MathAnalysis.trend(slope, threshold);
         return trend;
     }
+
+    /**
+     * Detect exceptional movements
+     *
+     * @param slope the slope on which detect crashes
+     * @param threshold         neutral trend boundaries in absolute value. The value is suggested to be within
+     *                          boundaries [0 - 0.1].
+
+     * @return 1 if an hyper-trend context is detected or 0
+     */
+    public static double[] hypertrend(double[] slope, float threshold) {
+
+        double[] hypertrend = new double[slope.length];
+        for (int i = 0; i < slope.length; i++) {
+            hypertrend[i]=(Math.abs(slope[i])>Math.abs(threshold))?1D:0D;
+        }
+
+        return hypertrend;
+    }
 }

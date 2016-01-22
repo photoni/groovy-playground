@@ -24,9 +24,9 @@
     <logger name="ta.RETRACEMENT" level="DEBUG"/>
     <logger name="ta.ERTest" level="DEBUG"/>
     <logger name="ta.MATest" level="DEBUG"/>
-    <logger name="ta.MathAnalysis" level="DEBUG"/>
     <logger name="ta.MathAnalysisTest" level="DEBUG"/>
     <logger name="algo" level="DEBUG"/>
+    <logger name="stats" level="DEBUG"/>
   <!-- Strictly speaking, the level attribute is not necessary since -->
   <!-- the level of the root level is set to DEBUG by default.       -->
   <root level="INFO">

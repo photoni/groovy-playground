@@ -17,7 +17,7 @@ public class Performance {
      * @param perc if true the result is a percentage
      * @return
      */
-    public Double gain(double from, double to, boolean perc) {
+    public static Double gain(double from, double to, boolean perc) {
         double gain = (to - from) / from;
         return perc ? gain * 100 : gain;
     }
@@ -27,7 +27,7 @@ public class Performance {
      * @param values values against which compute the gain
      * @return
      */
-    public Double[] gainSignal(int[] signal, double[] values) {
+    public static Double[] gainSignal(double[] signal, double[] values) {
         List<Double> gains = new LinkedList<Double>();
         boolean rec = false;
         double from=0;
