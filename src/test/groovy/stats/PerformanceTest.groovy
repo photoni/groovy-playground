@@ -4,6 +4,7 @@ import data.TestDataSupport
 import groovy.util.logging.Slf4j
 import helpers.ArrayHelper
 import org.junit.Test
+import org.vertx.java.core.json.impl.Json
 import service.SecurityService
 import ta.KAMA
 import ta.MathAnalysis
@@ -28,14 +29,30 @@ class PerformanceTest {
         def ikama5Trend = KAMA.trend(reverse,eRP,f5,slow,regression20,threshold)
 
         def ikama2Trend = KAMA.trend(reverse,eRP,f2,slow,regression5,threshold)
-        def kama2 = KAMA.kama(prices,eRP,f2,slow);
+        def kama2 = KAMA.kama(reverse,eRP,f2,slow);
         def ikama2Slope = MathAnalysis.slope(kama2,regression5)
         def hypertrend = KAMA.hypertrend(ikama2Slope,0.5)
 
-        double[] ikamaConvergence=MathAnalysis.convergence(ikama5Trend,ikama2Trend,hypertrend)
+        double[] ikamaConvergenceHyper=MathAnalysis.convergence(ikama5Trend,ikama2Trend,hypertrend)
+        double[] ikamaConvergence=MathAnalysis.convergence(ikama5Trend,ikama2Trend)
 
-        def perf=Performance.gainSignal(ikamaConvergence,reverse)
+
+
+        def perfHyper=Performance.gainSignal(ikamaConvergenceHyper,reverse,false)
+        def perf=Performance.gainSignal(ikamaConvergence,reverse,false)
         ArrayHelper.log(perf,log,false)
+       log.debug("----------")
+        ArrayHelper.log(perfHyper,log,false)
+        double capital=100;
+        for (int i = 0; i < perfHyper.length; i++) {
+            capital=capital+(capital*perfHyper[i])
+        }
+        log.debug("hyperCapital: {}",capital)
+        capital=100;
+        for (int i = 0; i < perf.length; i++) {
+            capital=capital+(capital*perf[i])
+        }
+        log.debug("capital: {}",capital)
 
     }
 }

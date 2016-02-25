@@ -25,9 +25,10 @@ public class Performance {
     /**
      * @param signal 1 means invested 0 means not invested
      * @param values values against which compute the gain
+     * @param perc if return percentage
      * @return
      */
-    public static Double[] gainSignal(double[] signal, double[] values) {
+    public static Double[] gainSignal(double[] signal, double[] values,boolean perc) {
         List<Double> gains = new LinkedList<Double>();
         boolean rec = false;
         double from=0;
@@ -40,7 +41,7 @@ public class Performance {
             }else if(signal[i] < 0)
             {
                 if (rec == true)
-                    gains.add(gain(from,values[i],true));
+                    gains.add(gain(from,values[i],perc));
                 rec=false;
                 from=0;
             }

@@ -35,8 +35,16 @@ class TechnicalAnalisys {
                 indicators.put("ikama2Slope", ArrayUtil.reverse(ikama2Slope))
                 def ikama2Trend = KAMA.trend(ArrayUtil.reverse(prices),30,2,30,5,0.03)
                 indicators.put("ikama2Trend", ArrayUtil.reverse(ikama2Trend))
+
+                def hypertrend = KAMA.hypertrend(ikama2Slope,0.5)
+
+
                 def ikamaConvergence=MathAnalysis.convergence(ikama5Trend,ikama2Trend)
+                def ikamaConvergenceHyper=MathAnalysis.convergence(ikama5Trend,ikama2Trend,hypertrend)
+
+                //  def ikamaConvergence=MathAnalysis.convergence(ikama5Trend,ikama2Trend)
                 indicators.put("ikamaConv", ArrayUtil.reverse(ikamaConvergence))
+                indicators.put("ikamaConvHyper", ArrayUtil.reverse(ikamaConvergenceHyper))
 
 
             } else if ("iboll".equalsIgnoreCase(obj)) {
