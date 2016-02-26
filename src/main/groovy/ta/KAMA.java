@@ -48,7 +48,7 @@ public class KAMA {
      *
      * @param slope the slope on which detect crashes
      * @param threshold         neutral trend boundaries in absolute value. The value is suggested to be within
-     *                          boundaries [0 - 0.1].
+     *                          boundaries [0.1 - 0.7].
 
      * @return 1 if an hyper-trend context is detected or 0
      */
