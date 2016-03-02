@@ -26,7 +26,7 @@ public class SOO {
      * @param revClose revClose in descending time order
      * @param periods
      * @param smooth
-     * @return stochastic oscillator oin ascending time order
+     * @return stochastic oscillator in ascending time order
      */
     public static double[][] stochasticOscillator(int startIndex, double[] revClose,int periods, int smooth){
         double[][] result=new double[4][revClose.length]
@@ -69,6 +69,7 @@ public class SOO {
      * @param stocasticOscillator the computed stocastic oscillator
      * @param overBThreshold Overbought threshold
      * @param overSThreshold Oversold threshold
+     * @param signum set to -1 to invert values
      *
      */
     public static double[] overBOverS(double[] stocasticOscillator,int overBThreshold,int overSThreshold,int signum){
@@ -94,9 +95,9 @@ public class SOO {
         return overBOverS(stocasticOscillator,overBThreshold,overSThreshold,-1)
 
     }
-    public static short[] overBOverSContinous(short[] overBOverS){
-        short[] continousSignal=new short[overBOverS.length]
-        short prev=0;
+    public static double[] overBOverSContinous(short[] overBOverS){
+        double[] continousSignal=new double[overBOverS.length]
+        double prev=0;
         for (int i = 1; i < overBOverS.length; i++) {
             if(overBOverS[i]==0){
                 continousSignal[i]=prev

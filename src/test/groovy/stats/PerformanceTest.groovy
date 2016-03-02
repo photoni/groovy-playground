@@ -6,9 +6,11 @@ import helpers.ArrayHelper
 import org.junit.Test
 import org.vertx.java.core.json.impl.Json
 import service.SecurityService
+import ta.AROON
 import ta.KAMA
 import ta.MA
 import ta.MathAnalysis
+import ta.SOO
 import util.ArrayUtil
 
 @Slf4j
@@ -55,21 +57,6 @@ class PerformanceTest {
 
     }
 
-    def double compoundCapital(Double[] perf, double capital) {
-        for (int i = 0; i < perf.length; i++) {
-            capital = capital + (capital * perf[i])
-        }
-        capital
-    }
-
-    def double[] getPrices(String ticker) {
-        def ss = SecurityService.instance
-        def s = ss.getSecurity(ticker)
-        def prices = new double[s.getHistory().size()];
-        s.getHistory().eachWithIndex { obj, i -> prices[i] = obj.adjClose }
-        return prices
-    }
-
     @Test
     public void macdPrformanceTest(){
         def ticker = "AAPL"
@@ -91,6 +78,65 @@ class PerformanceTest {
         capital = compoundCapital(perfCompound, capital)
         log.debug("compound: {}",capital)
     }
+
+    @Test
+    public void aroonPrformanceTest(){
+        def ticker = "AAPL"
+        double[] prices = getPrices(ticker)
+        final def reverse = ArrayUtil.reverse(prices)
+
+        def periods = 25
+        def bullishThreshold=40
+        def bearishThreshold=-40
+        double[] aroonCompoundSignal=AROON.aroonCompoundSignal(reverse, periods, bullishThreshold, bearishThreshold)
+        def perf=Performance.gainSignal(aroonCompoundSignal,reverse,false)
+        ArrayHelper.log(perf,log,false)
+
+        double capital=100;
+        capital = compoundCapital(perf, capital)
+        log.debug("center: {}",capital)
+
+
+    }
+
+    @Test
+    public void sooPrformanceTest(){
+        def ticker = "AAPL"
+        double[] prices = getPrices(ticker)
+        final def reverse = ArrayUtil.reverse(prices)
+        def periods = 14
+        def finalSmoothingPeriods = 3
+        double[][] oscillator = SOO.stochasticOscillator(0, prices, periods, finalSmoothingPeriods)
+        def overBoughtThreshold = 70
+        def overSoldThreshold = 30
+        short[] overBOverS = SOO.overBOverS(oscillator[3], overBoughtThreshold, overSoldThreshold,1)
+        double[] overBOverSContinous=SOO.overBOverSContinous(overBOverS)
+        def perf=Performance.gainSignal(overBOverSContinous,reverse,false)
+        ArrayHelper.log(perf,log,false)
+
+        double capital=100;
+        capital = compoundCapital(perf, capital)
+        log.debug("center: {}",capital)
+
+
+    }
+
+
+    def double compoundCapital(Double[] perf, double capital) {
+        for (int i = 0; i < perf.length; i++) {
+            capital = capital + (capital * perf[i])
+        }
+        capital
+    }
+
+    def double[] getPrices(String ticker) {
+        def ss = SecurityService.instance
+        def s = ss.getSecurity(ticker)
+        def prices = new double[s.getHistory().size()];
+        s.getHistory().eachWithIndex { obj, i -> prices[i] = obj.adjClose }
+        return prices
+    }
+
 
     //
 }

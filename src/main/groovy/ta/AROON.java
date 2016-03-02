@@ -90,7 +90,7 @@ public class AROON {
      * @return 1 Similar to #aroonSignal. In case of neutral signal it keep the last value
      **/
     public static double[] aroonCompoundSignal(double[] prices,int periods,int bullishThreshold,int bearThreshold){
-        short[] aroonSignal=AROON.aroonSignal(prices, 25,50, -50);
+        short[] aroonSignal=AROON.aroonSignal(prices, periods,bullishThreshold, bearThreshold);
         double[] aroonCompound=new double[aroonSignal.length];
 
 

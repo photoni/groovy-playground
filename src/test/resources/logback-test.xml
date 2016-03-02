@@ -18,7 +18,7 @@
 
 
 
-    <logger name="helpers.ArrayHelper" level="DEBUG"/>
+    <logger name="helpers.ArrayHelper" level="INFO"/>
 
     <logger name="ta.RETRACEMENTTest" level="DEBUG"/>
     <logger name="ta.RETRACEMENT" level="DEBUG"/>
