@@ -48,6 +48,38 @@ public class ROC {
 
         return result;
     }
+    public static double[] composite(double[]... rocs) {
+        int historyLen=rocs[0].length;
+        double[] result = new double[historyLen];
+        int rocsLen=rocs.length;
+
+        for (int i = 0; i < historyLen; i++) {
+            int sum=0;
+            for (int j = 0; j < rocsLen; j++) {
+                sum+=rocs[j][i];
+            }
+            result[i]=sum;
+
+        }
+
+        return result;
+    }
+    public static double[] compositeSignal(double[] composite) {
+        int threshold=10;
+        int historyLen=composite.length;
+        double[] result = new double[historyLen];
+
+        for (int i = composite.length-2; i > 0; i--) {
+            if(composite[i]>threshold)
+                result[i]=1;
+            else if(composite[i]<threshold&&composite[i]>-threshold)
+                result[i]=result[i+1];
+            else
+                result[i]=-1;
+        }
+
+        return result;
+    }
 
 
     public static double rocFormula(int startIndex, int endIndex,

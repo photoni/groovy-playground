@@ -114,14 +114,25 @@ class TechnicalAnalisys {
 
 
             } else if ("iroc".equalsIgnoreCase(obj)) {
+                //13 21 34 55 89 144 233
+                double[] roc13 = ROC.roc(prices, 13)
                 double[] roc21 = ROC.roc(prices, 21)
-                double[] roc63 = ROC.roc(prices, 63)
-                double[] roc125 = ROC.roc(prices, 125)
-                double[] roc250 = ROC.roc(prices, 250)
+                double[] roc34 = ROC.roc(prices, 34)
+                double[] roc55 = ROC.roc(prices, 100)
+                double[] roc120 = ROC.roc(prices, 120)
+                double[] roc144 = ROC.roc(prices, 144)
+                double[] roc233 = ROC.roc(prices, 233)
+                double[] rocComposite=ROC.composite(roc13,roc21,roc34,roc55,roc120,roc144,roc233)
+                double[] rocCompositeSignal=ROC.compositeSignal(rocComposite)
+                indicators.put("iroc13", roc13)
                 indicators.put("iroc21", roc21)
-                //indicators.put("iroc63", roc63)
-                //indicators.put("iroc125", roc125)
-                indicators.put("iroc250", roc250)
+                //indicators.put("iroc34", MA.sma(0,roc34.length,roc34,3))
+                indicators.put("iroc55", roc55)
+                indicators.put("iroc89", roc120)
+                indicators.put("iroc144", roc144)
+                indicators.put("iroc233", roc233)
+                indicators.put("irocComposite", rocComposite)
+                indicators.put("irocCompositeSignal", rocCompositeSignal)
             } else if ("izigzag".equalsIgnoreCase(obj)) {
                 double[] zigzag7 = ZIGZAG.zigZag(ArrayUtil.reverse(prices), 7)
                 double[] zigzag10 = ZIGZAG.zigZag(ArrayUtil.reverse(prices), 10)

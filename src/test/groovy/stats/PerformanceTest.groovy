@@ -121,6 +121,28 @@ class PerformanceTest {
 
     }
 
+    @Test
+    public void rocPrformanceTest(){
+        def ticker = "AAPL"
+        double[] prices = getPrices(ticker)
+        final def reverse = ArrayUtil.reverse(prices)
+        def periods = 14
+        def finalSmoothingPeriods = 3
+        double[][] oscillator = SOO.stochasticOscillator(0, prices, periods, finalSmoothingPeriods)
+        def overBoughtThreshold = 70
+        def overSoldThreshold = 30
+        short[] overBOverS = SOO.overBOverS(oscillator[3], overBoughtThreshold, overSoldThreshold,1)
+        double[] overBOverSContinous=SOO.overBOverSContinous(overBOverS)
+        def perf=Performance.gainSignal(overBOverSContinous,reverse,false)
+        ArrayHelper.log(perf,log,false)
+
+        double capital=100;
+        capital = compoundCapital(perf, capital)
+        log.debug("center: {}",capital)
+
+
+    }
+
 
     def double compoundCapital(Double[] perf, double capital) {
         for (int i = 0; i < perf.length; i++) {
