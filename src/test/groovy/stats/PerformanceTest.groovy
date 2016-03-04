@@ -10,6 +10,7 @@ import ta.AROON
 import ta.KAMA
 import ta.MA
 import ta.MathAnalysis
+import ta.ROC
 import ta.SOO
 import util.ArrayUtil
 
@@ -126,19 +127,23 @@ class PerformanceTest {
         def ticker = "AAPL"
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
-        def periods = 14
-        def finalSmoothingPeriods = 3
-        double[][] oscillator = SOO.stochasticOscillator(0, prices, periods, finalSmoothingPeriods)
-        def overBoughtThreshold = 70
-        def overSoldThreshold = 30
-        short[] overBOverS = SOO.overBOverS(oscillator[3], overBoughtThreshold, overSoldThreshold,1)
-        double[] overBOverSContinous=SOO.overBOverSContinous(overBOverS)
-        def perf=Performance.gainSignal(overBOverSContinous,reverse,false)
+        double[] roc13 = ROC.roc(prices, 13)
+        double[] roc21 = ROC.roc(prices, 21)
+        //double[] roc34 = ROC.roc(prices, 34)
+        //double[] roc100 = ROC.roc(prices, 100)
+        double[] roc150 = ROC.roc(prices, 150)
+        double[] roc200 = ROC.roc(prices, 200)
+        double[] roc250 = ROC.roc(prices, 250)
+        double[] rocComposite=ROC.composite(roc13,roc21,roc150,roc200,roc250)
+        double[] rocCompositeSmooth=ArrayUtil.reverse(MA.sma(0,rocComposite.length,ArrayUtil
+                .reverse(rocComposite),10))
+        double[] rocCompositeSignal=ROC.compositeSignal(rocCompositeSmooth,15)
+        def perf=Performance.gainSignal(rocCompositeSignal,reverse,false)
         ArrayHelper.log(perf,log,false)
 
         double capital=100;
         capital = compoundCapital(perf, capital)
-        log.debug("center: {}",capital)
+        log.debug("capital: {}",capital)
 
 
     }

@@ -48,6 +48,13 @@ public class ROC {
 
         return result;
     }
+
+    /**
+     *
+     * @param rocs list of Roc histories computent with different periods. They must appear in the array from the
+     *             fastest to the slowest reactive
+     * @return
+     */
     public static double[] composite(double[]... rocs) {
         int historyLen=rocs[0].length;
         double[] result = new double[historyLen];
@@ -64,18 +71,17 @@ public class ROC {
 
         return result;
     }
-    public static double[] compositeSignal(double[] composite) {
-        int threshold=10;
+    public static double[] compositeSignal(double[] composite,double threshold) {
         int historyLen=composite.length;
         double[] result = new double[historyLen];
 
-        for (int i = composite.length-2; i > 0; i--) {
+        for (int i = composite.length-2; i >= 0; i--) {
             if(composite[i]>threshold)
-                result[i]=1;
+                result[i]=100;
             else if(composite[i]<threshold&&composite[i]>-threshold)
                 result[i]=result[i+1];
             else
-                result[i]=-1;
+                result[i]=-100;
         }
 
         return result;
