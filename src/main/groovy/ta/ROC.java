@@ -50,8 +50,9 @@ public class ROC {
     }
 
     /**
-     *
-     * @param rocs list of Roc histories computent with different periods. They must appear in the array from the
+     * Create a composite indicator based on the list of ROC indicators in input. The composite indicator is the sum
+     * of input indicators
+     * @param rocs list of Roc histories computed with different periods. They must appear in the array from the
      *             fastest to the slowest reactive
      * @return
      */
@@ -71,17 +72,25 @@ public class ROC {
 
         return result;
     }
+
+    /**
+     * Create a signal from an indicator
+     * @param composite
+     * @param threshold
+     * @return 1 if the indicator is greater than threshold, -1 if it's lower than indicator, unchanged if it's
+     * between threshold boundaries
+     */
     public static double[] compositeSignal(double[] composite,double threshold) {
         int historyLen=composite.length;
         double[] result = new double[historyLen];
 
         for (int i = composite.length-2; i >= 0; i--) {
             if(composite[i]>threshold)
-                result[i]=100;
+                result[i]=1;
             else if(composite[i]<threshold&&composite[i]>-threshold)
                 result[i]=result[i+1];
             else
-                result[i]=-100;
+                result[i]=-1;
         }
 
         return result;
