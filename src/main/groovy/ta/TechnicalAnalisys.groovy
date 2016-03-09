@@ -53,7 +53,7 @@ class TechnicalAnalisys {
                 result.put("iboll-middle", bollingerBands[1])
                 result.put("iboll-higher", bollingerBands[2])
             } else if ("imacd".equalsIgnoreCase(obj)) {
-                def macd = MA.macd(0, prices.length, ArrayUtil.reverse(prices), 12, 36)
+                def macd = MA.macd(0, prices.length, ArrayUtil.reverse(prices), 12, 36,9)
                 indicators.put("macd-line", ArrayUtil.reverse(macd[0]))
                 indicators.put("macd-signal", ArrayUtil.reverse(macd[1]))
                 indicators.put("macd-histogram", ArrayUtil.reverse(macd[2]))

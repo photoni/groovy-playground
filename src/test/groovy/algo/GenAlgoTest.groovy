@@ -267,6 +267,7 @@ public class SooGene extends BinaryGeneBase{
 public class MacdGene extends BinaryGeneBase{
     private int fastEma=12
     private int slowEma=26
+    private int finalEma=9
     MacdGene(Double[] sequence) {
         super(sequence)
     }
@@ -274,7 +275,7 @@ public class MacdGene extends BinaryGeneBase{
     @Override
     protected Double[] evaluate(Double[] sequence) {
 
-        def macd = MA.macd(0, sequence.length, sequence, fastEma, slowEma)
+        def macd = MA.macd(0, sequence.length, sequence, fastEma, slowEma,finalEma)
         return macd[7]
 
     }

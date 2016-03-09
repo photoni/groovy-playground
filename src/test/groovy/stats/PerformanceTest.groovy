@@ -59,11 +59,70 @@ class PerformanceTest {
     }
 
     @Test
+    public void kamaPrformanceBruteForceTest(){
+        def bestCapital=0;
+
+        def ticker = "AAPL"
+        double[] prices = getPrices(ticker)
+        /*
+        def eRP=30;//Efficiency Ratio periods
+        def f5=5;// slowest fast constant 5 periods
+        def f2=2;// fastest constant 2 periods
+        def slow=30;// slowest constant 30 periods
+        def regression20=20;// regression periods 20
+        def regression5=5;// regression periods 5
+        def threshold=0.03;//neutral trend boundaries
+        def hypertrendSlopeThreshold=0.2*/
+        final def reverse = ArrayUtil.reverse(prices)
+        for (int eRP=10;eRP<=40;eRP+=5) {
+            for (int f5=6;f5<12;f5+=2) {
+                for (int f2=2;f2<6;f2+=1) {
+                    for (int slow=20;slow<=50;slow+=5) {
+                        for (int regression20=15;regression20<=30;regression20+=5) {
+                            for (int regression5=4;regression5<=10;regression5+=2) {
+                                for (int thresholdInt=1;thresholdInt<7;thresholdInt++) {
+                                    for (int hypertrendSlopeThresholdInt=1;hypertrendSlopeThresholdInt<5;
+                                         hypertrendSlopeThresholdInt++) {
+                                        float threshold=thresholdInt/100F;
+                                        float hypertrendSlopeThreshold=hypertrendSlopeThresholdInt/10F;
+                                        def ikama5Trend = KAMA.trend(reverse,eRP,f5,slow,regression20,threshold)
+                                        def ikama2Trend = KAMA.trend(reverse,eRP,f2,slow,regression5,threshold)
+                                        def kama2 = KAMA.kama(reverse,eRP,f2,slow);
+                                        def ikama2Slope = MathAnalysis.slope(kama2,regression5)
+                                        def hypertrend = KAMA.hypertrend(ikama2Slope,hypertrendSlopeThreshold)
+                                        double[] ikamaConvergenceHyper=MathAnalysis.convergence(ikama5Trend,ikama2Trend,hypertrend)
+                                        def perf=Performance.gainSignal(ikamaConvergenceHyper,reverse,false)
+
+                                        double capital=100;
+                                        capital = compoundCapital(perf, capital)
+                                        if(capital>bestCapital) {
+                                            bestCapital = capital
+                                            log.debug("capital: {} - eRP: {} - f5: {} - f2: {} - slow: {} - regression20: {} " +
+                                                    " - regression5: {} - threshold: {} - hypertrendSlopeThreshold: {}", capital,
+                                                    eRP, f5, f2, slow, regression20, regression5,threshold,hypertrendSlopeThreshold)
+
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
+
+    @Test
     public void macdPrformanceTest(){
         def ticker = "AAPL"
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
-        double[][] out=MA.macd(0,reverse.size(),reverse,12,36);
+        double[][] out=MA.macd(0,reverse.size(),reverse,12,36,9);
         def centerLineCrossSignal=out[5];
         def compoundSignal=out[7];
         def perfcenter=Performance.gainSignal(centerLineCrossSignal,reverse,false)
@@ -78,6 +137,41 @@ class PerformanceTest {
         capital=100;
         capital = compoundCapital(perfCompound, capital)
         log.debug("compound: {}",capital)
+    }
+
+    @Test
+    public void macdPrformanceBruteForceTest(){
+        /* winners AAPL */
+        /*
+        capital: 69890.45346084643 - fastEma: 4 - slowEma: 24 - finalEma: 3
+        capital: 72124.62372843911 - fastEma: 8 - slowEma: 32 - finalEma: 3
+        capital: 148981.350995845 - fastEma: 16 - slowEma: 24 - finalEma: 3
+        */
+        def bestCapital=0;
+        def ticker = "AAPL"
+        double[] prices = getPrices(ticker)
+        final def reverse = ArrayUtil.reverse(prices)
+
+        /*def fastEma = 12
+        def slowEma = 36
+        def finalEma = 9*/
+        for (int fastEma=4;fastEma<=20;fastEma+=4) {
+            for (int slowEma=24;slowEma<44;slowEma+=4) {
+                for (int finalEma=3;finalEma<15;finalEma+=3) {
+                    double[][] out=MA.macd(0,reverse.size(),reverse, fastEma, slowEma, finalEma);
+                    def centerLineCrossSignal=out[5];
+                    def perf=Performance.gainSignal(centerLineCrossSignal,reverse,false)
+                    double capital=100;
+                    capital = compoundCapital(perf, capital)
+                    if(capital>bestCapital) {
+                        bestCapital = capital
+                        log.debug("capital: {} - fastEma: {} - slowEma: {} - finalEma: {}", capital, fastEma, slowEma, finalEma)
+
+                    }
+                }
+            }
+        }
+
     }
 
     @Test
@@ -102,12 +196,12 @@ class PerformanceTest {
 
     @Test
     public void aroonPrformanceBruteForceTest(){
-        /* winners */
+        /* winners AAPL*/
         /*
         capital: 110436.18258912767 - periods: 30 - bullishThreshold: 50 - bearishThreshold:-75
         capital: 127696.14304468011 - periods: 35 - bullishThreshold: 40 - bearishThreshold:-65
         */
-         
+
         def ticker = "AAPL"
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
@@ -185,7 +279,7 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceBruteForceTest(){
-        /* winners */
+        /* winners AAPL*/
         /* capital: 150081.66948643822 - r1:10 - r2:15 - r3:90 - r4: 245 - r5: 290 - rcsp:5 - rct:15
         capital: 165189.43007903354 - r1:10 - r2:20 - r3:90 - r4: 240 - r5: 290 - rcsp:5 - rct:15
         capital: 185218.99725047845 - r1:10 - r2:20 - r3:90 - r4: 245 - r5: 290 - rcsp:5 - rct:15

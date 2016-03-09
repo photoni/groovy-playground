@@ -86,7 +86,7 @@ class MATest {
       QA_MACD_HISTOGRAM=OK
      */
     public void macdTest() {
-        double[][] out=MA.macd(0,TestDataSupport.MACD_VALUES.size(),TestDataSupport.MACD_VALUES,12,26);
+        double[][] out=MA.macd(0,TestDataSupport.MACD_VALUES.size(),TestDataSupport.MACD_VALUES,12,26,9);
         assert out[0][25]==0.20380053583966884
         assert out[0][26]==0.24674034266928757
         assert out[0][27]==0.41003825490876267

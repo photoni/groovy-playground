@@ -115,7 +115,8 @@ public class MA {
      * @param values from older to newer
      * @return
      */
-    public static double[][] macd(int startIndex, int endIndex, double[] values,int shortPeriods,int longPeriods) {
+    public static double[][] macd(int startIndex, int endIndex, double[] values,int shortPeriods,int longPeriods, int
+     ema) {
         int length = endIndex - startIndex;
         double[][] result= new double[8][length];
 
@@ -137,7 +138,7 @@ public class MA {
         double[] signalLineCrossResult = new double[length];
         //Signal Line: 9-day EMA of MACD Line
         for (int i = 0; i < length; i++) {
-            double macdSignal =emaFormula(startIndex+i, endIndex, macdLineResult,9,0);
+            double macdSignal =emaFormula(startIndex+i, endIndex, macdLineResult,ema,0);
             macdSignalResult[i]=macdSignal;
 
         }
