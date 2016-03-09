@@ -101,15 +101,51 @@ class PerformanceTest {
     }
 
     @Test
+    public void aroonPrformanceBruteForceTest(){
+        /* winners */
+        /*
+        capital: 110436.18258912767 - periods: 30 - bullishThreshold: 50 - bearishThreshold:-75
+        capital: 127696.14304468011 - periods: 35 - bullishThreshold: 40 - bearishThreshold:-65
+        */
+         
+        def ticker = "AAPL"
+        double[] prices = getPrices(ticker)
+        final def reverse = ArrayUtil.reverse(prices)
+        def bestCapital=0;
+        /*
+        def periods = 25
+        def bullishThreshold=40
+        def bearishThreshold=-40*/
+
+        for (int periods=10;periods<50;periods+=5) {
+            for ( int bullishThreshold=30;bullishThreshold<=80;bullishThreshold+=5) {
+                for (int bearishThreshold=-80;bearishThreshold<=-30;bearishThreshold+=5) {
+                    double[] aroonCompoundSignal=AROON.aroonCompoundSignal(reverse, periods, bullishThreshold, bearishThreshold)
+                    def perf=Performance.gainSignal(aroonCompoundSignal,reverse,false)
+                    double capital=100;
+                    capital = compoundCapital(perf, capital)
+                    if(capital>bestCapital){
+                        bestCapital=capital
+                    log.debug("capital: {} - periods: {} - bullishThreshold: {} - bearishThreshold:{}",capital,
+                            periods,bullishThreshold,bearishThreshold)
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    @Test
     public void sooPrformanceTest(){
         def ticker = "AAPL"
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
         def periods = 14
         def finalSmoothingPeriods = 3
-        double[][] oscillator = SOO.stochasticOscillator(0, prices, periods, finalSmoothingPeriods)
         def overBoughtThreshold = 70
         def overSoldThreshold = 30
+        double[][] oscillator = SOO.stochasticOscillator(0, prices, periods, finalSmoothingPeriods)
         short[] overBOverS = SOO.overBOverS(oscillator[3], overBoughtThreshold, overSoldThreshold,1)
         double[] overBOverSContinous=SOO.overBOverSContinous(overBOverS)
         def perf=Performance.gainSignal(overBOverSContinous,reverse,false)
@@ -127,18 +163,17 @@ class PerformanceTest {
         def ticker = "AAPL"
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
-        double[] roc13 = ROC.roc(prices, 13)
-        double[] roc21 = ROC.roc(prices, 21)
-        //double[] roc34 = ROC.roc(prices, 34)
-        //double[] roc100 = ROC.roc(prices, 100)
-        double[] roc150 = ROC.roc(prices, 150)
-        double[] roc200 = ROC.roc(prices, 200)
-        double[] roc250 = ROC.roc(prices, 250)
-        double[] rocComposite=ROC.composite(roc13,roc21,roc150,roc200,roc250)
-        double[] rocCompositeSmooth=ArrayUtil.reverse(MA.sma(0,rocComposite.length,ArrayUtil
-                .reverse(rocComposite),10))
-        double[] rocCompositeSignal=ROC.compositeSignal(rocCompositeSmooth,15)
-        def perf=Performance.gainSignal(rocCompositeSignal,reverse,false)
+
+        def roc1Period = 13
+        def roc2Period = 21
+        def roc3Period = 150
+        def roc4Period = 200
+        def roc5Period = 250
+        def rocCompositeSmoothPeriod = 10
+        def rocCompositeThreshold = 15
+
+        Double[] perf = ROC.compositeSignal(prices, roc1Period, roc2Period, roc3Period, roc4Period, roc5Period,
+                rocCompositeSmoothPeriod, rocCompositeThreshold, reverse)
         ArrayHelper.log(perf,log,false)
 
         double capital=100;
@@ -147,6 +182,61 @@ class PerformanceTest {
 
 
     }
+
+    @Test
+    public void rocPrformanceBruteForceTest(){
+        /* winners */
+        /* capital: 150081.66948643822 - r1:10 - r2:15 - r3:90 - r4: 245 - r5: 290 - rcsp:5 - rct:15
+        capital: 165189.43007903354 - r1:10 - r2:20 - r3:90 - r4: 240 - r5: 290 - rcsp:5 - rct:15
+        capital: 185218.99725047845 - r1:10 - r2:20 - r3:90 - r4: 245 - r5: 290 - rcsp:5 - rct:15
+        */
+        def ticker = "AAPL"
+        def bestCapital=0;
+        double[] prices = getPrices(ticker)
+        final def reverse = ArrayUtil.reverse(prices)
+/*
+        def roc1Period = 13
+        def roc2Period = 21
+        def roc3Period = 150
+        def roc4Period = 200
+        def roc5Period = 250
+        def rocCompositeSmoothPeriod = 10
+        def rocCompositeThreshold = 15*/
+
+        for (int roc1Period=5; roc1Period<15;roc1Period+=5) {
+            for (int roc2Period=15; roc2Period<50;roc2Period+=5) {
+                for (int roc3Period=50; roc3Period<200;roc3Period+=10) {
+                    for (int roc4Period=200; roc4Period<250;roc4Period+=5) {
+                        for (int roc5Period=250; roc5Period<350;roc5Period+=10) {
+                            for (int rocCompositeSmoothPeriod=5; rocCompositeSmoothPeriod<30;
+                                 rocCompositeSmoothPeriod+=5) {
+                                for (int rocCompositeThreshold=5; rocCompositeThreshold<30;
+                                     rocCompositeThreshold+=5) {
+                                    double[] rocCompositeSignal = ROC.compositeSignal(prices, roc1Period, roc2Period, roc3Period, roc4Period,
+                                            roc5Period,
+                                            rocCompositeSmoothPeriod, rocCompositeThreshold)
+                                    def perf = Performance.gainSignal(rocCompositeSignal, reverse, false)
+                                    double capital=100;
+                                    capital = compoundCapital(perf, capital)
+                                    if(capital>bestCapital){
+                                        bestCapital=capital
+                                        log.debug("capital: {} - r1:{} - r2:{} - r3:{} - r4: {} - r5: {} - rcsp:{} - " +
+                                            "rct:{} ",capital,roc1Period,roc2Period,roc3Period,roc4Period,roc5Period,
+                                            rocCompositeSmoothPeriod,rocCompositeThreshold)
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
 
 
     def double compoundCapital(Double[] perf, double capital) {

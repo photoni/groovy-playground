@@ -1,5 +1,7 @@
 package ta;
 
+import util.ArrayUtil;
+
 /**
  * Rate-of-Change indicator is momentum in its purest form. It measures the percentage increase or decrease in price
  * over a given period of time. Think of its as the rise (price change) over the run (time). In general, prices are
@@ -94,6 +96,24 @@ public class ROC {
         }
 
         return result;
+    }
+
+    public static double[] compositeSignal(double[] prices, int roc1Period, int roc2Period, int roc3Period, int
+            roc4Period, int
+            roc5Period, int rocCompositeSmoothPeriod, int rocCompositeThreshold) {
+        double[] roc1 = ROC.roc(prices, roc1Period);
+        double[] roc2 = ROC.roc(prices, roc2Period);
+        double[] roc3 = ROC.roc(prices, roc3Period);
+        double[] roc4 = ROC.roc(prices, roc4Period);
+        double[] roc5 = ROC.roc(prices, roc5Period);
+        double[] rocComposite = composite(roc1, roc2, roc3, roc4, roc5);
+
+        double[] rocCompositeSmooth = ArrayUtil.reverse(MA.sma(0, rocComposite.length, ArrayUtil
+                .reverse(rocComposite), rocCompositeSmoothPeriod));
+
+        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmooth, rocCompositeThreshold);
+
+        return rocCompositeSignal;
     }
 
 
