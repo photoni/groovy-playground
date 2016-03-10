@@ -23,6 +23,7 @@ dependencies {
 	compile 'io.vertx:vertx-platform:2.1.2'
 	compile 'com.sun.jersey:jersey-server:1.18.1'
 	compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.3.0'
+	compile 'org.codehaus.gpars:gpars:1.2.0'
 	testCompile 'junit:junit:4.11'
 }
 

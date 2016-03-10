@@ -2,6 +2,9 @@ package stats
 
 import data.TestDataSupport
 import groovy.util.logging.Slf4j
+import groovyx.gpars.GParsPool
+import groovyx.gpars.dataflow.Promise
+import groovyx.gpars.pa.CallAsyncTask
 import helpers.ArrayHelper
 import org.junit.Test
 import org.vertx.java.core.json.impl.Json
@@ -60,9 +63,18 @@ class PerformanceTest {
 
     @Test
     public void kamaPrformanceBruteForceTest(){
+
+        /*winners*/
+        /*
+        capital: 91005.79664486904 - eRP: 10 - f5: 8 - f2: 2 - slow: 25 - regression20: 30  - regression5: 10 - threshold: 0.01 - hypertrendSlopeThreshold: 0.2
+        capital: 93507.91950147462 - eRP: 10 - f5: 8 - f2: 2 - slow: 35 - regression20: 30  - regression5: 10 - threshold: 0.01 - hypertrendSlopeThreshold: 0.2
+        capital: 99268.81623576248 - eRP: 10 - f5: 8 - f2: 2 - slow: 40 - regression20: 30  - regression5: 10 - threshold: 0.01 - hypertrendSlopeThreshold: 0.2
+        capital: 105985.19363184845 - eRP: 15 - f5: 10 - f2: 2 - slow: 30 - regression20: 20  - regression5: 4 - threshold: 0.01 - hypertrendSlopeThreshold: 0.4
+         */
+
         def bestCapital=0;
 
-        def ticker = "AAPL"
+        def ticker = "JPM"
         double[] prices = getPrices(ticker)
         /*
         def eRP=30;//Efficiency Ratio periods
@@ -141,14 +153,19 @@ class PerformanceTest {
 
     @Test
     public void macdPrformanceBruteForceTest(){
-        /* winners AAPL */
-        /*
+        /* winners  */
+        /*AAPL
         capital: 69890.45346084643 - fastEma: 4 - slowEma: 24 - finalEma: 3
         capital: 72124.62372843911 - fastEma: 8 - slowEma: 32 - finalEma: 3
         capital: 148981.350995845 - fastEma: 16 - slowEma: 24 - finalEma: 3
         */
+        /* JPM
+        capital: 1411.881270953797 - fastEma: 12 - slowEma: 32 - finalEma: 3
+        capital: 1435.1472130644747 - fastEma: 12 - slowEma: 40 - finalEma: 3
+        capital: 1988.4268992016525 - fastEma: 20 - slowEma: 28 - finalEma: 3
+         */
         def bestCapital=0;
-        def ticker = "AAPL"
+        def ticker = "JPM"
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
 
@@ -279,12 +296,18 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceBruteForceTest(){
-        /* winners AAPL*/
-        /* capital: 150081.66948643822 - r1:10 - r2:15 - r3:90 - r4: 245 - r5: 290 - rcsp:5 - rct:15
+        /* winners*/
+        /*  AAPL
+        capital: 150081.66948643822 - r1:10 - r2:15 - r3:90 - r4: 245 - r5: 290 - rcsp:5 - rct:15
         capital: 165189.43007903354 - r1:10 - r2:20 - r3:90 - r4: 240 - r5: 290 - rcsp:5 - rct:15
         capital: 185218.99725047845 - r1:10 - r2:20 - r3:90 - r4: 245 - r5: 290 - rcsp:5 - rct:15
         */
-        def ticker = "AAPL"
+        /* JPM
+        capital: 2846.4443736867315 - r1:10 - r2:30 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
+        capital: 2938.144145344695 - r1:10 - r2:35 - r3:180 - r4: 200 - r5: 340 - rcsp:5 - rct:5
+        capital: 3057.4275791037994 - r1:10 - r2:40 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
+         */
+        def ticker = "JPM"
         def bestCapital=0;
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
@@ -296,29 +319,39 @@ class PerformanceTest {
         def roc5Period = 250
         def rocCompositeSmoothPeriod = 10
         def rocCompositeThreshold = 15*/
+        GParsPool.withPool(4) {
+            for (int roc1Period = 5; roc1Period < 15; roc1Period += 5) {
+                for (int roc2Period = 15; roc2Period < 50; roc2Period += 5) {
+                    for (int roc3Period = 50; roc3Period < 200; roc3Period += 10) {
+                        for (int roc4Period = 200; roc4Period < 250; roc4Period += 5) {
+                            for (int roc5Period = 250; roc5Period < 350; roc5Period += 10) {
+                                for (int rocCompositeSmoothPeriod = 5; rocCompositeSmoothPeriod < 30;
+                                     rocCompositeSmoothPeriod += 5) {
+                                    for (int rocCompositeThreshold = 5; rocCompositeThreshold < 30;
+                                         rocCompositeThreshold += 5) {
 
-        for (int roc1Period=5; roc1Period<15;roc1Period+=5) {
-            for (int roc2Period=15; roc2Period<50;roc2Period+=5) {
-                for (int roc3Period=50; roc3Period<200;roc3Period+=10) {
-                    for (int roc4Period=200; roc4Period<250;roc4Period+=5) {
-                        for (int roc5Period=250; roc5Period<350;roc5Period+=10) {
-                            for (int rocCompositeSmoothPeriod=5; rocCompositeSmoothPeriod<30;
-                                 rocCompositeSmoothPeriod+=5) {
-                                for (int rocCompositeThreshold=5; rocCompositeThreshold<30;
-                                     rocCompositeThreshold+=5) {
-                                    double[] rocCompositeSignal = ROC.compositeSignal(prices, roc1Period, roc2Period, roc3Period, roc4Period,
-                                            roc5Period,
-                                            rocCompositeSmoothPeriod, rocCompositeThreshold)
-                                    def perf = Performance.gainSignal(rocCompositeSignal, reverse, false)
-                                    double capital=100;
-                                    capital = compoundCapital(perf, capital)
-                                    if(capital>bestCapital){
-                                        bestCapital=capital
-                                        log.debug("capital: {} - r1:{} - r2:{} - r3:{} - r4: {} - r5: {} - rcsp:{} - " +
-                                            "rct:{} ",capital,roc1Period,roc2Period,roc3Period,roc4Period,roc5Period,
-                                            rocCompositeSmoothPeriod,rocCompositeThreshold)
+
+                                        CallAsyncTask task={ roc1P,roc2P,roc3P,roc4P,roc5P,
+                                                             rocCompositeSmoothP,rocCompositeT->
+                                                    double[] rocCompositeSignal = ROC.compositeSignal(prices, roc1P,
+                                                            roc2P, roc3P, roc4P,
+                                                            roc5P,
+                                                            rocCompositeSmoothP, rocCompositeT)
+                                                    def perf = Performance.gainSignal(rocCompositeSignal, reverse, false)
+                                                    double capital = 100;
+                                                    capital = compoundCapital(perf, capital)
+                                                    if (capital > bestCapital) {
+                                                        bestCapital = capital
+                                                        log.debug("capital: {} - r1:{} - r2:{} - r3:{} - r4: {} - r5: {} - " +
+                                                                "rcsp:{} - " +
+                                                                "rct:{} ", capital, roc1P, roc2P, roc3P, roc4P, roc5P,
+                                                                rocCompositeSmoothP, rocCompositeT)
+                                                    }
+                                                }.callAsync(roc1Period,roc2Period,roc3Period,roc4Period,roc5Period,
+                                                rocCompositeSmoothPeriod,rocCompositeThreshold)
+
+
                                     }
-
                                 }
                             }
                         }
@@ -326,6 +359,24 @@ class PerformanceTest {
                 }
             }
         }
+
+
+    }
+
+    @Test
+    public void parallel(){
+
+            GParsPool.withPool(4) {
+                for (int i=0;i<10;i++) {
+                    CallAsyncTask task={
+                        def sleepingTime = 100 * Random.newInstance().nextInt(7)
+                        Thread.currentThread().sleep(sleepingTime)
+                        println(" Thread ${Thread.currentThread().id} with sleeping time ${sleepingTime}")
+                    }.callAsync();
+                    println('-------------')
+                }
+
+            }
 
 
     }

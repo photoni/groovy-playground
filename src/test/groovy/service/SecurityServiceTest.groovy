@@ -34,7 +34,8 @@ class SecurityServiceTest {
 		SecurityService ss= SecurityService.instance
 
 		//def sec = "GOOGL"
-		def sec = "AAPL"
+		//def sec = "AAPL"
+		def sec = "JPM"
 		Security s=ss.loadSecurityAndStore(sec);
 		/* define here assertions */
 	}
