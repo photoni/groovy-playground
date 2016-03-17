@@ -35,7 +35,7 @@ class SecurityServiceTest {
 
 		//def sec = "GOOGL"
 		//def sec = "AAPL"
-		def sec = "JPM"
+		def sec = "AAPL"
 		Security s=ss.loadSecurityAndStore(sec);
 		/* define here assertions */
 	}

@@ -1,11 +1,15 @@
 package stats
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import data.TestDataSupport
+import groovy.json.JsonParserType
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import groovyx.gpars.GParsPool
 import groovyx.gpars.dataflow.Promise
 import groovyx.gpars.pa.CallAsyncTask
 import helpers.ArrayHelper
+import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Test
 import org.vertx.java.core.json.impl.Json
 import service.SecurityService
@@ -16,6 +20,8 @@ import ta.MathAnalysis
 import ta.ROC
 import ta.SOO
 import util.ArrayUtil
+
+import java.lang.reflect.Type
 
 @Slf4j
 class PerformanceTest {
@@ -377,6 +383,22 @@ class PerformanceTest {
                 }
 
             }
+
+
+    }
+
+    @Test
+    public void legacyTest(){
+        InputStream is=ReflectionUtils.getCallingClass(0).getResourceAsStream("/AAPL.json")
+        ObjectMapper mapper = new ObjectMapper();
+        List object = (ArrayList)mapper.readValue(is, new ArrayList<Object>().class);
+        for (int i = 0; i < object.size(); i++) {
+            log.debug("i: {}",object.get(i));
+        }
+        String ticker = "AAPL"
+        double[] prices = getPrices(ticker)
+        //ArrayHelper.log(prices,log,true)
+        //println("jsonObect ${object.class}")
 
 
     }
