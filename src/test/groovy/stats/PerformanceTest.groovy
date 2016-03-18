@@ -137,16 +137,27 @@ class PerformanceTest {
 
     @Test
     public void macdPrformanceTest(){
-        def ticker = "AAPL"
-        double[] prices = getPrices(ticker)
-        final def reverse = ArrayUtil.reverse(prices)
-        double[][] out=MA.macd(0,reverse.size(),reverse,12,36,9);
+        //def ticker = "AAPL"
+        //double[] prices = getPrices(ticker)
+        //final def reverse = ArrayUtil.reverse(prices)
+
+        String ticker="AAPL"
+        double[] pricesT = getLegacyPrices(ticker)
+
+
+        pricesT=ArrayUtil.reverse(pricesT)
+
+
+
+
+
+        double[][] out=MA.macd(0,pricesT.size(),pricesT,16,24,3);
         def centerLineCrossSignal=out[5];
         def compoundSignal=out[7];
-        def perfcenter=Performance.gainSignal(centerLineCrossSignal,reverse,false)
+        def perfcenter=Performance.gainSignal(centerLineCrossSignal,pricesT,false)
         ArrayHelper.log(perfcenter,log,false)
         log.debug("----------")
-        def perfCompound=Performance.gainSignal(compoundSignal,reverse,false)
+        def perfCompound=Performance.gainSignal(compoundSignal,pricesT,false)
         ArrayHelper.log(perfCompound,log,false)
         double capital=100;
         capital = compoundCapital(perfcenter, capital)
@@ -155,6 +166,17 @@ class PerformanceTest {
         capital=100;
         capital = compoundCapital(perfCompound, capital)
         log.debug("compound: {}",capital)
+    }
+
+    def double[] getLegacyPrices(String ticker) {
+        InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/${ticker}.json")
+        ObjectMapper mapper = new ObjectMapper();
+        List list = (ArrayList) mapper.readValue(is, new ArrayList<Object>().class);
+        double[] pricesT = new double[list.size()]
+        for (int i = 0; i < list.size(); i++) {
+            pricesT[i] = list.get(i)['v']
+        }
+        pricesT
     }
 
     @Test
@@ -171,9 +193,13 @@ class PerformanceTest {
         capital: 1988.4268992016525 - fastEma: 20 - slowEma: 28 - finalEma: 3
          */
         def bestCapital=0;
-        def ticker = "JPM"
+        def ticker = "AAPL"
         double[] prices = getPrices(ticker)
         final def reverse = ArrayUtil.reverse(prices)
+
+
+
+
 
         /*def fastEma = 12
         def slowEma = 36
@@ -278,22 +304,30 @@ class PerformanceTest {
     @Test
     public void rocPrformanceTest(){
         def ticker = "AAPL"
-        double[] prices = getPrices(ticker)
-        final def reverse = ArrayUtil.reverse(prices)
+        //double[] prices = getPrices(ticker)
+        //final def reverse = ArrayUtil.reverse(prices)
 
-        def roc1Period = 13
-        def roc2Period = 21
-        def roc3Period = 150
+        //String ticker="AAPL"
+        double[] prices = getLegacyPrices(ticker)
+
+
+        double[] reverse=ArrayUtil.reverse(prices)
+
+        def roc1Period = 5
+        def roc2Period = 20
+        def roc3Period = 110
         def roc4Period = 200
         def roc5Period = 250
-        def rocCompositeSmoothPeriod = 10
-        def rocCompositeThreshold = 15
+        def rocCompositeSmoothPeriod = 5
+        def rocCompositeThreshold = 20
 
-        Double[] perf = ROC.compositeSignal(prices, roc1Period, roc2Period, roc3Period, roc4Period, roc5Period,
-                rocCompositeSmoothPeriod, rocCompositeThreshold, reverse)
-        ArrayHelper.log(perf,log,false)
-
-        double capital=100;
+        //r1:5 - r2:25 - r3:130 - r4: 245 - r5: 250 - rcsp:20 - rct:5
+        double[] rocCompositeSignal = ROC.compositeSignal(prices, roc1Period,
+                roc2Period, roc3Period, roc4Period,
+                roc5Period,
+                rocCompositeSmoothPeriod, rocCompositeThreshold)
+        def perf = Performance.gainSignal(ArrayUtil.reverse(rocCompositeSignal), reverse, false)
+        double capital = 100;
         capital = compoundCapital(perf, capital)
         log.debug("capital: {}",capital)
 
@@ -313,10 +347,15 @@ class PerformanceTest {
         capital: 2938.144145344695 - r1:10 - r2:35 - r3:180 - r4: 200 - r5: 340 - rcsp:5 - rct:5
         capital: 3057.4275791037994 - r1:10 - r2:40 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
          */
-        def ticker = "JPM"
+        def ticker = "AAPL"
         def bestCapital=0;
-        double[] prices = getPrices(ticker)
-        final def reverse = ArrayUtil.reverse(prices)
+        //double[] prices = getPrices(ticker)
+        //final def reverse = ArrayUtil.reverse(prices)
+
+        double[] prices = getLegacyPrices(ticker)
+
+
+        double[] reverse=ArrayUtil.reverse(prices)
 /*
         def roc1Period = 13
         def roc2Period = 21
@@ -343,7 +382,8 @@ class PerformanceTest {
                                                             roc2P, roc3P, roc4P,
                                                             roc5P,
                                                             rocCompositeSmoothP, rocCompositeT)
-                                                    def perf = Performance.gainSignal(rocCompositeSignal, reverse, false)
+                                                    def perf = Performance.gainSignal(ArrayUtil.reverse
+                                                            (rocCompositeSignal), reverse, false)
                                                     double capital = 100;
                                                     capital = compoundCapital(perf, capital)
                                                     if (capital > bestCapital) {
@@ -391,14 +431,37 @@ class PerformanceTest {
     public void legacyTest(){
         InputStream is=ReflectionUtils.getCallingClass(0).getResourceAsStream("/AAPL.json")
         ObjectMapper mapper = new ObjectMapper();
-        List object = (ArrayList)mapper.readValue(is, new ArrayList<Object>().class);
-        for (int i = 0; i < object.size(); i++) {
-            log.debug("i: {}",object.get(i));
+        List list = (ArrayList)mapper.readValue(is, new ArrayList<Object>().class);
+        double[] pricesT=new double[list.size()]
+        double[] rateT=new double[list.size()]
+        double[] signalT=new double[list.size()]
+        for (int i = 0; i < list.size(); i++) {
+            pricesT[i]=list.get(i)['v']
+            rateT[i]=list.get(i)['r']
+            if(rateT[i]>0)
+                signalT[i]=1
+            else
+                signalT[i]=-1
+            //log.debug("i: {}",list.get(i));
         }
-        String ticker = "AAPL"
-        double[] prices = getPrices(ticker)
-        //ArrayHelper.log(prices,log,true)
-        //println("jsonObect ${object.class}")
+        pricesT=ArrayUtil.reverse(pricesT)
+        rateT=ArrayUtil.reverse(rateT)
+        signalT=ArrayUtil.reverse(signalT)
+
+        for (int i = 0; i < pricesT.length; i++) {
+
+            log.debug("i: {} - v: {} - r:{} - s: {}",i,pricesT[i],rateT[i],signalT[i]);
+        }
+
+        def perf=Performance.gainSignal(signalT,pricesT,false)
+
+
+        double capital=100;
+        capital = compoundCapital(perf, capital)
+        log.debug("capital: {}",capital)
+
+
+
 
 
     }
