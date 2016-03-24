@@ -116,6 +116,22 @@ public class ROC {
         return rocCompositeSignal;
     }
 
+    public static double[] compositeSignal(int rocCompositeSmoothPeriod, int rocCompositeThreshold,double[] prices,Integer... rocPeriods) {
+        double[][] rocs=new double[rocPeriods.length][];
+        for (int i = 0; i < rocPeriods.length; i++) {
+            rocs[i]=ROC.roc(prices, rocPeriods[i]);
+        }
+
+        double[] rocComposite = composite(rocs);
+
+        double[] rocCompositeSmooth = ArrayUtil.reverse(MA.sma(0, rocComposite.length, ArrayUtil
+                .reverse(rocComposite), rocCompositeSmoothPeriod));
+
+        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmooth, rocCompositeThreshold);
+
+        return rocCompositeSignal;
+    }
+
 
     public static double rocFormula(int startIndex, int endIndex,
                                     double[] values, int periods) {

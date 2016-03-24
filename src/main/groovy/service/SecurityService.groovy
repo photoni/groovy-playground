@@ -1,4 +1,6 @@
 package service
+
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Slf4j
 import model.Security
 import model.SecurityConverter;
@@ -8,6 +10,7 @@ import au.com.bytecode.opencsv.CSVReader
 import au.com.bytecode.opencsv.bean.CsvToBean
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy
 import data.SecurityRepo
+import org.codehaus.groovy.reflection.ReflectionUtils
 import util.CSVUtil
 
 
@@ -89,6 +92,22 @@ class SecurityService {
         return security
 
     }
+
+	/**
+	 * Load prices in a json format from file system
+	 * @param ticker
+	 * @return
+	 */
+	def double[] getLegacyPrices(String ticker) {
+		InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/${ticker}.json")
+		ObjectMapper mapper = new ObjectMapper();
+		List list = (ArrayList) mapper.readValue(is, new ArrayList<Object>().class);
+		double[] pricesT = new double[list.size()]
+		for (int i = 0; i < list.size(); i++) {
+			pricesT[i] = list.get(i)['v']
+		}
+		pricesT
+	}
 	
 	
 }
