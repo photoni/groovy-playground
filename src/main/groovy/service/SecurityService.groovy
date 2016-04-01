@@ -99,7 +99,22 @@ class SecurityService {
 	 * @return
 	 */
 	def double[] getLegacyPrices(String ticker) {
-		InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/${ticker}.json")
+		InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/histories/${ticker}.json")
+		ObjectMapper mapper = new ObjectMapper();
+		List list = (ArrayList) mapper.readValue(is, new ArrayList<Object>().class);
+		double[] pricesT = new double[list.size()]
+		for (int i = 0; i < list.size(); i++) {
+			pricesT[i] = list.get(i)['v']
+		}
+		pricesT
+	}
+
+	/**
+	 * Load prices in a json format from file system
+	 * @param is
+	 * @return
+	 */
+	def double[] getLegacyPrices(InputStream is) {
 		ObjectMapper mapper = new ObjectMapper();
 		List list = (ArrayList) mapper.readValue(is, new ArrayList<Object>().class);
 		double[] pricesT = new double[list.size()]

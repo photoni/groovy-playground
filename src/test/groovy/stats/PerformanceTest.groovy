@@ -2,6 +2,7 @@ package stats
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import data.TestDataSupport
+import groovy.io.FileType
 import groovy.json.JsonParserType
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
@@ -299,41 +300,26 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceTest() {
-        def ticker = "AAPL"
-        //double[] prices = getPrices(ticker)
-        //final def reverse = ArrayUtil.reverse(prices)
-
-        //String ticker="AAPL"
-        def ss = SecurityService.instance
-        double[] prices = ss.getLegacyPrices(ticker)
-
-
-        double[] reverse = ArrayUtil.reverse(prices)
-
+        def ticker = "MOMO"
         def roc1Period = 5
         def roc2Period = 20
-        def roc3Period = 110
-        def roc4Period = 200
-        def roc5Period = 250
+        def roc3Period = 50
+        def roc4Period = 70
+        def roc5Period = 230
+        def roc6Period = 240
         def rocCompositeSmoothPeriod = 5
-        def rocCompositeThreshold = 20
-
-        //r1:5 - r2:25 - r3:130 - r4: 245 - r5: 250 - rcsp:20 - rct:5
-        /*double[] rocCompositeSignal = ROC.compositeSignal(prices, roc1Period,
-                roc2Period, roc3Period, roc4Period,
-                roc5Period,
-                rocCompositeSmoothPeriod, rocCompositeThreshold)*/
-        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmoothPeriod, rocCompositeThreshold, prices,
-                roc1Period,
-                roc2Period, roc3Period, roc4Period,
-                roc5Period)
-        def perf = Performance.gainSignal(ArrayUtil.reverse(rocCompositeSignal), reverse, false)
+        def rocCompositeThreshold = 25
+        Double[] perf = compute(ticker, rocCompositeSmoothPeriod, rocCompositeThreshold, roc1Period, roc2Period,
+                roc3Period, roc4Period, roc5Period,roc6Period)
         double capital = 100;
         capital = compoundCapital(perf, capital)
+        ArrayHelper.log(perf,log,false)
         log.debug("capital: {}", capital)
 
 
     }
+
+
 
     @Test
     public void rocPrformanceBruteForceTest() {
@@ -408,37 +394,37 @@ class PerformanceTest {
                                                     switch ( capital ) {
 
                                                         case { 0<= it && it < 10000 }:
-                                                            distribution[0].add(["r1":roc1P,"r1":roc1P,"r2":roc2P,
+                                                            distribution[0].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
                                                         case { 10000<= it && it < 20000 }:
-                                                            distribution[1].add(["r1":roc1P,"r1":roc1P,"r2":roc2P,
+                                                            distribution[1].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
                                                         case { 20000<= it && it < 30000 }:
-                                                            distribution[2].add(["r1":roc1P,"r1":roc1P,"r2":roc2P,
+                                                            distribution[2].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
                                                         case { 30000<= it && it < 40000 }:
-                                                            distribution[3].add(["r1":roc1P,"r1":roc1P,"r2":roc2P,
+                                                            distribution[3].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
                                                         case { 40000<= it && it < 50000 }:
-                                                            distribution[4].add(["r1":roc1P,"r1":roc1P,"r2":roc2P,
+                                                            distribution[4].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
                                                         case { 50000<= it && it < 60000 }:
-                                                            distribution[5].add(["r1":roc1P,"r1":roc1P,"r2":roc2P,
+                                                            distribution[5].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
@@ -466,9 +452,68 @@ class PerformanceTest {
 
         log.debug("distribution: {} ",distribution[4])
         log.debug("distribution: {} ",distribution[5])
+        def tickers=[];
+        def map=new HashMap<String,List>();
+        for (int i = 0; i < distribution[5].size(); i++) {
+            def dist = distribution[5][i]
+            String key=extractKey(dist)
+            if(!map.containsKey(key))
+                map.put(key,[])
+
+        }
+        for (int i = 0; i < distribution[4].size(); i++) {
+            def dist = distribution[4][i]
+            String key=extractKey(dist)
+            if(!map.containsKey(key))
+                map.put(key,[])
+        }
+        ArrayList list = doListHistories()
+
+
+        for (int i = 0; i < list.size() ; i++) {
+            String file=list.get(i);
+            String tick=file.split("\\.")[0]
+
+            for (int j = 0; j < distribution[5].size(); j++) {
+                def dist = distribution[5][j]
+                String key=extractKey(dist)
+                log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
+                        dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])
+                def perf=compute(tick,dist["rcsp"],dist["rct"],dist["r1"],dist["r2"],dist["r3"],dist["r4"],
+                        dist["r5"],dist["r6"])
+                double capital = 100;
+                capital = compoundCapital(perf, capital)
+                log.debug("capital: {}", capital)
+                map.get(key).add(capital)
+            }
+            //tickers.add(tick)
+        }
+        def dist = distribution[5][0]
+        String key=extractKey(dist)
+        Arrays.sort(map.get(key))
+        ArrayHelper.log(map.get(key),log,true)
+
+        //ArrayHelper.log(tickers,log,false)
+
+
+
 
 
     }
+
+
+
+    @Test
+    public void listHistories(){
+
+        ArrayList list = doListHistories()
+
+
+
+
+
+    }
+
 
     @Test
     public void parallel() {
@@ -490,7 +535,7 @@ class PerformanceTest {
 
     @Test
     public void legacyTest() {
-        InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/AAPL.json")
+        InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/histories/MOMO.json")
         ObjectMapper mapper = new ObjectMapper();
         List list = (ArrayList) mapper.readValue(is, new ArrayList<Object>().class);
         double[] pricesT = new double[list.size()]
@@ -539,6 +584,36 @@ class PerformanceTest {
         s.getHistory().eachWithIndex { obj, i -> prices[i] = obj.adjClose }
         return prices
     }
+
+    def ArrayList doListHistories() {
+        def list = []
+
+        def dir = new File("/home/filippo/projects/pig/groovy-playground/src/test/resources/histories/")
+        dir.eachFileRecurse(FileType.FILES) { file ->
+            list << file.getName()
+        }
+        list
+    }
+
+    def String extractKey(dist) {
+        def key = dist["r1"] + "-" + dist["r2"] + "-" + dist["r3" +
+                ""] + "-" + dist["r4"] + "-" + dist["r5"] + "-" + dist["rcsp"] + "-" + dist["rct"]
+        key
+    }
+
+    def Double[] compute(String ticker, int rocCompositeSmoothPeriod, int rocCompositeThreshold, int roc1Period, int
+            roc2Period, int roc3Period, int roc4Period, int roc5Period,int roc6Period) {
+        def ss = SecurityService.instance
+        double[] prices = ss.getLegacyPrices(ticker)
+        double[] reverse = ArrayUtil.reverse(prices)
+        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmoothPeriod, rocCompositeThreshold, prices,
+                roc1Period,
+                roc2Period, roc3Period, roc4Period,
+                roc5Period,roc6Period)
+        def perf = Performance.gainSignal(ArrayUtil.reverse(rocCompositeSignal), reverse, false)
+        perf
+    }
+
 
     //
 }
