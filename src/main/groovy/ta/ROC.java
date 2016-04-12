@@ -98,6 +98,7 @@ public class ROC {
         return result;
     }
 
+    /*
     public static double[] compositeSignal(double[] prices, int roc1Period, int roc2Period, int roc3Period, int
             roc4Period, int
             roc5Period, int rocCompositeSmoothPeriod, int rocCompositeThreshold) {
@@ -114,7 +115,7 @@ public class ROC {
         double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmooth, rocCompositeThreshold);
 
         return rocCompositeSignal;
-    }
+    }*/
 
     public static double[] compositeSignal(int rocCompositeSmoothPeriod, int rocCompositeThreshold,double[] prices,Integer... rocPeriods) {
         double[][] rocs=new double[rocPeriods.length][];

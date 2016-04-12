@@ -10,6 +10,7 @@ import groovyx.gpars.GParsPool
 import groovyx.gpars.dataflow.Promise
 import groovyx.gpars.pa.CallAsyncTask
 import helpers.ArrayHelper
+import org.apache.commons.math3.stat.descriptive.moment.Mean
 import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Test
 import org.vertx.java.core.json.impl.Json
@@ -300,7 +301,7 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceTest() {
-        def ticker = "MOMO"
+        def ticker = "AAPL"
         def roc1Period = 5
         def roc2Period = 20
         def roc3Period = 50
@@ -311,6 +312,23 @@ class PerformanceTest {
         def rocCompositeThreshold = 25
         Double[] perf = compute(ticker, rocCompositeSmoothPeriod, rocCompositeThreshold, roc1Period, roc2Period,
                 roc3Period, roc4Period, roc5Period,roc6Period)
+        double capital = 100;
+        capital = compoundCapital(perf, capital)
+        ArrayHelper.log(perf,log,false)
+        log.debug("capital: {}", capital)
+
+
+    }
+
+    @Test
+    public void rocPrformanceMSCITest() {
+        def ticker = "AAPL"
+        def roc1Period = 120
+        def roc2Period = 240
+
+        def rocCompositeSmoothPeriod = 5
+        def rocCompositeThreshold = 1
+        Double[] perf = compute(ticker, rocCompositeSmoothPeriod, rocCompositeThreshold, roc1Period, roc2Period)
         double capital = 100;
         capital = compoundCapital(perf, capital)
         ArrayHelper.log(perf,log,false)
@@ -467,6 +485,12 @@ class PerformanceTest {
             if(!map.containsKey(key))
                 map.put(key,[])
         }
+        for (int i = 0; i < distribution[3].size(); i++) {
+            def dist = distribution[3][i]
+            String key=extractKey(dist)
+            if(!map.containsKey(key))
+                map.put(key,[])
+        }
         ArrayList list = doListHistories()
 
 
@@ -477,21 +501,66 @@ class PerformanceTest {
             for (int j = 0; j < distribution[5].size(); j++) {
                 def dist = distribution[5][j]
                 String key=extractKey(dist)
-                log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
-                        dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])
+                /*log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
+                        dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])*/
                 def perf=compute(tick,dist["rcsp"],dist["rct"],dist["r1"],dist["r2"],dist["r3"],dist["r4"],
                         dist["r5"],dist["r6"])
                 double capital = 100;
                 capital = compoundCapital(perf, capital)
-                log.debug("capital: {}", capital)
+                //log.debug("capital: {}", capital)
+                map.get(key).add(capital)
+            }
+            for (int j = 0; j < distribution[4].size(); j++) {
+                def dist = distribution[4][j]
+                String key=extractKey(dist)
+                /*log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
+                        dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])*/
+                def perf=compute(tick,dist["rcsp"],dist["rct"],dist["r1"],dist["r2"],dist["r3"],dist["r4"],
+                        dist["r5"],dist["r6"])
+                double capital = 100;
+                capital = compoundCapital(perf, capital)
+                //log.debug("capital: {}", capital)
+                map.get(key).add(capital)
+            }
+            for (int j = 0; j < distribution[3].size(); j++) {
+                def dist = distribution[3][j]
+                String key=extractKey(dist)
+                /*log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
+                        dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])*/
+                def perf=compute(tick,dist["rcsp"],dist["rct"],dist["r1"],dist["r2"],dist["r3"],dist["r4"],
+                        dist["r5"],dist["r6"])
+                double capital = 100;
+                capital = compoundCapital(perf, capital)
+                //log.debug("capital: {}", capital)
                 map.get(key).add(capital)
             }
             //tickers.add(tick)
         }
         def dist = distribution[5][0]
         String key=extractKey(dist)
-        Arrays.sort(map.get(key))
-        ArrayHelper.log(map.get(key),log,true)
+        //Arrays.sort(map.get(key))
+        //ArrayHelper.log(map.get(key),log,true)
+        Mean m= new Mean();
+        ArrayList<Double> capitals = map.get(key)
+        double mean5=m.evaluate(ArrayUtil.toDoubleArray(capitals))
+        log.debug("mean5: {}", mean5)
+
+        for (int i = 0; i < distribution[4].size(); i++) {
+            def dist4 = distribution[4][i]
+            String key4=extractKey(dist4)
+            Mean m4= new Mean();
+            def capitals4 = map.get(key4)
+            double mean4=m4.evaluate(ArrayUtil.toDoubleArray(capitals4))
+            log.debug("mean4: index {} - {}", i,mean4)
+        }
+        for (int i = 0; i < distribution[3].size(); i++) {
+            def dist3 = distribution[3][i]
+            String key3=extractKey(dist3)
+            Mean m3= new Mean();
+            def capitals3 = map.get(key3)
+            double mean3=m3.evaluate(ArrayUtil.toDoubleArray(capitals3))
+            log.debug("mean3: index {} - {}", i,mean3)
+        }
 
         //ArrayHelper.log(tickers,log,false)
 
@@ -535,7 +604,28 @@ class PerformanceTest {
 
     @Test
     public void legacyTest() {
-        InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/histories/MOMO.json")
+        ArrayList list = doListHistories()
+        def capitals=[]
+        for (int i = 0; i < list.size() ; i++) {
+            String file=list.get(i);
+            String tick=file.split("\\.")[0]
+            def capital=doLegacy(tick)
+            capitals.add(capital)
+            log.debug("ticker: {} - capital: {}", tick,capital)
+
+        }
+
+        Mean m= new Mean();
+
+        Double mean=m.evaluate(ArrayUtil.toDoubleArray(capitals))
+        log.debug("mean:  {}",mean)
+
+
+
+    }
+
+    def double doLegacy(String tick) {
+        InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/histories/${tick}.json")
         ObjectMapper mapper = new ObjectMapper();
         List list = (ArrayList) mapper.readValue(is, new ArrayList<Object>().class);
         double[] pricesT = new double[list.size()]
@@ -553,20 +643,17 @@ class PerformanceTest {
         pricesT = ArrayUtil.reverse(pricesT)
         rateT = ArrayUtil.reverse(rateT)
         signalT = ArrayUtil.reverse(signalT)
-
+/*
         for (int i = 0; i < pricesT.length; i++) {
 
             log.debug("i: {} - v: {} - r:{} - s: {}", i, pricesT[i], rateT[i], signalT[i]);
-        }
+        }*/
 
         def perf = Performance.gainSignal(signalT, pricesT, false)
 
 
         double capital = 100;
         capital = compoundCapital(perf, capital)
-        log.debug("capital: {}", capital)
-
-
     }
 
 
@@ -610,6 +697,18 @@ class PerformanceTest {
                 roc1Period,
                 roc2Period, roc3Period, roc4Period,
                 roc5Period,roc6Period)
+        def perf = Performance.gainSignal(ArrayUtil.reverse(rocCompositeSignal), reverse, false)
+        perf
+    }
+
+    def Double[] compute(String ticker, int rocCompositeSmoothPeriod, int rocCompositeThreshold, int roc1Period, int
+            roc2Period) {
+        def ss = SecurityService.instance
+        double[] prices = ss.getLegacyPrices(ticker)
+        double[] reverse = ArrayUtil.reverse(prices)
+        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmoothPeriod, rocCompositeThreshold, prices,
+                roc1Period,
+                roc2Period)
         def perf = Performance.gainSignal(ArrayUtil.reverse(rocCompositeSignal), reverse, false)
         perf
     }
