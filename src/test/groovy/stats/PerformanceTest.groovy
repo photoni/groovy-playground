@@ -301,12 +301,17 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceTest() {
-        def ticker = "AAPL"
+        //-----AAPL
+        //5-25-30-120-200-240-5-25
+        //r1=5, r2=20, r3=50, r4=70, r5=230, r6=240, rcsp=5, rct=25
+
+
+        def ticker = "GOOGL"
         def roc1Period = 5
-        def roc2Period = 20
-        def roc3Period = 50
-        def roc4Period = 70
-        def roc5Period = 230
+        def roc2Period = 25
+        def roc3Period = 30
+        def roc4Period = 120
+        def roc5Period = 200
         def roc6Period = 240
         def rocCompositeSmoothPeriod = 5
         def rocCompositeThreshold = 25
@@ -352,7 +357,7 @@ class PerformanceTest {
         capital: 2938.144145344695 - r1:10 - r2:35 - r3:180 - r4: 200 - r5: 340 - rcsp:5 - rct:5
         capital: 3057.4275791037994 - r1:10 - r2:40 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
          */
-        def ticker = "AAPL"
+        def ticker = "IBM"
         def bestCapital = 0;
         //double[] prices = getPrices(ticker)
         //final def reverse = ArrayUtil.reverse(prices)
@@ -411,41 +416,43 @@ class PerformanceTest {
                                                     }
                                                     switch ( capital ) {
 
-                                                        case { 0<= it && it < 10000 }:
+                                                        case { 0<= it && it < 100 }:
                                                             distribution[0].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 10000<= it && it < 20000 }:
+                                                        case { 100<= it && it < 200 }:
                                                             distribution[1].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 20000<= it && it < 30000 }:
+                                                        case { 200<= it && it < 350 }:
                                                             distribution[2].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 30000<= it && it < 40000 }:
+                                                        case { 390<= it && it < 400 }:
                                                             distribution[3].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 40000<= it && it < 50000 }:
+                                                        case { 400<= it && it < 500 }:
                                                             distribution[4].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 50000<= it && it < 60000 }:
+                                                        case { 500<= it }:
                                                             distribution[5].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
+                                                            break
+                                                        default:
                                                             break
 
                                                     }
@@ -467,9 +474,9 @@ class PerformanceTest {
                 }
             }
         }
-
-        log.debug("distribution: {} ",distribution[4])
-        log.debug("distribution: {} ",distribution[5])
+        log.debug("distribution3: {} - {} ",distribution[3].size(),distribution[3])
+        log.debug("distribution4: {} - {} ",distribution[4].size(),distribution[4])
+        log.debug("distribution5: {} - {} ",distribution[5].size(),distribution[5])
         def tickers=[];
         def map=new HashMap<String,List>();
         for (int i = 0; i < distribution[5].size(); i++) {
@@ -487,9 +494,14 @@ class PerformanceTest {
         }
         for (int i = 0; i < distribution[3].size(); i++) {
             def dist = distribution[3][i]
-            String key=extractKey(dist)
-            if(!map.containsKey(key))
-                map.put(key,[])
+            try {
+                String key=extractKey(dist)
+                if(!map.containsKey(key))
+                    map.put(key,[])
+            } catch (Exception e) {
+                log.error("error for dist: {}",dist)
+            }
+
         }
         ArrayList list = doListHistories()
 
@@ -497,8 +509,11 @@ class PerformanceTest {
         for (int i = 0; i < list.size() ; i++) {
             String file=list.get(i);
             String tick=file.split("\\.")[0]
-
+            log.debug("computing symbol :{} ",tick)
+            if(i%2==0)
+                log.debug("computing symbol block:{} ",i)
             for (int j = 0; j < distribution[5].size(); j++) {
+
                 def dist = distribution[5][j]
                 String key=extractKey(dist)
                 /*log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
@@ -551,7 +566,7 @@ class PerformanceTest {
             Mean m4= new Mean();
             def capitals4 = map.get(key4)
             double mean4=m4.evaluate(ArrayUtil.toDoubleArray(capitals4))
-            log.debug("mean4: index {} - {}", i,mean4)
+            log.debug("mean4: index {} - {} - {}",key4, i,mean4)
         }
         for (int i = 0; i < distribution[3].size(); i++) {
             def dist3 = distribution[3][i]
@@ -559,7 +574,7 @@ class PerformanceTest {
             Mean m3= new Mean();
             def capitals3 = map.get(key3)
             double mean3=m3.evaluate(ArrayUtil.toDoubleArray(capitals3))
-            log.debug("mean3: index {} - {}", i,mean3)
+            log.debug("mean3: index {} - {} - {}",key3, i,mean3)
         }
 
         //ArrayHelper.log(tickers,log,false)
@@ -619,10 +634,16 @@ class PerformanceTest {
 
         Double mean=m.evaluate(ArrayUtil.toDoubleArray(capitals))
         log.debug("mean:  {}",mean)
+    }
 
+    @Test
+    public void legacySingleTest() {
 
+            def capital=doLegacy("GOOGL")
+            log.debug("capital:  {}",capital)
 
     }
+
 
     def double doLegacy(String tick) {
         InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/histories/${tick}.json")
@@ -651,7 +672,7 @@ class PerformanceTest {
 
         def perf = Performance.gainSignal(signalT, pricesT, false)
 
-
+        ArrayHelper.log(perf,log,false)
         double capital = 100;
         capital = compoundCapital(perf, capital)
     }
@@ -684,7 +705,7 @@ class PerformanceTest {
 
     def String extractKey(dist) {
         def key = dist["r1"] + "-" + dist["r2"] + "-" + dist["r3" +
-                ""] + "-" + dist["r4"] + "-" + dist["r5"] + "-" + dist["rcsp"] + "-" + dist["rct"]
+                ""] + "-" + dist["r4"] + "-" + dist["r5"] + "-" + dist["r6"]+ "-" + dist["rcsp"] + "-" + dist["rct"]
         key
     }
 
