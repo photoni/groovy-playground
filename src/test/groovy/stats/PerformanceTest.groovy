@@ -10,6 +10,7 @@ import groovyx.gpars.GParsPool
 import groovyx.gpars.dataflow.Promise
 import groovyx.gpars.pa.CallAsyncTask
 import helpers.ArrayHelper
+import io.netty.handler.codec.http.multipart.InterfaceHttpData
 import org.apache.commons.math3.stat.descriptive.moment.Mean
 import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Test
@@ -22,6 +23,7 @@ import ta.MathAnalysis
 import ta.ROC
 import ta.SOO
 import util.ArrayUtil
+import util.FileUtil
 
 import java.lang.reflect.Type
 
@@ -357,12 +359,12 @@ class PerformanceTest {
         capital: 2938.144145344695 - r1:10 - r2:35 - r3:180 - r4: 200 - r5: 340 - rcsp:5 - rct:5
         capital: 3057.4275791037994 - r1:10 - r2:40 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
          */
-        def ticker = "IBM"
+        def masterTicker = "AAPL"
         def bestCapital = 0;
         //double[] prices = getPrices(ticker)
         //final def reverse = ArrayUtil.reverse(prices)
         def ss = SecurityService.instance
-        double[] prices = ss.getLegacyPrices(ticker)
+        double[] prices = ss.getLegacyPrices(masterTicker)
 
 
         double[] reverse = ArrayUtil.reverse(prices)
@@ -414,39 +416,40 @@ class PerformanceTest {
                                                                 roc5P,roc6P,
                                                                 rocCompositeSmoothP, rocCompositeT)
                                                     }
+                                                    def perfLevel=[0,100,100,200,200,350,390,400,400,500,500]
                                                     switch ( capital ) {
 
-                                                        case { 0<= it && it < 100 }:
+                                                        case { perfLevel[0]<= it && it < perfLevel[1] }:
                                                             distribution[0].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 100<= it && it < 200 }:
+                                                        case { perfLevel[2]<= it && it < perfLevel[3] }:
                                                             distribution[1].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 200<= it && it < 350 }:
+                                                        case { perfLevel[4]<= it && it < perfLevel[5] }:
                                                             distribution[2].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 390<= it && it < 400 }:
+                                                        case { perfLevel[6]<= it && it < perfLevel[7] }:
                                                             distribution[3].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 400<= it && it < 500 }:
+                                                        case { perfLevel[8]<= it && it < perfLevel[9] }:
                                                             distribution[4].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
                                                                                  "rcsp":rocCompositeSmoothP,"rct":rocCompositeT])
                                                             break
-                                                        case { 500<= it }:
+                                                        case { perfLevel[10]<= it }:
                                                             distribution[5].add(["r1":roc1P,"r2":roc2P,
                                                                                  "r3":roc3P,"r4":roc4P,"r5":roc5P,
                                                                                  "r6":roc6P,
@@ -479,6 +482,7 @@ class PerformanceTest {
         log.debug("distribution5: {} - {} ",distribution[5].size(),distribution[5])
         def tickers=[];
         def map=new HashMap<String,List>();
+        def resultLog=[]
         for (int i = 0; i < distribution[5].size(); i++) {
             def dist = distribution[5][i]
             String key=extractKey(dist)
@@ -524,6 +528,7 @@ class PerformanceTest {
                 capital = compoundCapital(perf, capital)
                 //log.debug("capital: {}", capital)
                 map.get(key).add(capital)
+                resultLog.add(tick+"_"+key+"_"+capital+"_"+perf.size())
             }
             for (int j = 0; j < distribution[4].size(); j++) {
                 def dist = distribution[4][j]
@@ -536,6 +541,7 @@ class PerformanceTest {
                 capital = compoundCapital(perf, capital)
                 //log.debug("capital: {}", capital)
                 map.get(key).add(capital)
+                resultLog.add(tick+"_"+key+"_"+capital+"_"+perf.size())
             }
             for (int j = 0; j < distribution[3].size(); j++) {
                 def dist = distribution[3][j]
@@ -548,6 +554,7 @@ class PerformanceTest {
                 capital = compoundCapital(perf, capital)
                 //log.debug("capital: {}", capital)
                 map.get(key).add(capital)
+                resultLog.add(tick+"_"+key+"_"+capital+"_"+perf.size())
             }
             //tickers.add(tick)
         }
@@ -576,8 +583,8 @@ class PerformanceTest {
             double mean3=m3.evaluate(ArrayUtil.toDoubleArray(capitals3))
             log.debug("mean3: index {} - {} - {}",key3, i,mean3)
         }
-
-        //ArrayHelper.log(tickers,log,false)
+        ObjectMapper mapper = new ObjectMapper();
+        FileUtil.write("/var/data/pig/bruteForceResults${masterTicker}.json",mapper.writeValueAsString(resultLog))
 
 
 
