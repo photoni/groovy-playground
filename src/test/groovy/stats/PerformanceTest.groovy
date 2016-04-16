@@ -1,20 +1,15 @@
 package stats
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import data.TestDataSupport
+import data.CSV
 import groovy.io.FileType
-import groovy.json.JsonParserType
-import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import groovyx.gpars.GParsPool
-import groovyx.gpars.dataflow.Promise
 import groovyx.gpars.pa.CallAsyncTask
 import helpers.ArrayHelper
-import io.netty.handler.codec.http.multipart.InterfaceHttpData
 import org.apache.commons.math3.stat.descriptive.moment.Mean
 import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Test
-import org.vertx.java.core.json.impl.Json
 import service.SecurityService
 import ta.AROON
 import ta.KAMA
@@ -23,9 +18,7 @@ import ta.MathAnalysis
 import ta.ROC
 import ta.SOO
 import util.ArrayUtil
-import util.FileUtil
-
-import java.lang.reflect.Type
+import util.CSVUtil
 
 @Slf4j
 class PerformanceTest {
@@ -416,7 +409,7 @@ class PerformanceTest {
                                                                 roc5P,roc6P,
                                                                 rocCompositeSmoothP, rocCompositeT)
                                                     }
-                                                    def perfLevel=[0,100,100,200,200,350,390,400,400,500,500]
+                                                    def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,40000,50000,50000]
                                                     switch ( capital ) {
 
                                                         case { perfLevel[0]<= it && it < perfLevel[1] }:
@@ -481,34 +474,10 @@ class PerformanceTest {
         log.debug("distribution4: {} - {} ",distribution[4].size(),distribution[4])
         log.debug("distribution5: {} - {} ",distribution[5].size(),distribution[5])
         def tickers=[];
-        def map=new HashMap<String,List>();
-        def resultLog=[]
-        for (int i = 0; i < distribution[5].size(); i++) {
-            def dist = distribution[5][i]
-            String key=extractKey(dist)
-            if(!map.containsKey(key))
-                map.put(key,[])
-
-        }
-        for (int i = 0; i < distribution[4].size(); i++) {
-            def dist = distribution[4][i]
-            String key=extractKey(dist)
-            if(!map.containsKey(key))
-                map.put(key,[])
-        }
-        for (int i = 0; i < distribution[3].size(); i++) {
-            def dist = distribution[3][i]
-            try {
-                String key=extractKey(dist)
-                if(!map.containsKey(key))
-                    map.put(key,[])
-            } catch (Exception e) {
-                log.error("error for dist: {}",dist)
-            }
-
-        }
+        CSV csv= new CSV()
+        String[] header = ['tick', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'rcsp', 'rct', 'capital', 'signalsNum']
+        csv.setHeader(header)
         ArrayList list = doListHistories()
-
 
         for (int i = 0; i < list.size() ; i++) {
             String file=list.get(i);
@@ -527,8 +496,12 @@ class PerformanceTest {
                 double capital = 100;
                 capital = compoundCapital(perf, capital)
                 //log.debug("capital: {}", capital)
-                map.get(key).add(capital)
-                resultLog.add(tick+"_"+key+"_"+capital+"_"+perf.size())
+                //map.get(key).add(capital)
+                dist.putAt("tick",tick)
+                dist.putAt("capital",capital)
+                dist.putAt("signalsNum",perf.size())
+                String[] line=extractLine(csv.getHeader(),dist)
+                csv.addLine(line)
             }
             for (int j = 0; j < distribution[4].size(); j++) {
                 def dist = distribution[4][j]
@@ -540,8 +513,11 @@ class PerformanceTest {
                 double capital = 100;
                 capital = compoundCapital(perf, capital)
                 //log.debug("capital: {}", capital)
-                map.get(key).add(capital)
-                resultLog.add(tick+"_"+key+"_"+capital+"_"+perf.size())
+                dist.putAt("tick",tick)
+                dist.putAt("capital",capital)
+                dist.putAt("signalsNum",perf.size())
+                String[] line=extractLine(csv.getHeader(),dist)
+                csv.addLine(line)
             }
             for (int j = 0; j < distribution[3].size(); j++) {
                 def dist = distribution[3][j]
@@ -553,42 +529,33 @@ class PerformanceTest {
                 double capital = 100;
                 capital = compoundCapital(perf, capital)
                 //log.debug("capital: {}", capital)
-                map.get(key).add(capital)
-                resultLog.add(tick+"_"+key+"_"+capital+"_"+perf.size())
+                dist.putAt("tick",tick)
+                dist.putAt("capital",capital)
+                dist.putAt("signalsNum",perf.size())
+                String[] line=extractLine(csv.getHeader(),dist)
+                csv.addLine(line)
             }
             //tickers.add(tick)
         }
-        def dist = distribution[5][0]
-        String key=extractKey(dist)
-        //Arrays.sort(map.get(key))
-        //ArrayHelper.log(map.get(key),log,true)
-        Mean m= new Mean();
-        ArrayList<Double> capitals = map.get(key)
-        double mean5=m.evaluate(ArrayUtil.toDoubleArray(capitals))
-        log.debug("mean5: {}", mean5)
 
-        for (int i = 0; i < distribution[4].size(); i++) {
-            def dist4 = distribution[4][i]
-            String key4=extractKey(dist4)
-            Mean m4= new Mean();
-            def capitals4 = map.get(key4)
-            double mean4=m4.evaluate(ArrayUtil.toDoubleArray(capitals4))
-            log.debug("mean4: index {} - {} - {}",key4, i,mean4)
+        CSVUtil.write("/var/data/pig/beuteForce${masterTicker}.csv",csv.getCsv());
+
+
+
+
+
+    }
+    @Test
+    public void readResults(){
+        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/beuteForceAAPL.csv")
+        CSV csv= new CSV(allLines)
+        csv.getHeader().each {
+            log.debug(it)
         }
-        for (int i = 0; i < distribution[3].size(); i++) {
-            def dist3 = distribution[3][i]
-            String key3=extractKey(dist3)
-            Mean m3= new Mean();
-            def capitals3 = map.get(key3)
-            double mean3=m3.evaluate(ArrayUtil.toDoubleArray(capitals3))
-            log.debug("mean3: index {} - {} - {}",key3, i,mean3)
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        FileUtil.write("/var/data/pig/bruteForceResults${masterTicker}.json",mapper.writeValueAsString(resultLog))
 
-
-
-
+        log.debug(Arrays.toString(csv.getHeader()))
+        log.debug(Arrays.toString(csv.getLines().get(0)))
+        log.debug(Arrays.toString(csv.getLines().get(1)))
 
     }
 
@@ -703,7 +670,7 @@ class PerformanceTest {
     def ArrayList doListHistories() {
         def list = []
 
-        def dir = new File("/home/filippo/projects/pig/groovy-playground/src/test/resources/histories/")
+        def dir = new File("/home/filippo/projects/pig/technical_analysis/src/test/resources/histories/")
         dir.eachFileRecurse(FileType.FILES) { file ->
             list << file.getName()
         }
@@ -714,6 +681,14 @@ class PerformanceTest {
         def key = dist["r1"] + "-" + dist["r2"] + "-" + dist["r3" +
                 ""] + "-" + dist["r4"] + "-" + dist["r5"] + "-" + dist["r6"]+ "-" + dist["rcsp"] + "-" + dist["rct"]
         key
+    }
+
+    def String[] extractLine(String[] header,Map dist) {
+        def result=new LinkedList()
+        for (String key:header){
+            result.add(dist[key])
+        }
+        result
     }
 
     def Double[] compute(String ticker, int rocCompositeSmoothPeriod, int rocCompositeThreshold, int roc1Period, int
