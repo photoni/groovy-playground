@@ -299,17 +299,17 @@ class PerformanceTest {
         //-----AAPL
         //5-25-30-120-200-240-5-25
         //r1=5, r2=20, r3=50, r4=70, r5=230, r6=240, rcsp=5, rct=25
+        //10-25-50-120-230-260-5-15
 
-
-        def ticker = "GOOGL"
-        def roc1Period = 5
+        def ticker = "AAPL"
+        def roc1Period = 10
         def roc2Period = 25
-        def roc3Period = 30
+        def roc3Period = 50
         def roc4Period = 120
-        def roc5Period = 200
-        def roc6Period = 240
+        def roc5Period = 230
+        def roc6Period = 260
         def rocCompositeSmoothPeriod = 5
-        def rocCompositeThreshold = 25
+        def rocCompositeThreshold = 15
         Double[] perf = compute(ticker, rocCompositeSmoothPeriod, rocCompositeThreshold, roc1Period, roc2Period,
                 roc3Period, roc4Period, roc5Period,roc6Period)
         double capital = 100;
@@ -409,7 +409,11 @@ class PerformanceTest {
                                                                 roc5P,roc6P,
                                                                 rocCompositeSmoothP, rocCompositeT)
                                                     }
-                                                    def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,40000,50000,50000]
+                                                    //def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,
+//                                                  40000,50000,50000]
+                                                    def perfLevel=[0,5000,5000,10000,10000,20000,20000,30000,30000,
+                                                                   40000,
+                                                                   40000]
                                                     switch ( capital ) {
 
                                                         case { perfLevel[0]<= it && it < perfLevel[1] }:
@@ -470,9 +474,9 @@ class PerformanceTest {
                 }
             }
         }
-        log.debug("distribution3: {} - {} ",distribution[3].size(),distribution[3])
-        log.debug("distribution4: {} - {} ",distribution[4].size(),distribution[4])
-        log.debug("distribution5: {} - {} ",distribution[5].size(),distribution[5])
+        log.debug("distribution3 size : {} ",distribution[3].size())
+        log.debug("distribution4 size : {} ",distribution[4].size())
+        log.debug("distribution5 size : {} ",distribution[5].size())
         def tickers=[];
         CSV csv= new CSV()
         String[] header = ['tick', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'rcsp', 'rct', 'capital', 'signalsNum']
@@ -488,8 +492,10 @@ class PerformanceTest {
             for (int j = 0; j < distribution[5].size(); j++) {
 
                 def dist = distribution[5][j]
+                if(dist==null)
+                    continue
                 String key=extractKey(dist)
-                /*log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
+                /*log.debug("computing 5: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
                         dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])*/
                 def perf=compute(tick,dist["rcsp"],dist["rct"],dist["r1"],dist["r2"],dist["r3"],dist["r4"],
                         dist["r5"],dist["r6"])
@@ -505,8 +511,10 @@ class PerformanceTest {
             }
             for (int j = 0; j < distribution[4].size(); j++) {
                 def dist = distribution[4][j]
+                if(dist==null)
+                    continue
                 String key=extractKey(dist)
-                /*log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
+                /*log.debug("computing 4: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
                         dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])*/
                 def perf=compute(tick,dist["rcsp"],dist["rct"],dist["r1"],dist["r2"],dist["r3"],dist["r4"],
                         dist["r5"],dist["r6"])
@@ -521,8 +529,10 @@ class PerformanceTest {
             }
             for (int j = 0; j < distribution[3].size(); j++) {
                 def dist = distribution[3][j]
+                if(dist==null)
+                    continue
                 String key=extractKey(dist)
-                /*log.debug("computing: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
+                /*log.debug("computing 3: {} - {} - {} - {} - {} - {} - {} - {} - {}", tick,dist["r1"],dist["r2"],
                         dist["r3"],dist["r4"],dist["r5"],dist["r6"],dist["rcsp"],dist["rct"])*/
                 def perf=compute(tick,dist["rcsp"],dist["rct"],dist["r1"],dist["r2"],dist["r3"],dist["r4"],
                         dist["r5"],dist["r6"])
@@ -670,7 +680,9 @@ class PerformanceTest {
     def ArrayList doListHistories() {
         def list = []
 
-        def dir = new File("/home/filippo/projects/pig/technical_analysis/src/test/resources/histories/")
+        //def dir = new File("/home/filippo/projects/pig/technical_analysis/src/test/resources/histories/")
+        def dir = new File("/home/filippo/projects/pig/groovy-playground/src/test/resources/histories/")
+
         dir.eachFileRecurse(FileType.FILES) { file ->
             list << file.getName()
         }

@@ -8,9 +8,12 @@ import java.util.*;
 public class CSV {
     private String[] header;
     private String[] unique;
-    private Set<Integer> uniqueHashCodes=new HashSet<>();
+    private Set<Integer> uniqueHashCodes=new HashSet<Integer>();
     private List<String[]> lines=new LinkedList();
 
+    public CSV() {
+
+    }
     public CSV(List<String[]> lines) {
         this.header=lines.get(0);
         this.lines = lines.subList(1,lines.size()-1);
@@ -31,6 +34,18 @@ public class CSV {
     public List<String[]> getLines() {
         return lines;
     }
+    public List<Map<String,Object>> getLinesObjects() {
+        List<Map<String,Object>> result= new LinkedList<Map<String, Object>>();
+        for (int i = 0; i < lines.size(); i++) {
+            String[] row=lines.get(i);
+            Map<String,Object> object=new HashMap<String, Object>();
+            for (int j = 0; j <row.length ; j++) {
+                object.put(header[j],row[j]);
+            }
+            result.add(object);
+        }
+        return result;
+    }
 
     public void setLines(List<String[]> lines) {
         this.lines = lines;
@@ -47,7 +62,7 @@ public class CSV {
         this.lines.addAll(lines);
     }
     public List<String[]> getCsv() {
-        List<String[]> csv=new LinkedList<>();
+        List<String[]> csv=new LinkedList<String[]>();
         csv.add(this.header);
         csv.addAll(this.lines);
         return csv;
