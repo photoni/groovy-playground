@@ -13,7 +13,7 @@ class PerformanceAnalisysTest {
 
     @Test
     public void selectBetterPerfOfSample(){
-        def sampleTicker="AAPL"
+        def sampleTicker="GOOGL"
         CSV csv=new CSV(CSVUtil.entriesFromURI("/var/data/pig/beuteForce${sampleTicker}.csv"));
         List<Map> rows= csv.linesObjects
         def performanceByParams=[:]
