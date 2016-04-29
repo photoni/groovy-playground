@@ -7,6 +7,8 @@ import groovy.util.logging.Slf4j
 import groovyx.gpars.GParsPool
 import groovyx.gpars.pa.CallAsyncTask
 import helpers.ArrayHelper
+import org.apache.commons.math3.random.EmpiricalDistribution
+import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 import org.apache.commons.math3.stat.descriptive.moment.Mean
 import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Test
@@ -19,6 +21,7 @@ import ta.ROC
 import ta.SOO
 import util.ArrayUtil
 import util.CSVUtil
+import util.MathUtil
 
 @Slf4j
 class PerformanceTest {
@@ -295,6 +298,24 @@ class PerformanceTest {
     }
 
     @Test
+    public void sdTest() {
+        def ss = SecurityService.instance
+        double[] prices = ss.getLegacyPrices('AAPL')
+        double[] reverse = ArrayUtil.reverse(prices)
+        double[] gains= new double[reverse.size()-1]
+        for (int i = 1; i < reverse.length; i++) {
+            gains[i-1]=MathAnalysis.gain(reverse[i-1],reverse[i])*100
+        }
+        EmpiricalDistribution ed= new EmpiricalDistribution();
+        ed.load(gains);
+        StatisticalSummary stats=ed.getSampleStats();
+        log.debug("sd: {}, mean: {}", stats.getStandardDeviation(),stats.getMean())
+
+
+    }
+
+
+    @Test
     public void rocPrformanceTest() {
         //-----AAPL
         //5-25-30-120-200-240-5-25
@@ -307,22 +328,46 @@ class PerformanceTest {
         //GOOGL
         //10-20-40-120-140-260-10-10 - 431.64044971704124
         //r1=10---r4=20--r6=240-10-5 - the most
-
-        def ticker = "MSFT"
         def roc1Period = 10
-
         def roc4Period = 20
         def roc6Period = 240
         def rocCompositeSmoothPeriod = 10
         def rocCompositeThreshold = 5
+        def params=['roc1Period':10,'roc4Period':20,'roc6Period':240,'rocCompositeSmoothPeriod':10,
+                    'rocCompositeThreshold':5,]
+        ArrayList list = doListHistories()
+        EmpiricalDistribution ed= new EmpiricalDistribution();
+        double[] capitals=new double[list.size()];
+        for (int i = 0; i < list.size() ; i++) {
+            String file = list.get(i);
+            String tick = file.split("\\.")[0]
+
+            double capital=rocCapital(tick,params)
+            log.debug("computing symbol :{} - capital:{} ", tick,capital)
+            capitals[i]=capital;
+        }
+        ed.load(capitals);
+        StatisticalSummary ss=ed.getSampleStats();
+        def min=ss.getMin();
+        def max=ss.getMax();
+        def mean=ss.getMean()
+        log.debug("min:{} - max:{} - mean:{}", min,max,mean)
+
+    }
+
+    def rocCapital(String ticker,Map params) {
+        def roc1Period = params['roc1Period']
+        def roc4Period = params['roc4Period']
+        def roc6Period = params['roc6Period']
+        def rocCompositeSmoothPeriod = params['rocCompositeSmoothPeriod']
+        def rocCompositeThreshold = params['rocCompositeThreshold']
         Double[] perf = compute(ticker, rocCompositeSmoothPeriod, rocCompositeThreshold, roc1Period,
-                 roc4Period, roc6Period)
+                roc4Period, roc6Period)
         double capital = 100;
         capital = compoundCapital(perf, capital)
-        ArrayHelper.log(perf,log,false)
-        log.debug("capital: {}", capital)
-
-
+        //ArrayHelper.log(perf,log,false)
+        //log.debug("capital: {}", capital)
+        capital
     }
 
     @Test
@@ -338,8 +383,6 @@ class PerformanceTest {
         capital = compoundCapital(perf, capital)
         ArrayHelper.log(perf,log,false)
         log.debug("capital: {}", capital)
-
-
     }
 
 
@@ -579,20 +622,23 @@ class PerformanceTest {
     @Test
     public void legacyTest() {
         ArrayList list = doListHistories()
-        def capitals=[]
+        double[] capitals=new double[list.size()]
+        EmpiricalDistribution ed= new EmpiricalDistribution();
         for (int i = 0; i < list.size() ; i++) {
             String file=list.get(i);
             String tick=file.split("\\.")[0]
-            def capital=doLegacy(tick)
-            capitals.add(capital)
+            double capital=doLegacy(tick)
+            capitals[i]=capital
             log.debug("ticker: {} - capital: {}", tick,capital)
 
         }
 
-        Mean m= new Mean();
-
-        Double mean=m.evaluate(ArrayUtil.toDoubleArray(capitals))
-        log.debug("mean:  {}",mean)
+        ed.load(capitals);
+        StatisticalSummary ss=ed.getSampleStats();
+        def min=ss.getMin();
+        def max=ss.getMax();
+        def mean=ss.getMean()
+        log.debug("min:{} - max:{} - mean:{}", min,max,mean)
     }
 
     @Test
@@ -631,7 +677,7 @@ class PerformanceTest {
 
         def perf = Performance.gainSignal(signalT, pricesT, false)
 
-        ArrayHelper.log(perf,log,false)
+        //ArrayHelper.log(perf,log,false)
         double capital = 100;
         capital = compoundCapital(perf, capital)
     }
