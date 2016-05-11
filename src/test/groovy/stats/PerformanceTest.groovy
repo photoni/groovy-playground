@@ -451,9 +451,8 @@ class PerformanceTest {
                                                                 "rcsp:{} - " +
                                                                 "rct:{} ", capital, roc1P, roc4P,roc6P,rocCompositeSmoothP, rocCompositeT)
                                                     }
-                                                    //def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,
-//                                                  40000,50000,50000]
-                                                    def perfLevel=[0,100,100,200,600,800,800,900,900,1000,1000]
+                                                    def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,40000,50000,50000]
+                                                    //def perfLevel=[0,100,100,200,600,800,800,900,900,1000,1000]
                                                     switch ( capital ) {
 
                                                         case { perfLevel[0]<= it && it < perfLevel[1] }:
@@ -500,7 +499,7 @@ class PerformanceTest {
         log.debug("distribution5 size : {} ",distribution[5].size())
         def tickers=[];
         CSV csv= new CSV()
-        String[] header = ['tick', 'r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'rcsp', 'rct', 'capital', 'signalsNum']
+        String[] header = ['tick', 'r1', 'r4', 'r6', 'rcsp', 'rct', 'capital', 'signalsNum']
         csv.setHeader(header)
         ArrayList list = doListHistories()
 
@@ -566,7 +565,7 @@ class PerformanceTest {
             //tickers.add(tick)
         }
 
-        CSVUtil.write("/var/data/pig/beuteForce${masterTicker}.csv",csv.getCsv());
+        CSVUtil.write("/var/data/pig/bruteForce${masterTicker}.csv",csv.getCsv());
 
 
 
@@ -575,15 +574,49 @@ class PerformanceTest {
     }
     @Test
     public void readResults(){
-        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/beuteForceAAPL.csv")
+        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/bruteForceAAPL.csv")
         CSV csv= new CSV(allLines)
         csv.getHeader().each {
             log.debug(it)
         }
 
+        def results=[:]
         log.debug(Arrays.toString(csv.getHeader()))
-        log.debug(Arrays.toString(csv.getLines().get(0)))
-        log.debug(Arrays.toString(csv.getLines().get(1)))
+        for (int i = 0; i < csv.getLines().size(); i++) {
+            def array=csv.getLines().get(i)
+            /* r1 */
+            def r1=array[1]
+            def r4=array[2]
+            def r6=array[3]
+            def capital=array[6]
+
+            def key= r1 + "-" + r4 + "-" + r6
+
+            if(!results.containsKey(key))
+                results.put(key,[])
+            List list= results.get(key)
+            list.add(capital)
+
+            //log.debug("{} {} {} {}",r1,r4,r6, capital)
+
+        }
+
+        def higestMean=0
+        def higestKey=''
+        for (String key:results.keySet()){
+            String[] caps=results.get(key)
+            double[] capsD=new double[caps.size()]
+            for (int i = 0; i < caps.size(); i++) {
+                capsD[i]=Double.parseDouble(caps[i])
+            }
+            Mean m= new Mean()
+            def mean=m.evaluate(capsD)
+            if(mean> higestMean){
+                higestMean=mean
+                higestKey=key
+            }
+        }
+        log.debug("{} {}",higestKey, higestMean)
 
     }
 
