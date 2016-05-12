@@ -330,28 +330,66 @@ class PerformanceTest {
         //r1=10---r4=20--r6=240-10-5 - the most
         def roc1Period = 10
         def roc4Period = 20
-        def roc6Period = 240
-        def rocCompositeSmoothPeriod = 10
-        def rocCompositeThreshold = 5
-        def params=['roc1Period':10,'roc4Period':20,'roc6Period':240,'rocCompositeSmoothPeriod':10,
-                    'rocCompositeThreshold':5,]
-        ArrayList list = doListHistories()
-        EmpiricalDistribution ed= new EmpiricalDistribution();
-        double[] capitals=new double[list.size()];
-        for (int i = 0; i < list.size() ; i++) {
-            String file = list.get(i);
-            String tick = file.split("\\.")[0]
+        def roc6Period = 230
+        def rocCompositeSmoothPeriod = 12
+        def rocCompositeThreshold = 10
+
+            def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
+                        'rocCompositeThreshold':rocCompositeThreshold]
+            ArrayList list = doListHistories()
+            EmpiricalDistribution ed= new EmpiricalDistribution();
+            double[] capitals=new double[list.size()];
+            for (int i = 0; i < list.size() ; i++) {
+                String file = list.get(i);
+                String tick = file.split("\\.")[0]
+
+                double capital=rocCapital(tick,params)
+                //log.debug("computing symbol :{} - capital:{} ", tick,capital)
+                capitals[i]=capital;
+            }
+
+            ed.load(capitals);
+
+            StatisticalSummary ss=ed.getSampleStats();
+            def min=ss.getMin();
+            def max=ss.getMax();
+            def mean=ss.getMean()
+        def sd=ss.getStandardDeviation()
+            log.debug("rocCompositeThreshold :{}",rocCompositeThreshold)
+            log.debug("min:{} - max:{} - mean:{} - sd:{}", min,max,mean,sd)
+
+
+    }
+
+    @Test
+    public void rocPrformanceSingleTest() {
+        //-----AAPL
+        //5-25-30-120-200-240-5-25
+        //r1=5, r2=20, r3=50, r4=70, r5=230, r6=240, rcsp=5, rct=25
+        //10-25-50-120-230-260-5-15
+
+        //IBM
+        //10-20-40-110-220-260-10-5 - 394.05134252115283
+
+        //GOOGL
+        //10-20-40-120-140-260-10-10 - 431.64044971704124
+        //r1=10---r4=20--r6=240-10-5 - the most
+        def roc1Period = 10
+        def roc4Period = 20
+        def roc6Period = 230
+        def rocCompositeSmoothPeriod = 12
+        def rocCompositeThreshold = 10
+
+
+            def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
+                        'rocCompositeThreshold':rocCompositeThreshold]
+            def tick='GOOGL'
 
             double capital=rocCapital(tick,params)
-            log.debug("computing symbol :{} - capital:{} ", tick,capital)
-            capitals[i]=capital;
-        }
-        ed.load(capitals);
-        StatisticalSummary ss=ed.getSampleStats();
-        def min=ss.getMin();
-        def max=ss.getMax();
-        def mean=ss.getMean()
-        log.debug("min:{} - max:{} - mean:{}", min,max,mean)
+            log.debug("rocCompositeThreshold :{}",rocCompositeThreshold)
+            log.debug("capital :{}",capital)
+
+
 
     }
 
@@ -372,7 +410,7 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceMSCITest() {
-        def ticker = "AAPL"
+        def ticker = "MSFT"
         def roc1Period = 120
         def roc2Period = 240
 
@@ -671,7 +709,8 @@ class PerformanceTest {
         def min=ss.getMin();
         def max=ss.getMax();
         def mean=ss.getMean()
-        log.debug("min:{} - max:{} - mean:{}", min,max,mean)
+        def sd=ss.getStandardDeviation()
+        log.debug("min:{} - max:{} - mean:{} - sd:{}", min,max,mean,sd)
     }
 
     @Test
