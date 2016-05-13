@@ -25,6 +25,9 @@ import util.MathUtil
 
 @Slf4j
 class PerformanceTest {
+
+    def historyFolder='GB_8000'
+
     @Test
     public void kamaPrformanceTest() {
 
@@ -317,31 +320,22 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceTest() {
-        //-----AAPL
-        //5-25-30-120-200-240-5-25
-        //r1=5, r2=20, r3=50, r4=70, r5=230, r6=240, rcsp=5, rct=25
-        //10-25-50-120-230-260-5-15
-
-        //IBM
-        //10-20-40-110-220-260-10-5 - 394.05134252115283
-
-        //GOOGL
-        //10-20-40-120-140-260-10-10 - 431.64044971704124
-        //r1=10---r4=20--r6=240-10-5 - the most
+        //US_9000 r1:10 r4:20 r6:230 rcsp:12 rct:10
         def roc1Period = 10
-        def roc4Period = 20
+        def roc4Period = 100
         def roc6Period = 230
         def rocCompositeSmoothPeriod = 12
         def rocCompositeThreshold = 10
 
             def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
                         'rocCompositeThreshold':rocCompositeThreshold]
-            ArrayList list = doListHistories()
+            ArrayList list = doListHistories(historyFolder)
             EmpiricalDistribution ed= new EmpiricalDistribution();
             double[] capitals=new double[list.size()];
             for (int i = 0; i < list.size() ; i++) {
                 String file = list.get(i);
                 String tick = file.split("\\.")[0]
+                println("file: ${file} - tick: ${tick}")
 
                 double capital=rocCapital(tick,params)
                 //log.debug("computing symbol :{} - capital:{} ", tick,capital)
@@ -438,12 +432,12 @@ class PerformanceTest {
         capital: 2938.144145344695 - r1:10 - r2:35 - r3:180 - r4: 200 - r5: 340 - rcsp:5 - rct:5
         capital: 3057.4275791037994 - r1:10 - r2:40 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
          */
-        def masterTicker = "AAPL"
+        def masterTicker = "LLOY"
         def bestCapital = 0;
         //double[] prices = getPrices(ticker)
         //final def reverse = ArrayUtil.reverse(prices)
         def ss = SecurityService.instance
-        double[] prices = ss.getLegacyPrices(masterTicker)
+        double[] prices = ss.getLegacyPrices(masterTicker,historyFolder)
 
 
         double[] reverse = ArrayUtil.reverse(prices)
@@ -489,8 +483,9 @@ class PerformanceTest {
                                                                 "rcsp:{} - " +
                                                                 "rct:{} ", capital, roc1P, roc4P,roc6P,rocCompositeSmoothP, rocCompositeT)
                                                     }
-                                                    def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,40000,50000,50000]
-                                                    //def perfLevel=[0,100,100,200,600,800,800,900,900,1000,1000]
+                                                    //def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,
+//40000,50000,50000]
+                                                    def perfLevel=[0,100,100,200,200,300,300,400,400,500,500]
                                                     switch ( capital ) {
 
                                                         case { perfLevel[0]<= it && it < perfLevel[1] }:
@@ -539,12 +534,12 @@ class PerformanceTest {
         CSV csv= new CSV()
         String[] header = ['tick', 'r1', 'r4', 'r6', 'rcsp', 'rct', 'capital', 'signalsNum']
         csv.setHeader(header)
-        ArrayList list = doListHistories()
+        ArrayList list = doListHistories(historyFolder)
 
         for (int i = 0; i < list.size() ; i++) {
             String file=list.get(i);
             String tick=file.split("\\.")[0]
-            log.debug("computing symbol :{} ",tick)
+            //log.debug("computing symbol :{} ",tick)
             if(i%2==0)
                 log.debug("computing symbol block:{} ",i)
             for (int j = 0; j < distribution[5].size(); j++) {
@@ -612,7 +607,7 @@ class PerformanceTest {
     }
     @Test
     public void readResults(){
-        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/bruteForceAAPL.csv")
+        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/bruteForceLLOY.csv")
         CSV csv= new CSV(allLines)
         csv.getHeader().each {
             log.debug(it)
@@ -663,7 +658,7 @@ class PerformanceTest {
     @Test
     public void listHistories(){
 
-        ArrayList list = doListHistories()
+        ArrayList list = doListHistories(historyFolder)
 
 
 
@@ -692,7 +687,7 @@ class PerformanceTest {
 
     @Test
     public void legacyTest() {
-        ArrayList list = doListHistories()
+        ArrayList list = doListHistories(historyFolder)
         double[] capitals=new double[list.size()]
         EmpiricalDistribution ed= new EmpiricalDistribution();
         for (int i = 0; i < list.size() ; i++) {
@@ -723,7 +718,7 @@ class PerformanceTest {
 
 
     def double doLegacy(String tick) {
-        InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/histories/${tick}.json")
+        InputStream is = ReflectionUtils.getCallingClass(0).getResourceAsStream("/histories/${historyFolder}/${tick}.json")
         ObjectMapper mapper = new ObjectMapper();
         List list = (ArrayList) mapper.readValue(is, new ArrayList<Object>().class);
         double[] pricesT = new double[list.size()]
@@ -770,11 +765,11 @@ class PerformanceTest {
         return prices
     }
 
-    def ArrayList doListHistories() {
+    def ArrayList doListHistories(String historyFolder) {
         def list = []
 
         //def dir = new File("/home/filippo/projects/pig/technical_analysis/src/test/resources/histories/")
-        def dir = new File("/home/filippo/projects/pig/groovy-playground/src/test/resources/histories/")
+        def dir = new File("/home/filippo/projects/pig/groovy-playground/src/test/resources/histories/${historyFolder}/")
 
         dir.eachFileRecurse(FileType.FILES) { file ->
             list << file.getName()
@@ -797,7 +792,7 @@ class PerformanceTest {
 
     def Double[] compute(String ticker, int rocCompositeSmoothPeriod, int rocCompositeThreshold, int roc1Period, int roc4Period,int roc6Period) {
         def ss = SecurityService.instance
-        double[] prices = ss.getLegacyPrices(ticker)
+        double[] prices = ss.getLegacyPrices(ticker,historyFolder)
         double[] reverse = ArrayUtil.reverse(prices)
         double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmoothPeriod, rocCompositeThreshold, prices,
                 roc1Period, roc4Period,roc6Period)
