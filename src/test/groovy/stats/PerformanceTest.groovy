@@ -26,7 +26,7 @@ import util.MathUtil
 @Slf4j
 class PerformanceTest {
 
-    def historyFolder='GB_8000'
+    def historyFolder='US_9000'
 
     @Test
     public void kamaPrformanceTest() {
@@ -321,10 +321,12 @@ class PerformanceTest {
     @Test
     public void rocPrformanceTest() {
         //US_9000 r1:10 r4:20 r6:230 rcsp:12 rct:10
+        //GB_8000 r1:15 r4:40 r6:130 rcsp:40 rct:6
+        //HK_2000 r1:15 r4:50 r6:150 rcsp:40 rct:10
         def roc1Period = 10
-        def roc4Period = 100
+        def roc4Period = 20
         def roc6Period = 230
-        def rocCompositeSmoothPeriod = 12
+        def rocCompositeSmoothPeriod = 16
         def rocCompositeThreshold = 10
 
             def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
@@ -377,7 +379,7 @@ class PerformanceTest {
 
             def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
                         'rocCompositeThreshold':rocCompositeThreshold]
-            def tick='GOOGL'
+            def tick='HK19'
 
             double capital=rocCapital(tick,params)
             log.debug("rocCompositeThreshold :{}",rocCompositeThreshold)
@@ -432,7 +434,7 @@ class PerformanceTest {
         capital: 2938.144145344695 - r1:10 - r2:35 - r3:180 - r4: 200 - r5: 340 - rcsp:5 - rct:5
         capital: 3057.4275791037994 - r1:10 - r2:40 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
          */
-        def masterTicker = "LLOY"
+        def masterTicker = "HK19"
         def bestCapital = 0;
         //double[] prices = getPrices(ticker)
         //final def reverse = ArrayUtil.reverse(prices)
@@ -607,7 +609,7 @@ class PerformanceTest {
     }
     @Test
     public void readResults(){
-        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/bruteForceLLOY.csv")
+        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/bruteForceHK19.csv")
         CSV csv= new CSV(allLines)
         csv.getHeader().each {
             log.debug(it)
@@ -711,7 +713,7 @@ class PerformanceTest {
     @Test
     public void legacySingleTest() {
 
-            def capital=doLegacy("MSFT")
+            def capital=doLegacy("HK19")
             log.debug("capital:  {}",capital)
 
     }
