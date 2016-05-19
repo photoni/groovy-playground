@@ -118,6 +118,13 @@ public class ROC {
     }*/
 
     public static double[] compositeSignal(int rocCompositeSmoothPeriod, int rocCompositeThreshold,double[] prices,Integer... rocPeriods) {
+
+
+        return compositeSignal(1,rocCompositeSmoothPeriod,rocCompositeThreshold,prices,rocPeriods);
+    }
+
+    public static double[] compositeSignal(double sd,int rocCompositeSmoothPeriod, int rocCompositeThreshold,double[]
+            prices,Integer... rocPeriods) {
         double[][] rocs=new double[rocPeriods.length][];
         for (int i = 0; i < rocPeriods.length; i++) {
             rocs[i]=ROC.roc(prices, rocPeriods[i]);
@@ -126,9 +133,9 @@ public class ROC {
         double[] rocComposite = composite(rocs);
 
         double[] rocCompositeSmooth = ArrayUtil.reverse(MA.sma(0, rocComposite.length, ArrayUtil
-                .reverse(rocComposite), rocCompositeSmoothPeriod));
+                .reverse(rocComposite), (int)Math.round(rocCompositeSmoothPeriod*sd)));
 
-        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmooth, rocCompositeThreshold);
+        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmooth, rocCompositeThreshold*sd);
 
         return rocCompositeSignal;
     }

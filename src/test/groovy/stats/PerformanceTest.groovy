@@ -10,6 +10,7 @@ import helpers.ArrayHelper
 import org.apache.commons.math3.random.EmpiricalDistribution
 import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 import org.apache.commons.math3.stat.descriptive.moment.Mean
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation
 import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Test
 import service.SecurityService
@@ -301,19 +302,17 @@ class PerformanceTest {
     }
 
     @Test
-    public void sdTest() {
+    public void sdTest(){
+        def historyFolder='US_9000'
+        def ticker='IBM'
         def ss = SecurityService.instance
-        double[] prices = ss.getLegacyPrices('AAPL')
+        double[] prices = ss.getLegacyPrices(ticker,historyFolder)
         double[] reverse = ArrayUtil.reverse(prices)
-        double[] gains= new double[reverse.size()-1]
-        for (int i = 1; i < reverse.length; i++) {
-            gains[i-1]=MathAnalysis.gain(reverse[i-1],reverse[i])*100
-        }
-        EmpiricalDistribution ed= new EmpiricalDistribution();
-        ed.load(gains);
-        StatisticalSummary stats=ed.getSampleStats();
-        log.debug("sd: {}, mean: {}", stats.getStandardDeviation(),stats.getMean())
+        double[] gains=MathAnalysis.rocs(reverse,20)
 
+        StandardDeviation sd = new StandardDeviation();
+        def sdResult=sd.evaluate(gains)
+        log.debug('sdResult: {}',sdResult*10)
 
     }
 
@@ -326,7 +325,7 @@ class PerformanceTest {
         def roc1Period = 10
         def roc4Period = 20
         def roc6Period = 230
-        def rocCompositeSmoothPeriod = 16
+        def rocCompositeSmoothPeriod = 12
         def rocCompositeThreshold = 10
 
             def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
@@ -379,7 +378,7 @@ class PerformanceTest {
 
             def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
                         'rocCompositeThreshold':rocCompositeThreshold]
-            def tick='HK19'
+            def tick='GOOGL'
 
             double capital=rocCapital(tick,params)
             log.debug("rocCompositeThreshold :{}",rocCompositeThreshold)
@@ -434,7 +433,7 @@ class PerformanceTest {
         capital: 2938.144145344695 - r1:10 - r2:35 - r3:180 - r4: 200 - r5: 340 - rcsp:5 - rct:5
         capital: 3057.4275791037994 - r1:10 - r2:40 - r3:170 - r4: 210 - r5: 340 - rcsp:5 - rct:5
          */
-        def masterTicker = "HK19"
+        def masterTicker = "GOOGL"
         def bestCapital = 0;
         //double[] prices = getPrices(ticker)
         //final def reverse = ArrayUtil.reverse(prices)
@@ -713,7 +712,7 @@ class PerformanceTest {
     @Test
     public void legacySingleTest() {
 
-            def capital=doLegacy("HK19")
+            def capital=doLegacy("GOOGL")
             log.debug("capital:  {}",capital)
 
     }
@@ -796,7 +795,11 @@ class PerformanceTest {
         def ss = SecurityService.instance
         double[] prices = ss.getLegacyPrices(ticker,historyFolder)
         double[] reverse = ArrayUtil.reverse(prices)
-        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmoothPeriod, rocCompositeThreshold, prices,
+        double[] gains=MathAnalysis.rocs(reverse,20)
+
+        StandardDeviation sd = new StandardDeviation();
+        def sdResult=sd.evaluate(gains)
+        double[] rocCompositeSignal = ROC.compositeSignal(sdResult,rocCompositeSmoothPeriod, rocCompositeThreshold, prices,
                 roc1Period, roc4Period,roc6Period)
         def perf = Performance.gainSignal(ArrayUtil.reverse(rocCompositeSignal), reverse, false)
         perf
