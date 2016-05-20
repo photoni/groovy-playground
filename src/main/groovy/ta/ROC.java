@@ -132,10 +132,14 @@ public class ROC {
 
         double[] rocComposite = composite(rocs);
 
+        long adjustedPeriods = Math.round(rocCompositeSmoothPeriod * sd);
+        adjustedPeriods=Math.max(adjustedPeriods,3);
         double[] rocCompositeSmooth = ArrayUtil.reverse(MA.sma(0, rocComposite.length, ArrayUtil
-                .reverse(rocComposite), (int)Math.round(rocCompositeSmoothPeriod*sd)));
+                .reverse(rocComposite), (int) adjustedPeriods));
 
-        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmooth, rocCompositeThreshold*sd);
+        double adjustedThreshold = rocCompositeThreshold * sd;
+        adjustedThreshold=Math.max(adjustedThreshold,3);
+        double[] rocCompositeSignal = ROC.compositeSignal(rocCompositeSmooth, adjustedThreshold);
 
         return rocCompositeSignal;
     }

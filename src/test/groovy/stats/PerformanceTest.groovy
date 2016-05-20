@@ -319,13 +319,13 @@ class PerformanceTest {
 
     @Test
     public void rocPrformanceTest() {
-        //US_9000 r1:10 r4:20 r6:230 rcsp:12 rct:10
+        //US_9000 r1:10 r4:20 r6:230 rcsp:12 rct:10 // r1:15 r4:60 r6:130 rcsp:40 rct:10  dynamic
         //GB_8000 r1:15 r4:40 r6:130 rcsp:40 rct:6
         //HK_2000 r1:15 r4:50 r6:150 rcsp:40 rct:10
-        def roc1Period = 10
-        def roc4Period = 20
-        def roc6Period = 230
-        def rocCompositeSmoothPeriod = 12
+        def roc1Period = 15
+        def roc4Period = 60
+        def roc6Period = 130
+        def rocCompositeSmoothPeriod = 40
         def rocCompositeThreshold = 10
 
             def params=['roc1Period':roc1Period,'roc4Period':roc4Period,'roc6Period':roc6Period,'rocCompositeSmoothPeriod':rocCompositeSmoothPeriod,
@@ -369,10 +369,10 @@ class PerformanceTest {
         //GOOGL
         //10-20-40-120-140-260-10-10 - 431.64044971704124
         //r1=10---r4=20--r6=240-10-5 - the most
-        def roc1Period = 10
-        def roc4Period = 20
-        def roc6Period = 230
-        def rocCompositeSmoothPeriod = 12
+        def roc1Period = 15
+        def roc4Period = 60
+        def roc6Period = 130
+        def rocCompositeSmoothPeriod = 40
         def rocCompositeThreshold = 10
 
 
@@ -486,7 +486,8 @@ class PerformanceTest {
                                                     }
                                                     //def perfLevel=[0,10000,10000,20000,20000,30000,30000,40000,
 //40000,50000,50000]
-                                                    def perfLevel=[0,100,100,200,200,300,300,400,400,500,500]
+                                                    //def perfLevel=[0,100,100,200,200,300,300,400,400,500,500]
+                                                    def perfLevel=[0,200,200,400,400,700,700,800,800,1000,1000]
                                                     switch ( capital ) {
 
                                                         case { perfLevel[0]<= it && it < perfLevel[1] }:
@@ -608,7 +609,8 @@ class PerformanceTest {
     }
     @Test
     public void readResults(){
-        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/bruteForceHK19.csv")
+        def masterTicker = "GOOGL"
+        List<String[]> allLines=CSVUtil.entriesFromURI("/var/data/pig/bruteForce${masterTicker}.csv")
         CSV csv= new CSV(allLines)
         csv.getHeader().each {
             log.debug(it)
@@ -798,7 +800,7 @@ class PerformanceTest {
         double[] gains=MathAnalysis.rocs(reverse,20)
 
         StandardDeviation sd = new StandardDeviation();
-        def sdResult=sd.evaluate(gains)
+        def sdResult=gains!=null?sd.evaluate(gains):1
         double[] rocCompositeSignal = ROC.compositeSignal(sdResult,rocCompositeSmoothPeriod, rocCompositeThreshold, prices,
                 roc1Period, roc4Period,roc6Period)
         def perf = Performance.gainSignal(ArrayUtil.reverse(rocCompositeSignal), reverse, false)

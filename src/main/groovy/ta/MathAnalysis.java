@@ -139,7 +139,9 @@ public class MathAnalysis {
      */
     public static double[] rocs(double[] values,int period) {
 
-        double[] gains = new double[values.length - period];
+        int lenght = values.length - period;
+        if(lenght<=5) return null;
+        double[] gains = new double[lenght];
         for (int i = period; i < (gains.length - 1); i++) {
                 gains[i-period] = gain(values[i-period],values[i]);
         }
